@@ -427,6 +427,78 @@ select.inp{cursor:pointer;
 }
 .feat-list{display:grid;gap:6px}
 .feat-row{display:grid;grid-template-columns:1fr 40px;gap:6px;align-items:center}
+
+/* ── أقسام مطوية ── */
+.acc{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-1);overflow:hidden;
+}
+.acc + .acc{margin-top:var(--s-3)}
+.acc > summary{
+  display:flex;align-items:center;gap:var(--s-3);padding:16px var(--s-4);
+  cursor:pointer;list-style:none;min-height:60px;
+  font-family:var(--f-head);font-weight:700;font-size:15.5px;
+  transition:background-color .18s var(--ease);
+}
+.acc > summary::-webkit-details-marker{display:none}
+.acc > summary:hover{background:var(--surface-2)}
+.acc > summary .ai{
+  width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;
+  background:var(--brand-wash);color:var(--brand-ink);font-size:18px;
+}
+.acc > summary .atxt{flex:1;min-width:0;display:grid;gap:2px}
+.acc > summary .asub{font-family:var(--f-body);font-size:12px;font-weight:400;color:var(--soft);line-height:1.5}
+.acc > summary .acount{
+  font-family:var(--f-num);font-size:12px;font-weight:600;padding:3px 10px;flex:none;
+  border-radius:var(--r-full);background:var(--sunken);color:var(--ink-2);
+}
+.acc > summary .chev{color:var(--soft);font-size:19px;flex:none;transition:transform .25s var(--ease)}
+.acc[open] > summary .chev{transform:rotate(180deg)}
+.acc[open] > summary{border-bottom:1px solid var(--line);background:var(--surface-2)}
+.acc-body{padding:var(--s-4);display:grid;gap:var(--s-3)}
+
+/* شريط الحفظ الثابت */
+.savebar{
+  position:sticky;bottom:0;z-index:20;margin-top:var(--s-4);
+  background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);padding:var(--s-3) 0;
+  padding-bottom:calc(var(--s-3) + env(safe-area-inset-bottom));
+  display:flex;gap:var(--s-3);align-items:center;flex-wrap:wrap;
+}
+.savebar .btn{min-width:150px}
+.savebar .err{flex:1;min-width:140px}
+
+/* ── مدير صور الواجهة ── */
+.hero-imgs{display:grid;gap:var(--s-2);grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.hi{
+  position:relative;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--line);background:var(--sunken);
+}
+.hi img{width:100%;height:100%;object-fit:cover}
+.hi img.failed{opacity:0}
+.hi .hi-acts{
+  position:absolute;inset-block-end:0;inset-inline:0;display:flex;gap:3px;padding:5px;
+  background:linear-gradient(to top,rgba(10,18,14,.8),transparent);
+}
+.hi .hi-acts button{
+  flex:1;height:32px;border-radius:8px;display:grid;place-items:center;font-size:15px;
+  background:rgba(255,255,255,.9);color:#14201B;transition:background-color .15s var(--ease);
+}
+.hi .hi-acts button:hover:not(:disabled){background:#fff}
+.hi .hi-acts button:disabled{opacity:.4}
+.hi .hi-acts button.rm{color:#A62F40}
+.hi .hi-n{
+  position:absolute;top:6px;inset-inline-start:6px;width:22px;height:22px;border-radius:7px;
+  display:grid;place-items:center;background:var(--glass);font-family:var(--f-num);font-size:11px;font-weight:700;
+}
+.hi-add{
+  aspect-ratio:4/5;border:1.5px dashed var(--line-2);border-radius:var(--r);
+  display:grid;place-items:center;align-content:center;gap:6px;color:var(--soft);
+  font-family:var(--f-head);font-weight:600;font-size:13px;text-align:center;padding:10px;
+  transition:color .18s var(--ease),border-color .18s var(--ease),background-color .18s var(--ease);
+}
+.hi-add:hover{color:var(--brand-ink);border-color:var(--brand);background:var(--brand-wash)}
+.hi-add .icon{font-size:26px}
 .modal{
   position:fixed;inset:0;z-index:100;background:rgba(10,18,14,.55);
   backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
@@ -595,6 +667,8 @@ select.inp{cursor:pointer;
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
     <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 14.5 6-6 6 6"/></symbol>
     <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9.5 6 6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.8" y="5" width="18.4" height="14" rx="2.6"/><path d="m3.4 6.6 8.6 6 8.6-6"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M19.6 3.6v4.8h-4.8"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.6" y="8.6" width="11.8" height="11.8" rx="2.4"/><path d="M15.4 5.4H6.2a2.4 2.4 0 0 0-2.4 2.4v9.2"/></symbol>
@@ -785,6 +859,9 @@ select.inp{cursor:pointer;
 
         <div class="fset">
           <h4 data-t="info.avatar">الصورة الشخصية</h4>
+          <p class="hint" data-t="info.avatarWhere">
+            تظهر بشعار الموقع فوق وبالفوتر — محل الحرف المختصر. إذا شلتيها يرجع الحرف.
+          </p>
           <div class="cover-box">
             <div class="cover-prev" id="i-prev">
               <svg class="icon" style="font-size:26px"><use href="#i-image"></use></svg>
@@ -861,6 +938,11 @@ select.inp{cursor:pointer;
       </button>
     </div>
     <div class="modal-body picking" style="gap:var(--s-3)">
+      <button class="btn btn-primary" type="button" id="pickUpBtn" style="justify-self:start">
+        <svg class="icon"><use href="#i-upload"></use></svg><span data-t="media.uploadHere">رفع صورة لهذا المجلد</span>
+      </button>
+      <input type="file" id="pickFile" accept="image/*" multiple hidden>
+      <div class="up-bar" id="pickBar" hidden><i></i></div>
       <div class="chips" id="pickChips" role="group" style="margin-top:0"></div>
       <div class="media-grid" id="pickGrid" style="margin-top:0;padding-bottom:0"></div>
     </div>
@@ -962,13 +1044,29 @@ const T = {
 
     "ct.intro":"كل النصوص اللي تظهر بالصفحة الرئيسية. اكتبي النص بالعربي وبالإنكليزي — الزائر يشوف حسب اللغة اللي يختارها.",
     "ct.emptyList":"ماكو عناصر — ضيفي أول واحد.",
-    "ct.hero":"الواجهة الرئيسية",
+    "ct.hero":"نصوص الواجهة",
+    "ct.heroSub":"العنوان الكبير والنص اللي تحته",
     "ct.eyebrow":"السطر الصغير فوق العنوان",
     "ct.title":"العنوان الكبير",
     "ct.titleHint":"تكدرين تلوّنين كلمة بوضعها بين <span class='hl'>و</span>",
     "ct.sub":"النص تحت العنوان",
-    "ct.heroImg":"صورة الواجهة",
-    "ct.aboutImg":"صورة قسم «عن الكوتش»",
+    "ct.heroImgs":"صور الواجهة المتحركة",
+    "ct.heroImgsSub":"الصور اللي تتقلب بأعلى الصفحة",
+    "ct.heroImgsHint":"تنقلب تلقائياً كل ٥ ثواني بترتيبهن. صورة وحدة بس؟ تبقى ثابتة بدون حركة.",
+    "ct.addHeroImg":"إضافة صورة",
+    "ct.aboutImg":"صورة «عن الكوتش»",
+    "ct.aboutImgSub":"الصورة الكبيرة بقسم التعريف",
+    "ct.stats":"الأرقام",
+    "ct.statsSub":"الأرقام الصغيرة تحت الواجهة",
+    "ct.creds":"الشهادات والخبرات",
+    "ct.credsSub":"تظهر بقسم «عن الكوتش»",
+    "ct.plans":"الباقات والأسعار",
+    "ct.plansSub":"أسماء الباقات وأسعارها ومزاياها",
+    "ct.quotes":"آراء المشتركات",
+    "ct.quotesSub":"التجارب اللي تظهر بالصفحة",
+    "ct.faqs":"الأسئلة الشائعة",
+    "ct.faqsSub":"سؤال وجواب",
+    "ct.creditSub":"السطر الصغير بأسفل الصفحة",
     "ct.stat":"رقم",
     "ct.addStat":"إضافة رقم",
     "ct.statN":"الرقم",
@@ -1006,7 +1104,10 @@ const T = {
     "media.all":"الكل",
     "media.fRecipes":"صور الوصفات",
     "media.fCourses":"صور الكورسات",
+    "media.fSite":"صور الموقع",
     "media.fAvatar":"الصورة الشخصية",
+    "media.uploadHere":"رفع صورة لهذا المجلد",
+    "media.pickCtx":"اختاري من: {x}",
     "media.count":"صورة",
     "media.empty":"ماكو صور مرفوعة",
     "media.emptyHint":"ارفعي أول صورة من الزر فوق، أو ارفعيها مباشرة وأنتِ تضيفين وصفة.",
@@ -1094,6 +1195,7 @@ const T = {
     "info.tagline":"السطر التعريفي",
     "info.bio":"النبذة",
     "info.avatar":"الصورة الشخصية",
+    "info.avatarWhere":"تظهر بشعار الموقع فوق وبالفوتر — محل الحرف المختصر. إذا شلتيها يرجع الحرف.",
     "info.upload":"رفع صورة",
     "info.links":"روابط التواصل",
     "info.instagram":"انستغرام",
@@ -1180,13 +1282,29 @@ const T = {
 
     "ct.intro":"Every piece of text on the home page. Write it in Arabic and in English — visitors see whichever language they pick.",
     "ct.emptyList":"Nothing here — add the first one.",
-    "ct.hero":"Hero section",
+    "ct.hero":"Hero text",
+    "ct.heroSub":"The main headline and the text under it",
     "ct.eyebrow":"Small line above the headline",
     "ct.title":"Main headline",
     "ct.titleHint":"You can highlight a word by wrapping it in <span class='hl'> and </span>",
     "ct.sub":"Text below the headline",
-    "ct.heroImg":"Hero image",
-    "ct.aboutImg":"“About the coach” image",
+    "ct.heroImgs":"Hero slideshow",
+    "ct.heroImgsSub":"The photos that rotate at the top of the page",
+    "ct.heroImgsHint":"They rotate automatically every 5 seconds, in this order. With a single photo it stays still.",
+    "ct.addHeroImg":"Add photo",
+    "ct.aboutImg":"“About the coach” photo",
+    "ct.aboutImgSub":"The large photo in the about section",
+    "ct.stats":"Stats",
+    "ct.statsSub":"The small numbers under the hero",
+    "ct.creds":"Credentials",
+    "ct.credsSub":"Shown in the about section",
+    "ct.plans":"Packages & prices",
+    "ct.plansSub":"Package names, prices and features",
+    "ct.quotes":"Reviews",
+    "ct.quotesSub":"The testimonials shown on the page",
+    "ct.faqs":"FAQ",
+    "ct.faqsSub":"Questions and answers",
+    "ct.creditSub":"The small line at the bottom of the page",
     "ct.stat":"Stat",
     "ct.addStat":"Add stat",
     "ct.statN":"Number",
@@ -1224,7 +1342,10 @@ const T = {
     "media.all":"All",
     "media.fRecipes":"Recipe images",
     "media.fCourses":"Course images",
+    "media.fSite":"Site images",
     "media.fAvatar":"Profile photo",
+    "media.uploadHere":"Upload to this folder",
+    "media.pickCtx":"Pick from: {x}",
     "media.count":"image(s)",
     "media.empty":"No images uploaded",
     "media.emptyHint":"Upload your first image with the button above, or upload one directly while adding a recipe.",
@@ -1312,6 +1433,7 @@ const T = {
     "info.tagline":"Tagline",
     "info.bio":"Bio",
     "info.avatar":"Profile photo",
+    "info.avatarWhere":"Shown in the site logo at the top and in the footer — in place of the initial. Remove it and the letter comes back.",
     "info.upload":"Upload image",
     "info.links":"Contact links",
     "info.instagram":"Instagram",
@@ -1429,8 +1551,9 @@ let PENDING_DELETE = null;
 let lastFocus = null;
 
 /* ── مكتبة الصور ── */
-const FOLDERS  = ['recipes','courses','avatar'];
-const FOLDER_T = { recipes:'media.fRecipes', courses:'media.fCourses', avatar:'media.fAvatar' };
+const FOLDERS  = ['recipes','courses','site','avatar'];
+const FOLDER_T = { recipes:'media.fRecipes', courses:'media.fCourses',
+                   site:'media.fSite', avatar:'media.fAvatar' };
 let MEDIA      = [];        // [{name, path, folder, url, size, created}]
 let MFILTER    = '*';       // '*' أو اسم مجلد
 let PICK_TARGET = null;     // 'cover' أو 'avatar' لما تكون نافذة الاختيار مفتوحة
@@ -1643,13 +1766,24 @@ function renderMedia(){
   $('#mediaGrid').innerHTML = items.map(m => mediaCard(m, false)).join('');
 }
 
+/* المجلد اللي يخص هدف الاختيار الحالي */
+function pickFolder(){
+  if (!PICK_TARGET) return 'recipes';
+  if (PICK_TARGET === 'avatar')          return 'avatar';
+  if (PICK_TARGET === 'hero:add')        return 'site';
+  if (PICK_TARGET.startsWith('ct:'))     return 'site';
+  return destFolder();                   /* recipes أو courses حسب التبويب */
+}
+
 /* ── نافذة اختيار صورة ── */
 function openPicker(target){
   PICK_TARGET = target;
+  MFILTER = pickFolder();                /* تفتح على مجلد السياق مباشرة */
   const p = $('#picker');
   p.hidden = false;
   requestAnimationFrame(() => p.classList.add('open'));
   document.body.style.overflow = 'hidden';
+  $('#pickerTitle').textContent = t('media.pickCtx', { x:t(FOLDER_T[MFILTER]) });
   renderPicker();
   if (!MEDIA.length) loadMedia().then(renderPicker);
   requestAnimationFrame(() => $('#pickClose').focus());
@@ -1663,6 +1797,7 @@ function closePicker(){
 }
 function renderPicker(){
   folderChips('#pickChips', MFILTER);
+  $('#pickerTitle').textContent = t('media.pickCtx', { x:t(FOLDER_T[MFILTER]) || t('media.all') });
   const items = MFILTER === '*' ? MEDIA : MEDIA.filter(m => m.folder === MFILTER);
   $('#pickGrid').innerHTML = items.length
     ? items.map(m => mediaCard(m, true)).join('')
@@ -1670,6 +1805,12 @@ function renderPicker(){
          <b>${esc(t('media.pickEmpty'))}</b></div>`;
 }
 function choosePicked(url){
+  if (PICK_TARGET === 'hero:add'){
+    syncContent();
+    CT.hero_images.push(url);
+    closePicker();
+    return drawContent();
+  }
   if (PICK_TARGET && PICK_TARGET.startsWith('ct:')){
     const field = PICK_TARGET.slice(3);
     syncContent();
@@ -2280,6 +2421,9 @@ function loadContent(){
   const s = INFO || {};
   const bi = v => (v && typeof v === 'object') ? { ar:v.ar || '', en:v.en || '' } : { ar:v || '', en:'' };
   CT = {
+    hero_images: Array.isArray(s.hero_images) && s.hero_images.length
+                   ? s.hero_images.slice()
+                   : (s.hero_image ? [s.hero_image] : []),
     hero_eyebrow: bi(s.hero_eyebrow),
     hero_title:   bi(s.hero_title),
     hero_sub:     bi(s.hero_sub),
@@ -2311,6 +2455,25 @@ function biField(label, path, val, area){
   </div>`;
 }
 
+/* قسم مطوي — يفتح بالضغط، وحالة الفتح تنحفظ */
+const OPEN_ACC = new Set();
+
+function acc(id, icon, title, sub, count, body){
+  const open = OPEN_ACC.has(id);
+  return `<details class="acc" data-acc="${id}"${open ? ' open' : ''}>
+    <summary>
+      <span class="ai">${ico(icon)}</span>
+      <span class="atxt">
+        <span>${esc(title)}</span>
+        ${sub ? `<span class="asub">${esc(sub)}</span>` : ''}
+      </span>
+      ${count != null ? `<span class="acount">${count}</span>` : ''}
+      ${ico('i-down', 'chev')}
+    </summary>
+    <div class="acc-body">${body}</div>
+  </details>`;
+}
+
 function listBlock(key, title, addLabel, rowFn){
   const rows = (CT[key] || []).map((item, i) => `
     <div class="blk" data-list="${key}" data-i="${i}">
@@ -2321,10 +2484,30 @@ function listBlock(key, title, addLabel, rowFn){
       </div>
       ${rowFn(item, i)}
     </div>`).join('');
-  return `<div class="fset">
-    <h4>${esc(title)}</h4>
-    ${rows || `<p class="rows-empty">${esc(t('ct.emptyList'))}</p>`}
-    <button class="add-row" type="button" data-ctadd="${key}">${ico('i-plus')}${esc(addLabel)}</button>
+  return `${rows || `<p class="rows-empty">${esc(t('ct.emptyList'))}</p>`}
+    <button class="add-row" type="button" data-ctadd="${key}">${ico('i-plus')}${esc(addLabel)}</button>`;
+}
+
+/* شبكة صور الواجهة المتحركة */
+function heroImagesBlock(){
+  const list = CT.hero_images || [];
+  return `<p class="hint">${esc(t('ct.heroImgsHint'))}</p>
+  <div class="hero-imgs">
+    ${list.map((src, i) => `<div class="hi">
+      <img src="${esc(src)}" alt="" onerror="this.classList.add('failed')">
+      <span class="hi-n">${i + 1}</span>
+      <div class="hi-acts">
+        <button type="button" data-hi="up" data-i="${i}" ${i === 0 ? 'disabled' : ''}
+                aria-label="${esc(t('app.moveUp'))}">${ico('i-right')}</button>
+        <button type="button" data-hi="down" data-i="${i}" ${i === list.length - 1 ? 'disabled' : ''}
+                aria-label="${esc(t('app.moveDown'))}">${ico('i-left')}</button>
+        <button type="button" class="rm" data-hi="del" data-i="${i}"
+                aria-label="${esc(t('app.delete'))}">${ico('i-trash')}</button>
+      </div>
+    </div>`).join('')}
+    <button class="hi-add" type="button" data-hi="add">
+      ${ico('i-plus')}<span>${esc(t('ct.addHeroImg'))}</span>
+    </button>
   </div>`;
 }
 
@@ -2332,33 +2515,35 @@ function drawContent(){
   if (!CT) loadContent();
   const b = v => (v && typeof v === 'object') ? v : emptyBi();
 
-  let h = `<div class="fset">
-    <h4>${esc(t('ct.hero'))}</h4>
+  let h = acc('hero', 'i-spark', t('ct.hero'), t('ct.heroSub'), null, `
     ${biField(t('ct.eyebrow'), 'hero_eyebrow', CT.hero_eyebrow)}
     ${biField(t('ct.title'),   'hero_title',   CT.hero_title, true)}
     <p class="hint">${esc(t('ct.titleHint'))}</p>
-    ${biField(t('ct.sub'),     'hero_sub',     CT.hero_sub, true)}
-    <div class="grid2">
-      <div class="field">
-        <label>${esc(t('ct.heroImg'))}</label>
-        <input class="inp" dir="ltr" data-ct="hero_image" value="${esc(CT.hero_image)}">
-        <button class="btn btn-ghost btn-sm" type="button" data-ctpick="hero_image">
-          ${ico('i-image')}<span>${esc(t('media.pick'))}</span></button>
+    ${biField(t('ct.sub'),     'hero_sub',     CT.hero_sub, true)}`);
+
+  h += acc('heroimgs', 'i-image', t('ct.heroImgs'), t('ct.heroImgsSub'),
+           (CT.hero_images || []).length, heroImagesBlock());
+
+  h += acc('aboutimg', 'i-user', t('ct.aboutImg'), t('ct.aboutImgSub'), null, `
+    <div class="cover-box">
+      <div class="cover-prev">
+        ${CT.about_image ? `<img src="${esc(CT.about_image)}" alt="" onerror="this.classList.add('failed')">`
+                         : `${ico('i-image')}<span>${esc(t('f.coverNone'))}</span>`}
       </div>
-      <div class="field">
-        <label>${esc(t('ct.aboutImg'))}</label>
+      <div class="cover-ctl">
         <input class="inp" dir="ltr" data-ct="about_image" value="${esc(CT.about_image)}">
         <button class="btn btn-ghost btn-sm" type="button" data-ctpick="about_image">
           ${ico('i-image')}<span>${esc(t('media.pick'))}</span></button>
       </div>
-    </div>
-  </div>`;
+    </div>`);
 
-  h += listBlock('stats', t('ct.stat'), t('ct.addStat'), s => `
-    ${biField(t('ct.statN'), `stats.${CT.stats.indexOf(s)}.n`, b(s.n))}
-    ${biField(t('ct.statL'), `stats.${CT.stats.indexOf(s)}.l`, b(s.l))}`);
+  h += acc('stats', 'i-spark', t('ct.stats'), t('ct.statsSub'), (CT.stats || []).length,
+    listBlock('stats', t('ct.stat'), t('ct.addStat'), s => `
+      ${biField(t('ct.statN'), `stats.${CT.stats.indexOf(s)}.n`, b(s.n))}
+      ${biField(t('ct.statL'), `stats.${CT.stats.indexOf(s)}.l`, b(s.l))}`));
 
-  h += listBlock('creds', t('ct.cred'), t('ct.addCred'), (c, i) => `
+  h += acc('creds', 'i-shield', t('ct.creds'), t('ct.credsSub'), (CT.creds || []).length,
+    listBlock('creds', t('ct.cred'), t('ct.addCred'), (c, i) => `
     <div class="field">
       <label>${esc(t('ct.icon'))}</label>
       <select class="inp" data-ct="creds.${i}.icon">
@@ -2367,9 +2552,10 @@ function drawContent(){
       </select>
     </div>
     ${biField(t('ct.credT'), `creds.${i}.t`, b(c.t))}
-    ${biField(t('ct.credS'), `creds.${i}.s`, b(c.s))}`);
+    ${biField(t('ct.credS'), `creds.${i}.s`, b(c.s))}`));
 
-  h += listBlock('plans', t('ct.plan'), t('ct.addPlan'), (p, i) => `
+  h += acc('plans', 'i-check-circle', t('ct.plans'), t('ct.plansSub'), (CT.plans || []).length,
+    listBlock('plans', t('ct.plan'), t('ct.addPlan'), (p, i) => `
     <label class="switch">
       <input type="checkbox" data-ct="plans.${i}.featured"${p.featured ? ' checked' : ''}>
       <span class="track"></span><span class="lbl-txt">${esc(t('ct.featured'))}</span>
@@ -2407,20 +2593,26 @@ function drawContent(){
           </div>
         </span>
       </div>
-    </div>`);
+    </div>`));
 
-  h += listBlock('quotes', t('ct.quote'), t('ct.addQuote'), (q, i) => `
-    ${biField(t('ct.quoteT'), `quotes.${i}.t`, b(q.t), true)}
-    ${biField(t('ct.quoteN'), `quotes.${i}.n`, b(q.n))}
-    ${biField(t('ct.quoteR'), `quotes.${i}.r`, b(q.r))}`);
+  h += acc('quotes', 'i-star', t('ct.quotes'), t('ct.quotesSub'), (CT.quotes || []).length,
+    listBlock('quotes', t('ct.quote'), t('ct.addQuote'), (q, i) => `
+      ${biField(t('ct.quoteT'), `quotes.${i}.t`, b(q.t), true)}
+      ${biField(t('ct.quoteN'), `quotes.${i}.n`, b(q.n))}
+      ${biField(t('ct.quoteR'), `quotes.${i}.r`, b(q.r))}`));
 
-  h += listBlock('faq', t('ct.faq'), t('ct.addFaq'), (f, i) => `
-    ${biField(t('ct.faqQ'), `faq.${i}.q`, b(f.q))}
-    ${biField(t('ct.faqA'), `faq.${i}.a`, b(f.a), true)}`);
+  h += acc('faq', 'i-info', t('ct.faqs'), t('ct.faqsSub'), (CT.faq || []).length,
+    listBlock('faq', t('ct.faq'), t('ct.addFaq'), (f, i) => `
+      ${biField(t('ct.faqQ'), `faq.${i}.q`, b(f.q))}
+      ${biField(t('ct.faqA'), `faq.${i}.a`, b(f.a), true)}`));
 
-  h += `${biField(t('ct.credit'), 'credit', CT.credit)}
-  <p class="err" id="ctErr" role="alert"></p>
-  <div><button class="btn btn-primary" id="ctSave" type="button">${esc(t('app.save'))}</button></div>`;
+  h += acc('credit', 'i-book', t('ct.credit'), t('ct.creditSub'), null,
+    biField('', 'credit', CT.credit));
+
+  h += `<div class="savebar">
+    <button class="btn btn-primary" id="ctSave" type="button">${ico('i-check')}${esc(t('app.save'))}</button>
+    <p class="err" id="ctErr" role="alert"></p>
+  </div>`;
 
   $('#contentBody').innerHTML = h;
 }
@@ -2450,7 +2642,10 @@ async function saveContent(){
   const { data, error } = await sb.from('site_info')
     .update({
       hero_eyebrow:CT.hero_eyebrow, hero_title:CT.hero_title, hero_sub:CT.hero_sub,
-      credit:CT.credit, hero_image:CT.hero_image, about_image:CT.about_image,
+      credit:CT.credit, about_image:CT.about_image,
+      hero_images:CT.hero_images,
+      /* أول صورة تبقى بـ hero_image لأن og:image يعتمد عليها */
+      hero_image:CT.hero_images[0] || '',
       stats:CT.stats, creds:CT.creds, plans:CT.plans, quotes:CT.quotes, faq:CT.faq
     })
     .eq('id', 1).select().single();
@@ -2589,7 +2784,26 @@ function wire(){
   PANES.forEach(k => $('#tab-' + k).addEventListener('click', () => setTab(k)));
 
   /* ── محرر محتوى الصفحة ── */
+  /* احفظ أي أقسام مفتوحة حتى ما تنسدّ عند إعادة الرسم */
+  $('#contentBody').addEventListener('toggle', e => {
+    const d = e.target.closest('.acc'); if (!d) return;
+    d.open ? OPEN_ACC.add(d.dataset.acc) : OPEN_ACC.delete(d.dataset.acc);
+  }, true);
+
   $('#contentBody').addEventListener('click', e => {
+    /* صور الواجهة المتحركة */
+    const hi = e.target.closest('[data-hi]');
+    if (hi){
+      syncContent();
+      const i = +hi.dataset.i;
+      const L = CT.hero_images;
+      if (hi.dataset.hi === 'add'){ OPEN_ACC.add('heroimgs'); return openPicker('hero:add') }
+      if (hi.dataset.hi === 'del')  L.splice(i, 1);
+      if (hi.dataset.hi === 'up'   && i > 0)            [L[i-1], L[i]] = [L[i], L[i-1]];
+      if (hi.dataset.hi === 'down' && i < L.length - 1) [L[i+1], L[i]] = [L[i], L[i+1]];
+      return drawContent();
+    }
+
     const add = e.target.closest('[data-ctadd]');
     if (add){
       syncContent();
@@ -2673,10 +2887,25 @@ function wire(){
   $('#pickClose').addEventListener('click', closePicker);
   $('#picker').addEventListener('click', e => {
     if (e.target === e.currentTarget) return closePicker();
+    if (e.target.closest('#pickUpBtn')) return $('#pickFile').click();
     const c = e.target.closest('.chip');
     if (c){ MFILTER = c.dataset.f; renderPicker(); return }
     const card = e.target.closest('.mcard');
     if (card) choosePicked(card.dataset.url);
+  });
+
+  /* رفع مباشر من داخل نافذة الاختيار — يروح لمجلد السياق */
+  $('#pickFile').addEventListener('change', async e => {
+    const files = [...(e.target.files || [])]; e.target.value = '';
+    if (!files.length) return;
+    const folder = FOLDERS.includes(MFILTER) ? MFILTER : pickFolder();
+    let last = null;
+    for (const f of files){
+      const url = await uploadImage(f, folder, $('#pickBar'), $('#pickUpBtn'));
+      if (url) last = url;
+    }
+    renderPicker();
+    if (files.length === 1 && last) choosePicked(last);   /* صورة وحدة → اختارها فوراً */
   });
 
   let dq;

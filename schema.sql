@@ -33,6 +33,7 @@ alter table public.site_info
   add column if not exists hero_title   jsonb not null default '{"ar":"","en":""}'::jsonb,
   add column if not exists hero_sub     jsonb not null default '{"ar":"","en":""}'::jsonb,
   add column if not exists hero_image   text  not null default '',
+  add column if not exists hero_images  jsonb not null default '[]'::jsonb,
   add column if not exists about_image  text  not null default '',
   add column if not exists stats        jsonb not null default '[]'::jsonb,
   add column if not exists creds        jsonb not null default '[]'::jsonb,
@@ -41,6 +42,9 @@ alter table public.site_info
   add column if not exists faq          jsonb not null default '[]'::jsonb,
   add column if not exists credit       jsonb not null default '{"ar":"","en":""}'::jsonb;
 
+-- ملاحظة: hero_images مصفوفة روابط تتقلب بسلايدر الواجهة.
+--          hero_image يبقى = أول صورة منها لأن og:image يعتمد عليه.
+--
 -- شكل الحقول:
 --   stats  : [{"n":{"ar":"+٢٥٠","en":"250+"},"l":{"ar":"مشتركة","en":"members"}}]
 --   creds  : [{"icon":"i-shield","t":{"ar":"…","en":"…"},"s":{"ar":"…","en":"…"}}]

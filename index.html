@@ -238,6 +238,16 @@ p{margin:0}
   box-shadow:0 6px 16px -7px rgba(14,124,102,.85);
 }
 .logo b{font-family:var(--f-head);font-size:18px;font-weight:600}
+/* الصورة الشخصية تحل محل الحرف بالشعار إذا انرفعت */
+.mark.has-photo{background:var(--sunken);overflow:hidden;font-size:0}
+.mark img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+/* ── انتقال ناعم عند تبديل اللغة ── */
+body{transition:opacity .22s var(--ease)}
+body.lang-swap{opacity:.35}
+@media (prefers-reduced-motion: reduce){
+  body,body.lang-swap{transition:none;opacity:1}
+}
 .nav{display:none;gap:2px;margin-inline-start:var(--s-5)}
 .nav a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:var(--r-sm);
   font-size:14.5px;font-weight:500;color:var(--soft);
@@ -286,8 +296,33 @@ p{margin:0}
   background:linear-gradient(150deg,var(--sunken),var(--brand-wash));
   box-shadow:var(--shadow-3);border:1px solid var(--line);
 }
-.hero-photo img{width:100%;height:100%;object-fit:cover}
-.hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,18,14,.5),transparent 46%)}
+.hero-photo::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to top,rgba(10,18,14,.5),transparent 46%)}
+
+/* ── سلايدر الواجهة ── */
+.slides{position:absolute;inset:0}
+.slides img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .9s var(--ease);
+}
+.slides img.on{opacity:1}
+.slides img.failed{opacity:0!important}
+/* حركة تقريب خفيفة تعطي إحساس بالحياة */
+@media (prefers-reduced-motion: no-preference){
+  .slides img.on{animation:kenburns 9s ease-out both}
+}
+@keyframes kenburns{from{transform:scale(1.06)}to{transform:scale(1)}}
+
+.dots{
+  position:absolute;z-index:3;inset-block-end:14px;inset-inline-start:0;inset-inline-end:0;
+  display:flex;gap:7px;justify-content:center;
+}
+.dots button{
+  width:8px;height:8px;border-radius:var(--r-full);background:rgba(255,255,255,.45);
+  transition:width .3s var(--ease),background-color .3s var(--ease);
+}
+.dots button[aria-selected="true"]{width:22px;background:#fff}
+.dots:has(button:only-child){display:none}
 .float-card{
   position:absolute;z-index:2;background:var(--surface);border:1px solid var(--line);
   border-radius:var(--r-lg);padding:12px 15px;box-shadow:var(--shadow-2);
@@ -885,8 +920,9 @@ ol.steps li::before{
         </div>
 
         <div class="hero-art">
-          <div class="hero-photo">
-            <img id="heroImg" alt="" decoding="async" fetchpriority="high">
+          <div class="hero-photo" id="heroPhoto">
+            <div class="slides" id="slides"></div>
+            <div class="dots" id="heroDots" role="tablist" data-t-aria="hero.dots"></div>
           </div>
           <div class="float-card fc-a">
             <span class="fc-ico" style="background:var(--brand-wash);color:var(--brand-ink)">
@@ -1189,6 +1225,7 @@ ar:{
   "nav.about":"عن الكوتش",
   "nav.faq":"أسئلة شائعة",
   "nav.lang":"التبديل للإنكليزية",
+  "hero.dots":"تنقّل بين الصور",
   "nav.theme":"تبديل الوضع الليلي",
   "cta.subscribe":"اشتركي بالبرنامج",
   "cta.start":"ابدئي معي اليوم",
@@ -1332,6 +1369,7 @@ en:{
   "nav.about":"About the coach",
   "nav.faq":"FAQ",
   "nav.lang":"Switch to Arabic",
+  "hero.dots":"Browse the photos",
   "nav.theme":"Toggle dark mode",
   "cta.subscribe":"Join the program",
   "cta.start":"Start with me today",
@@ -1614,7 +1652,19 @@ function paintSite(){
   $('#canonical')?.setAttribute('href', base);
   if (SITE.hero_image) $('#ogImage')?.setAttribute('content', SITE.hero_image);
 
-  ['#mark','#mark2'].forEach(s => $(s).textContent = SITE.initial || 'ز');
+  /* الشعار: صورتها الشخصية إذا موجودة، وإلا الحرف المختصر */
+  ['#mark','#mark2'].forEach(s => {
+    const el = $(s);
+    if (SITE.avatar_url){
+      el.classList.add('has-photo');
+      el.innerHTML = `<img src="${esc(SITE.avatar_url)}" alt="${esc(name)}"
+        onerror="this.parentNode.classList.remove('has-photo');
+                 this.parentNode.textContent='${esc(SITE.initial || 'ز')}'">`;
+    } else {
+      el.classList.remove('has-photo');
+      el.textContent = SITE.initial || 'ز';
+    }
+  });
   ['#logoName','#logoName2','#footName','#aboutName'].forEach(s => $(s).textContent = name);
   $('#heroEyebrow').textContent = bi(SITE.hero_eyebrow);
   $('#heroTitle').innerHTML     = bi(SITE.hero_title);   /* يسمح بـ <span class="hl"> */
@@ -1623,10 +1673,9 @@ function paintSite(){
   $('#footTag').textContent     = siteTag();
   $('#by').textContent          = bi(SITE.credit);
 
-  const hero = $('#heroImg'), about = $('#aboutImg');
-  if (SITE.hero_image && hero.getAttribute('src') !== SITE.hero_image){
-    hero.src = SITE.hero_image; hero.onerror = () => hero.classList.add('failed');
-  }
+  buildSlides();
+
+  const about = $('#aboutImg');
   if (SITE.about_image && about.getAttribute('src') !== SITE.about_image){
     about.src = SITE.about_image; about.onerror = () => about.classList.add('failed');
   }
@@ -1676,6 +1725,57 @@ function paintSite(){
   calcRun();
 }
 
+/* ══════════════════════════════════════════════════════════
+   ⑤ب  سلايدر صور الواجهة
+   ══════════════════════════════════════════════════════════ */
+let SLIDE_I = 0, slideTimer = null;
+const SLIDE_MS = 5000;
+
+function heroList(){
+  const a = Array.isArray(SITE?.hero_images) ? SITE.hero_images.filter(Boolean) : [];
+  if (a.length) return a;
+  return SITE?.hero_image ? [SITE.hero_image] : [];
+}
+
+function buildSlides(){
+  const imgs = heroList();
+  const box  = $('#slides');
+  const key  = imgs.join('|');
+  if (box.dataset.key === key) return;      /* ما تغيّر شي */
+  box.dataset.key = key;
+
+  box.innerHTML = imgs.map((src, i) =>
+    `<img src="${esc(src)}" alt="" class="${i === 0 ? 'on' : ''}"
+       ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"
+       onerror="this.classList.add('failed')">`).join('');
+
+  $('#heroDots').innerHTML = imgs.length > 1
+    ? imgs.map((_, i) => `<button type="button" role="tab" data-slide="${i}"
+        aria-selected="${i === 0}" aria-label="${i + 1}"></button>`).join('')
+    : '';
+
+  SLIDE_I = 0;
+  startSlides();
+}
+
+function showSlide(n){
+  const imgs = $$('#slides img');
+  if (imgs.length < 2) return;
+  SLIDE_I = (n + imgs.length) % imgs.length;
+  imgs.forEach((im, i) => im.classList.toggle('on', i === SLIDE_I));
+  $$('#heroDots button').forEach((b, i) => b.setAttribute('aria-selected', String(i === SLIDE_I)));
+}
+
+function startSlides(){
+  clearInterval(slideTimer);
+  if ($$('#slides img').length < 2) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  slideTimer = setInterval(() => {
+    if (document.hidden) return;                 /* لا تشتغل والتبويب مخفي */
+    showSlide(SLIDE_I + 1);
+  }, SLIDE_MS);
+}
+
 /* النصوص الثابتة + اللغة */
 function paintUI(){
   document.documentElement.lang = LANG;
@@ -1688,15 +1788,37 @@ function paintUI(){
   syncThemeIcon();
 }
 
+/* تبديل اللغة — تلاشي خفيف قبل التبديل حتى ما يصير قفزة مفاجئة */
+let langBusy = false;
 function toggleLang(){
-  LANG = LANG === 'ar' ? 'en' : 'ar';
-  try { localStorage.setItem('cz-lang', LANG) } catch(e){}
-  $('#toastBox')?.remove();
-  paintUI();
-  paintSite();
-  renderGrid();
-  if ($('#sheet').classList.contains('open')) drawSheet();
-  syncCartFab();
+  if (langBusy) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const apply = () => {
+    LANG = LANG === 'ar' ? 'en' : 'ar';
+    try { localStorage.setItem('cz-lang', LANG) } catch(e){}
+    $('#toastBox')?.remove();
+    paintUI();
+    paintSite();
+    renderGrid();
+    syncCartButtons();
+    if ($('#sheet').classList.contains('open')) drawSheet();
+    syncCartFab();
+  };
+
+  if (reduce){ apply(); return }
+
+  langBusy = true;
+  const y = scrollY;
+  document.body.classList.add('lang-swap');
+  setTimeout(() => {
+    apply();
+    scrollTo({ top:y, behavior:'instant' });     /* الاتجاه ينقلب — ثبّت المكان */
+    requestAnimationFrame(() => {
+      document.body.classList.remove('lang-swap');
+      langBusy = false;
+    });
+  }, 220);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2238,6 +2360,16 @@ function wire(){
   });
 
   $('#cartFab').addEventListener('click', openCart);
+
+  /* سلايدر الواجهة: نقاط التنقل + وقفة عند اللمس أو المرور */
+  $('#heroDots').addEventListener('click', e => {
+    const b = e.target.closest('[data-slide]'); if (!b) return;
+    showSlide(+b.dataset.slide); startSlides();
+  });
+  const hp = $('#heroPhoto');
+  hp.addEventListener('pointerenter', () => clearInterval(slideTimer));
+  hp.addEventListener('pointerleave', startSlides);
+  addEventListener('visibilitychange', () => document.hidden ? clearInterval(slideTimer) : startSlides());
 
   $('#sheet').addEventListener('click', e => {
     if (e.target === e.currentTarget) return closeSheet();
