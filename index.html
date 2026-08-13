@@ -14,11 +14,16 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400..700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <script>
-/* يمنع وميض الثيم قبل تحميل الصفحة */
-try{var _t=localStorage.getItem('cz-theme');if(_t){document.documentElement.dataset.theme=_t}}catch(e){}
+/* يمنع وميض الثيم واللغة قبل تحميل الصفحة */
+try{
+  var _t=localStorage.getItem('cz-theme'); if(_t) document.documentElement.dataset.theme=_t;
+  var _l=localStorage.getItem('cz-lang')||'ar';
+  document.documentElement.lang=_l;
+  document.documentElement.dir=(_l==='ar'?'rtl':'ltr');
+}catch(e){}
 </script>
 
 <style>
@@ -72,6 +77,11 @@ try{var _t=localStorage.getItem('cz-theme');if(_t){document.documentElement.data
   --header-h:64px;
   --ease:cubic-bezier(.16,1,.3,1);
   --back:cubic-bezier(.34,1.42,.64,1);
+
+  /* الخطوط — واضحة ومقروءة بالعربي، ونفسها تشتغل بالإنكليزي */
+  --f-head:"Cairo","Noto Sans Arabic",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Noto Sans Arabic","Cairo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,"Cairo",monospace;
 }
 
 /* ── الوضع الداكن (تلقائي حسب النظام) ── */
@@ -141,8 +151,8 @@ try{var _t=localStorage.getItem('cz-theme');if(_t){document.documentElement.data
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 12px);-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--paper);color:var(--ink);
-  font-family:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:15.5px;line-height:1.75;
+  font-family:var(--f-body);
+  font-size:16.5px;line-height:1.85;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
@@ -151,9 +161,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;text-a
 input,select{font:inherit;color:inherit}
 a{color:inherit;text-decoration:none;cursor:pointer}
 /* ملاحظة: لا تستخدم letter-spacing سالب مع العربية — يكسر اتصال الحروف */
-h1,h2,h3,h4{font-family:"Reem Kufi",system-ui,sans-serif;font-weight:600;margin:0;line-height:1.32;letter-spacing:normal}
+h1,h2,h3,h4{font-family:var(--f-head);font-weight:700;margin:0;line-height:1.45;letter-spacing:normal}
 p{margin:0}
-.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
 
 :where(a,button,input,select,summary,[tabindex]):focus-visible{
   outline:2.5px solid var(--ring);outline-offset:3px;border-radius:8px;
@@ -199,6 +209,8 @@ p{margin:0}
   font-size:19px;transition:background-color .2s var(--ease),border-color .2s var(--ease),transform .18s var(--ease);
 }
 .icon-btn:hover{background:var(--surface-2);border-color:var(--line-2);transform:translateY(-2px)}
+.icon-btn.lang-btn{width:auto;padding-inline:13px;gap:6px;font-family:var(--f-head);font-weight:700;font-size:13px}
+.icon-btn.lang-btn .icon{font-size:17px}
 
 /* ═══════════════════════════════════════════════════════════
    ④  الهيدر
@@ -214,10 +226,10 @@ p{margin:0}
 .mark{
   width:38px;height:38px;border-radius:13px;flex:none;display:grid;place-items:center;
   background:linear-gradient(145deg,var(--pine),#17A98A 75%);color:#fff;
-  font-family:"Reem Kufi",sans-serif;font-size:19px;line-height:1;
+  font-family:var(--f-head);font-size:19px;line-height:1;
   box-shadow:0 6px 16px -7px rgba(14,124,102,.85);
 }
-.logo b{font-family:"Reem Kufi",sans-serif;font-size:18px;font-weight:600}
+.logo b{font-family:var(--f-head);font-size:18px;font-weight:600}
 .nav{display:none;gap:2px;margin-inline-start:var(--s-5)}
 .nav a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:var(--r-sm);
   font-size:14.5px;font-weight:500;color:var(--soft);
@@ -256,7 +268,7 @@ p{margin:0}
 
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);margin-top:var(--s-6);max-width:480px}
 .stat-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 12px;text-align:center;box-shadow:var(--shadow-1)}
-.stat-box b{display:block;font-family:"IBM Plex Mono",monospace;font-size:clamp(19px,3.4vw,25px);font-weight:600;line-height:1.2;color:var(--ink)}
+.stat-box b{display:block;font-family:var(--f-num);font-size:clamp(19px,3.4vw,25px);font-weight:600;line-height:1.2;color:var(--ink)}
 .stat-box span{font-size:12px;color:var(--soft);line-height:1.5;display:block;margin-top:3px}
 
 /* لوحة الهيرو */
@@ -391,7 +403,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .kcal-chip{
   position:absolute;bottom:10px;inset-inline-start:10px;
   background:var(--surface);color:var(--ink);padding:4px 11px;border-radius:var(--r-full);
-  font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;
+  font-family:var(--f-num);font-size:11.5px;font-weight:600;
   box-shadow:var(--shadow-1);border:1px solid var(--line);
 }
 .play{
@@ -409,7 +421,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .macro-bar{display:flex;height:7px;border-radius:var(--r-full);overflow:hidden;background:var(--sunken);gap:1.5px}
 .macro-bar i{display:block;height:100%;border-radius:var(--r-full)}
 .macro-legend{display:flex;justify-content:space-between;gap:6px;margin-top:8px;
-  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--soft)}
+  font-family:var(--f-num);font-size:11px;color:var(--soft)}
 .macro-legend span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .dot{width:7px;height:7px;border-radius:50%;flex:none}
 
@@ -418,7 +430,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
   background:var(--surface);border:1px dashed var(--line-2);border-radius:var(--r-lg);
 }
 .empty .icon{font-size:38px;color:var(--line-2);margin:0 auto 14px}
-.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px;font-family:"Reem Kufi",sans-serif}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px;font-family:var(--f-head)}
 
 /* ═══════════════════════════════════════════════════════════
    ⑨  الباقات
@@ -440,7 +452,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .plan h3{font-size:21px;margin-bottom:6px}
 .plan .desc{color:var(--soft);font-size:14px;line-height:1.7;min-height:2.6em}
 .price{display:flex;align-items:baseline;gap:7px;margin:18px 0;padding-bottom:18px;border-bottom:1px solid var(--line)}
-.price b{font-family:"IBM Plex Mono",monospace;font-size:clamp(30px,4.6vw,40px);font-weight:600;line-height:1}
+.price b{font-family:var(--f-num);font-size:clamp(30px,4.6vw,40px);font-weight:600;line-height:1}
 .price span{color:var(--soft);font-size:13.5px}
 .plan ul{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:11px;flex:1}
 .plan li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.65}
@@ -459,7 +471,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .quote p{font-size:14.8px;line-height:1.85;color:var(--ink-2);flex:1}
 .who{display:flex;align-items:center;gap:11px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
 .who .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:none;
-  background:var(--brand-wash);color:var(--brand-ink);font-family:"Reem Kufi",sans-serif;font-size:16px}
+  background:var(--brand-wash);color:var(--brand-ink);font-family:var(--f-head);font-size:16px}
 .who b{display:block;font-size:14px;font-weight:600;line-height:1.4}
 .who span{font-size:12px;color:var(--soft)}
 
@@ -517,7 +529,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 @media(min-width:720px){.foot-grid{grid-template-columns:1.4fr 1fr 1fr}}
 .foot-brand p{color:var(--soft);font-size:14px;line-height:1.8;margin-top:12px;max-width:40ch}
 .socials{display:flex;gap:9px;margin-top:16px}
-.foot-col h4{font-size:14px;font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:600;margin-bottom:12px}
+.foot-col h4{font-size:14px;font-family:var(--f-head);font-weight:600;margin-bottom:12px}
 .foot-col a{display:flex;align-items:center;min-height:44px;color:var(--soft);font-size:14px;transition:color .2s var(--ease)}
 .foot-col a:hover{color:var(--ink)}
 .foot-bottom{margin-top:var(--s-6);padding-top:var(--s-5);border-top:1px solid var(--line);
@@ -574,24 +586,24 @@ body{padding-bottom:0}
 
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   padding:clamp(15px,2.4vw,20px);margin-top:var(--s-4);box-shadow:var(--shadow-1)}
-.panel h4{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:12.5px;font-weight:700;
+.panel h4{font-family:var(--f-head);font-size:12.5px;font-weight:700;
   letter-spacing:.5px;color:var(--soft);margin-bottom:12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .panel h4 .hint{font-weight:400;letter-spacing:0;font-size:11.5px;opacity:.85}
 
 .servings{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
-.servings .lbl b{display:block;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:13px;font-weight:700;color:var(--soft);letter-spacing:.4px}
+.servings .lbl b{display:block;font-family:var(--f-head);font-size:13px;font-weight:700;color:var(--soft);letter-spacing:.4px}
 .servings .lbl span{font-size:12px;color:var(--soft)}
 .stepper{display:flex;align-items:center;gap:4px;background:var(--sunken);border-radius:var(--r);padding:4px}
 .stepper button{width:44px;height:40px;border-radius:9px;background:var(--surface);display:grid;place-items:center;
   font-size:16px;box-shadow:var(--shadow-1);transition:background-color .18s var(--ease),transform .15s var(--ease)}
 .stepper button:hover:not(:disabled){background:var(--surface-2);transform:scale(1.06)}
 .stepper button:disabled{opacity:.38;cursor:not-allowed}
-.stepper b{min-width:40px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:15px}
+.stepper b{min-width:40px;text-align:center;font-family:var(--f-num);font-size:15px}
 
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
 @media(max-width:400px){.stat-row{grid-template-columns:repeat(2,1fr)}}
 .stat{background:var(--sunken);border-radius:var(--r-sm);padding:12px 6px}
-.stat b{display:block;font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;line-height:1.2}
+.stat b{display:block;font-family:var(--f-num);font-size:19px;font-weight:600;line-height:1.2}
 .stat span{font-size:11px;color:var(--soft);line-height:1.5}
 
 ul.list{list-style:none;margin:0;padding:0}
@@ -602,7 +614,7 @@ ul.list li:hover{padding-inline-start:5px}
 ul.list li .nm{display:flex;align-items:center;gap:10px;font-size:14.5px}
 ul.list li .tickbox{width:19px;height:19px;border-radius:6px;border:1.8px solid var(--line-2);flex:none;
   display:grid;place-items:center;color:transparent;font-size:12px;transition:all .18s var(--ease)}
-ul.list li .q{font-family:"IBM Plex Mono",monospace;color:var(--pine-ink);font-weight:500;white-space:nowrap;font-size:13.5px}
+ul.list li .q{font-family:var(--f-num);color:var(--pine-ink);font-weight:500;white-space:nowrap;font-size:13.5px}
 ul.list li.done{opacity:.42}
 ul.list li.done .nm{text-decoration:line-through}
 ul.list li.done .tickbox{background:var(--pine);border-color:var(--pine);color:#fff}
@@ -612,7 +624,7 @@ ol.steps li{counter-increment:s;position:relative;padding-inline-start:38px;font
 ol.steps li::before{
   content:counter(s);position:absolute;inset-inline-start:0;top:1px;width:26px;height:26px;border-radius:50%;
   background:var(--ink);color:var(--paper);display:grid;place-items:center;
-  font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;
+  font-family:var(--f-num);font-size:12.5px;font-weight:600;
 }
 .embed{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;margin-top:var(--s-4);background:#000;border:1px solid var(--line)}
 .embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -645,7 +657,7 @@ ol.steps li::before{
 </head>
 <body>
 
-<a class="skip" href="#catalog">تخطَّ إلى المحتوى</a>
+<a class="skip" href="#catalog" data-t="skip">تخطَّ إلى المحتوى</a>
 
 <!-- ══ أيقونات SVG (بدل الإيموجي) ══ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -673,6 +685,7 @@ ol.steps li::before{
     <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/></symbol>
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.8A1.8 1.8 0 0 1 5.8 3H19v18H5.8A1.8 1.8 0 0 1 4 19.2Z"/><path d="M4 17.2h15"/></symbol>
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.2 9.6h17.6M3.2 14.4h17.6"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
   </defs>
 </svg>
 
@@ -683,18 +696,21 @@ ol.steps li::before{
       <span class="mark" id="mark">ز</span>
       <b id="logoName">كوتش زهراء</b>
     </a>
-    <nav class="nav" aria-label="التنقل الرئيسي">
-      <a href="#catalog">الوصفات والكورسات</a>
-      <a href="#plans">الباقات</a>
-      <a href="#about">عن الكوتش</a>
-      <a href="#faq">أسئلة شائعة</a>
+    <nav class="nav" data-t-aria="nav.aria">
+      <a href="#catalog" data-t="nav.catalog">الوصفات والكورسات</a>
+      <a href="#plans" data-t="nav.plans">الباقات</a>
+      <a href="#about" data-t="nav.about">عن الكوتش</a>
+      <a href="#faq" data-t="nav.faq">أسئلة شائعة</a>
     </nav>
     <div class="header-end">
-      <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الليلي">
+      <button class="icon-btn lang-btn" id="langBtn" type="button" data-t-aria="nav.lang">
+        <svg class="icon"><use href="#i-globe"></use></svg><span id="langTxt">EN</span>
+      </button>
+      <button class="icon-btn" id="themeBtn" type="button" data-t-aria="nav.theme">
         <svg class="icon" id="themeIcon"><use href="#i-moon"></use></svg>
       </button>
       <a class="btn btn-primary btn-sm header-cta" id="headerCta" href="#" target="_blank" rel="noopener">
-        <svg class="icon"><use href="#i-whatsapp"></use></svg> اشتركي بالبرنامج
+        <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="cta.subscribe">اشتركي بالبرنامج</span>
       </a>
     </div>
   </div>
@@ -707,17 +723,17 @@ ol.steps li::before{
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <span class="eyebrow" id="demoFlag">
-            <svg class="icon"><use href="#i-spark"></use></svg> نسخة تجريبية — DEMO
+          <span class="eyebrow">
+            <svg class="icon"><use href="#i-spark"></use></svg> <span id="heroEyebrow"></span>
           </span>
           <h1 id="heroTitle"></h1>
           <p class="hero-sub" id="heroSub"></p>
           <div class="hero-actions">
             <a class="btn btn-primary btn-lg" id="heroCta1" href="#" target="_blank" rel="noopener">
-              <svg class="icon"><use href="#i-whatsapp"></use></svg> ابدئي معي اليوم
+              <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="cta.start">ابدئي معي اليوم</span>
             </a>
             <a class="btn btn-ghost btn-lg" href="#catalog">
-              <svg class="icon"><use href="#i-salad"></use></svg> شوفي الوصفات
+              <svg class="icon"><use href="#i-salad"></use></svg> <span data-t="cta.browse">شوفي الوصفات</span>
             </a>
           </div>
           <div class="stats" id="statsRow"></div>
@@ -732,8 +748,8 @@ ol.steps li::before{
               <svg class="icon"><use href="#i-flame"></use></svg>
             </span>
             <span>
-              <b>كل وصفة محسوبة</b>
-              <span>سعرات وماكروز دقيقة</span>
+              <b data-t="fc.a1">كل وصفة محسوبة</b>
+              <span data-t="fc.a2">سعرات وماكروز دقيقة</span>
             </span>
           </div>
           <div class="float-card fc-b">
@@ -741,18 +757,18 @@ ol.steps li::before{
               <svg class="icon"><use href="#i-dumbbell"></use></svg>
             </span>
             <span>
-              <b>تمارين بيت ونادي</b>
-              <span>لكل المستويات</span>
+              <b data-t="fc.b1">تمارين بيت ونادي</b>
+              <span data-t="fc.b2">لكل المستويات</span>
             </span>
           </div>
         </div>
       </div>
 
       <div class="trust">
-        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> بدون حرمان</span>
-        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> أكل من السوق المحلي</span>
-        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> متابعة أسبوعية</span>
-        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> مناسب للمبتدئات</span>
+        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.1">بدون حرمان</span></span>
+        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.2">أكل من السوق المحلي</span></span>
+        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.3">متابعة أسبوعية</span></span>
+        <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.4">مناسب للمبتدئات</span></span>
       </div>
     </div>
   </section>
@@ -761,32 +777,32 @@ ol.steps li::before{
   <section class="sec sec-alt" id="catalog" style="padding-top:clamp(28px,4vw,48px)">
     <div class="wrap">
       <div class="sec-head rv">
-        <span class="kicker">الكتالوج</span>
-        <h2>وصفات وكورسات — كلشي بمكان واحد</h2>
-        <p>اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.</p>
+        <span class="kicker" data-t="cat.kicker">الكتالوج</span>
+        <h2 data-t="cat.h">وصفات وكورسات — كلشي بمكان واحد</h2>
+        <p data-t="cat.p">اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.</p>
       </div>
 
       <div class="toolbar">
         <div class="toolbar-row">
-          <div class="tabs" role="tablist" aria-label="نوع المحتوى">
+          <div class="tabs" role="tablist" data-t-aria="cat.tabsAria">
             <button class="tab" role="tab" id="tab-recipes" aria-selected="true" aria-controls="grid" type="button">
-              <svg class="icon"><use href="#i-salad"></use></svg> وصفات الأكل
+              <svg class="icon"><use href="#i-salad"></use></svg> <span data-t="cat.tabR">وصفات الأكل</span>
             </button>
             <button class="tab" role="tab" id="tab-courses" aria-selected="false" aria-controls="grid" type="button">
-              <svg class="icon"><use href="#i-dumbbell"></use></svg> الكورسات
+              <svg class="icon"><use href="#i-dumbbell"></use></svg> <span data-t="cat.tabC">الكورسات</span>
             </button>
           </div>
           <div class="search" id="searchBox">
             <svg class="icon s-ico"><use href="#i-search"></use></svg>
-            <label class="sr-only" for="q">بحث</label>
-            <input id="q" type="search" autocomplete="off" placeholder="دوّري على وصفة…">
-            <button class="s-clear" type="button" id="clearBtn" aria-label="مسح البحث">
+            <label class="sr-only" for="q" data-t="cat.search">بحث</label>
+            <input id="q" type="search" autocomplete="off">
+            <button class="s-clear" type="button" id="clearBtn" data-t-aria="cat.clear">
               <svg class="icon"><use href="#i-close"></use></svg>
             </button>
           </div>
         </div>
         <div class="chips-row">
-          <div class="chips" id="chips" role="group" aria-label="فلترة"></div>
+          <div class="chips" id="chips" role="group" data-t-aria="cat.filter"></div>
           <span class="count" id="count" aria-live="polite"></span>
         </div>
       </div>
@@ -799,14 +815,11 @@ ol.steps li::before{
   <section class="sec" id="plans">
     <div class="wrap">
       <div class="sec-head center rv">
-        <span class="kicker">الاشتراك</span>
-        <h2>اختاري الباقة اللي تناسبج</h2>
-        <p>كل الباقات تشمل خطة أكل بالسعرات وجدول تمارين. الفرق بمستوى المتابعة والتخصيص.</p>
+        <span class="kicker" data-t="plans.kicker">الاشتراك</span>
+        <h2 data-t="plans.h">اختاري الباقة اللي تناسبج</h2>
+        <p data-t="plans.p">كل الباقات تشمل خطة أكل بالسعرات وجدول تمارين. الفرق بمستوى المتابعة والتخصيص.</p>
       </div>
       <div class="plans" id="plansGrid"></div>
-      <p style="text-align:center;color:var(--soft);font-size:13.5px;margin-top:24px">
-        الأسعار توضيحية — بدّليها من قسم <code style="font-family:'IBM Plex Mono',monospace">PLANS</code> بالكود.
-      </p>
     </div>
   </section>
 
@@ -818,7 +831,7 @@ ol.steps li::before{
           <img id="aboutImg" alt="" loading="lazy" decoding="async">
         </div>
         <div class="about-body rv rv-d1">
-          <span class="kicker">عن الكوتش</span>
+          <span class="kicker" data-t="about.kicker">عن الكوتش</span>
           <h2 style="font-size:clamp(24px,4vw,36px)" id="aboutName"></h2>
           <p id="bio"></p>
           <div class="creds" id="creds"></div>
@@ -831,9 +844,9 @@ ol.steps li::before{
   <section class="sec" id="reviews">
     <div class="wrap">
       <div class="sec-head center rv">
-        <span class="kicker">آراء</span>
-        <h2>شنو تكولون البنات؟</h2>
-        <p>آراء توضيحية — استبدليها بآراء حقيقية من مشتركاتج قبل النشر.</p>
+        <span class="kicker" data-t="rev.kicker">آراء</span>
+        <h2 data-t="rev.h">شنو تكولون البنات؟</h2>
+        <p data-t="rev.p">تجارب حقيقية من بنات كملن معي البرنامج.</p>
       </div>
       <div class="quotes" id="quotesGrid"></div>
     </div>
@@ -843,8 +856,8 @@ ol.steps li::before{
   <section class="sec sec-alt" id="faq">
     <div class="wrap">
       <div class="sec-head center rv">
-        <span class="kicker">أسئلة شائعة</span>
-        <h2>أكثر شي يسألون عنه</h2>
+        <span class="kicker" data-t="faq.kicker">أسئلة شائعة</span>
+        <h2 data-t="faq.h">أكثر شي يسألون عنه</h2>
       </div>
       <div class="faq" id="faqList"></div>
     </div>
@@ -854,14 +867,14 @@ ol.steps li::before{
   <section class="sec" style="padding-bottom:0">
     <div class="wrap">
       <div class="cta-band rv">
-        <h2>جاهزة تبدين؟</h2>
-        <p>راسليني بالواتساب وأسولّج تقييم مجاني، ونشوف سوية أي باقة تناسب هدفج ووقتج.</p>
+        <h2 data-t="cta.h">جاهزة تبدين؟</h2>
+        <p data-t="cta.p">راسليني بالواتساب وأسولّج تقييم مجاني، ونشوف سوية أي باقة تناسب هدفج ووقتج.</p>
         <div class="btn-row">
           <a class="btn btn-primary btn-lg" id="ctaWhats" href="#" target="_blank" rel="noopener">
-            <svg class="icon"><use href="#i-whatsapp"></use></svg> راسليني بالواتساب
+            <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="cta.whats">راسليني بالواتساب</span>
           </a>
           <a class="btn btn-ghost btn-lg" id="ctaInsta" href="#" target="_blank" rel="noopener">
-            <svg class="icon"><use href="#i-instagram"></use></svg> تابعيني بالانستغرام
+            <svg class="icon"><use href="#i-instagram"></use></svg> <span data-t="cta.insta">تابعيني بالانستغرام</span>
           </a>
         </div>
       </div>
@@ -880,30 +893,30 @@ ol.steps li::before{
         </a>
         <p id="footTag"></p>
         <div class="socials">
-          <a class="icon-btn" id="sInsta" href="#" target="_blank" rel="noopener" aria-label="انستغرام">
+          <a class="icon-btn" id="sInsta" href="#" target="_blank" rel="noopener" data-t-aria="soc.insta">
             <svg class="icon"><use href="#i-instagram"></use></svg>
           </a>
-          <a class="icon-btn" id="sWhats" href="#" target="_blank" rel="noopener" aria-label="واتساب">
+          <a class="icon-btn" id="sWhats" href="#" target="_blank" rel="noopener" data-t-aria="soc.whats">
             <svg class="icon"><use href="#i-whatsapp"></use></svg>
           </a>
         </div>
       </div>
       <div class="foot-col">
-        <h4>روابط</h4>
-        <a href="#catalog">الوصفات</a>
-        <a href="#catalog">الكورسات</a>
-        <a href="#plans">الباقات</a>
-        <a href="#about">عن الكوتش</a>
+        <h4 data-t="foot.links">روابط</h4>
+        <a href="#catalog" data-t="foot.recipes">الوصفات</a>
+        <a href="#catalog" data-t="foot.courses">الكورسات</a>
+        <a href="#plans" data-t="nav.plans">الباقات</a>
+        <a href="#about" data-t="nav.about">عن الكوتش</a>
       </div>
       <div class="foot-col">
-        <h4>تواصل</h4>
-        <a id="fWhats" href="#" target="_blank" rel="noopener">واتساب</a>
-        <a id="fInsta" href="#" target="_blank" rel="noopener">انستغرام</a>
-        <a href="#faq">أسئلة شائعة</a>
+        <h4 data-t="foot.contact">تواصل</h4>
+        <a id="fWhats" href="#" target="_blank" rel="noopener" data-t="soc.whats">واتساب</a>
+        <a id="fInsta" href="#" target="_blank" rel="noopener" data-t="soc.insta">انستغرام</a>
+        <a href="#faq" data-t="nav.faq">أسئلة شائعة</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span id="yr" class="num"></span> <span id="footName"></span> — كل الحقوق محفوظة</span>
+      <span>© <span id="yr" class="num"></span> <span id="footName"></span> <span data-t="foot.rights">— كل الحقوق محفوظة</span></span>
       <span id="by"></span>
     </div>
   </div>
@@ -912,7 +925,7 @@ ol.steps li::before{
 <!-- ══ الشريط السفلي (موبايل) ══ -->
 <div class="mobile-cta" id="mobileCta">
   <a class="btn btn-primary" id="mobileCtaLink" href="#" target="_blank" rel="noopener">
-    <svg class="icon"><use href="#i-whatsapp"></use></svg> اشتركي بالبرنامج
+    <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="cta.subscribe">اشتركي بالبرنامج</span>
   </a>
 </div>
 
@@ -923,80 +936,300 @@ ol.steps li::before{
 
 <script>
 /* ══════════════════════════════════════════════════════════
-   ①  معلومات الحساب  ← غيّري من هنا
+   ①  إعدادات مشتركة بين اللغتين  ← الصور والروابط
    ══════════════════════════════════════════════════════════ */
-const INFO = {
-  name: "كوتش زهراء",
+const SITE = {
   initial: "ز",
-  heroTitle: "جسمج يتغيّر بـ <span class='hl'>أكل تحبينه</span> وتمارين تكدرين تلتزمين بيها",
-  heroSub: "مدربة لياقة وتغذية. كل برنامج مبني على أهداف واقعية وأكل تسوينه بمطبخج — بدون حرمان وبدون منتجات غالية.",
-  tagline: "تمارين ووصفات — كلشي محسوب بالسعرات",
-  bio: "بديت رحلتي بنفس مكانج بالضبط: محتارة بين آلاف الحميات وما أعرف منين أبدي. اليوم بعد سنين من التدريب والدراسة، صار هدفي أخلّي الموضوع بسيط — أكل تعرفينه، تمارين تكدرين تسوينها، وأرقام واضحة تشوفين بيها تقدمج أسبوع بأسبوع.",
   heroImage: "https://images.unsplash.com/photo-1518611012118-696072aa579a?fm=jpg&q=75&w=900&auto=format&fit=crop",
   aboutImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fm=jpg&q=75&w=800&auto=format&fit=crop",
   instagram: "https://instagram.com/",
-  whatsapp: "https://wa.me/9647700000000",
-  by: "تصميم وتطوير الموقع — للتواصل"
+  whatsapp: "https://wa.me/9647700000000"
 };
 
-/* الأرقام تحت الهيرو */
-const STATS = [
-  { n:"+٢٥٠", l:"مشتركة" },
-  { n:"+٤٠",  l:"وصفة محسوبة" },
-  { n:"٥",    l:"سنوات خبرة" }
-];
-
-/* الشهادات والخبرات */
-const CREDS = [
-  { icon:"i-shield",   t:"شهادة تدريب معتمدة", s:"تدريب شخصي ولياقة عامة" },
-  { icon:"i-book",     t:"دراسة تغذية تطبيقية", s:"حساب سعرات وماكروز" },
-  { icon:"i-users",    t:"+٢٥٠ حالة", s:"تنشيف، زيادة وزن، وثبات" },
-  { icon:"i-calendar", t:"متابعة أسبوعية", s:"تعديل الخطة حسب النتيجة" }
-];
-
 /* ══════════════════════════════════════════════════════════
-   ②  الباقات  ← بدّلي الأسعار والمزايا
+   ②  المحتوى — عربي / إنكليزي
    ══════════════════════════════════════════════════════════ */
-const PLANS = [
-  {
-    name:"خطة الأكل", tag:"", price:"٢٥,٠٠٠", unit:"د.ع / شهر",
-    desc:"للي تريد تظبط أكلها بس، بدون جدول تمارين.",
-    features:["خطة سعرات مخصصة لهدفج","٤ خيارات لكل وجبة","قائمة تسوّق أسبوعية","تعديل مرة بالشهر"],
-    featured:false
+const L = {
+ar:{
+  name:"كوتش زهراء",
+  docTitle:"كوتش زهراء — كورسات رياضية ووصفات صحية",
+  heroEyebrow:"مدرّبة لياقة وتغذية معتمدة",
+  heroTitle:"جسمج يتغيّر بـ <span class='hl'>أكل تحبينه</span> وتمارين تكدرين تلتزمين بيها",
+  heroSub:"مدربة لياقة وتغذية. كل برنامج مبني على أهداف واقعية وأكل تسوينه بمطبخج — بدون حرمان وبدون منتجات غالية.",
+  tagline:"تمارين ووصفات — كلشي محسوب بالسعرات",
+  bio:"بديت رحلتي بنفس مكانج بالضبط: محتارة بين آلاف الحميات وما أعرف منين أبدي. اليوم بعد سنين من التدريب والدراسة، صار هدفي أخلّي الموضوع بسيط — أكل تعرفينه، تمارين تكدرين تسوينها، وأرقام واضحة تشوفين بيها تقدمج أسبوع بأسبوع.",
+  by:"تصميم وتطوير الموقع — للتواصل",
+
+  STATS:[
+    { n:"+٢٥٠", l:"مشتركة" },
+    { n:"+٤٠",  l:"وصفة محسوبة" },
+    { n:"٥",    l:"سنوات خبرة" }
+  ],
+  CREDS:[
+    { icon:"i-shield",   t:"شهادة تدريب معتمدة", s:"تدريب شخصي ولياقة عامة" },
+    { icon:"i-book",     t:"دراسة تغذية تطبيقية", s:"حساب سعرات وماكروز" },
+    { icon:"i-users",    t:"+٢٥٠ حالة", s:"تنشيف، زيادة وزن، وثبات" },
+    { icon:"i-calendar", t:"متابعة أسبوعية", s:"تعديل الخطة حسب النتيجة" }
+  ],
+  PLANS:[
+    { name:"خطة الأكل", tag:"", price:"٢٥,٠٠٠", unit:"د.ع / شهر",
+      desc:"للي تريد تظبط أكلها بس، بدون جدول تمارين.",
+      features:["خطة سعرات مخصصة لهدفج","٤ خيارات لكل وجبة","قائمة تسوّق أسبوعية","تعديل مرة بالشهر"],
+      featured:false },
+    { name:"الباقة الكاملة", tag:"الأكثر طلباً", price:"٤٥,٠٠٠", unit:"د.ع / شهر",
+      desc:"أكل + تمارين + متابعة. هاي اللي أنصح بيها أغلب البنات.",
+      features:["كلشي بخطة الأكل","جدول تمارين بيت أو نادي","فيديو شرح لكل تمرين","متابعة أسبوعية بالواتساب","تعديل الخطة كل أسبوعين"],
+      featured:true },
+    { name:"متابعة VIP", tag:"", price:"٩٠,٠٠٠", unit:"د.ع / شهر",
+      desc:"للي تريد اهتمام شخصي ونتيجة أسرع.",
+      features:["كلشي بالباقة الكاملة","مكالمة أسبوعية ٣٠ دقيقة","رد خلال ساعة","تعديل الخطة أي وقت","خطة مكملات إذا تحتاجين"],
+      featured:false }
+  ],
+  QUOTES:[
+    { t:"أول مرة ألتزم بحمية أكثر من أسبوعين. السبب إني آكل أكل بيتنا نفسه بس بكميات محسوبة.", n:"مريم", r:"٣ أشهر — نزلت ٧ كيلو" },
+    { t:"التمارين البيتية أنقذتني، ما عندي وقت أروح نادي. ١٥ دقيقة باليوم وشفت فرق بالبطن.", n:"زينب", r:"شهرين — برنامج البيت" },
+    { t:"أحسن شي بالموضوع إنها ترد بسرعة وتعدّل الخطة إذا الوزن وكف. ما تخليني أضيع.", n:"هدى", r:"٤ أشهر — متابعة VIP" }
+  ],
+  FAQ:[
+    { q:"أحتاج نادي أو أجهزة؟", a:"لا. أغلب البرامج بيتية بالكامل وبدون أجهزة. إذا عندج اشتراك نادي، أكو جداول مخصصة للنادي بعد." },
+    { q:"الأكل يكون غالي أو صعب؟", a:"لا أبداً. كل المكونات موجودة بالسوق المحلي وبأسعار عادية — دجاج، رز، بيض، خضار. ماكو مكملات إجبارية ولا منتجات مستوردة." },
+    { q:"شكد أشوف نتيجة؟", a:"أول تغيير بالطاقة والنوم يجي خلال أسبوع لأسبوعين. تغيير الوزن الواضح عادة من الأسبوع الرابع، حسب التزامج ونقطة البداية." },
+    { q:"إذا عندي مشكلة صحية؟", a:"راسليني قبل الاشتراك ونحچي بالتفاصيل. بحالات معينة (حمل، سكري، ضغط، إصابات) أطلب منج موافقة طبيبج أول." },
+    { q:"شلون أشترك وأدفع؟", a:"اضغطي على زر الواتساب، نحچي عن هدفج، وأرسلج تفاصيل الدفع والباقة المناسبة. تكدرين تلغين بأي وقت." }
+  ],
+
+  ui:{
+    "skip":"تخطَّ إلى المحتوى",
+    "nav.aria":"التنقل الرئيسي",
+    "nav.catalog":"الوصفات والكورسات",
+    "nav.plans":"الباقات",
+    "nav.about":"عن الكوتش",
+    "nav.faq":"أسئلة شائعة",
+    "nav.lang":"التبديل للإنكليزية",
+    "nav.theme":"تبديل الوضع الليلي",
+    "cta.subscribe":"اشتركي بالبرنامج",
+    "cta.start":"ابدئي معي اليوم",
+    "cta.browse":"شوفي الوصفات",
+    "fc.a1":"كل وصفة محسوبة",
+    "fc.a2":"سعرات وماكروز دقيقة",
+    "fc.b1":"تمارين بيت ونادي",
+    "fc.b2":"لكل المستويات",
+    "trust.1":"بدون حرمان",
+    "trust.2":"أكل من السوق المحلي",
+    "trust.3":"متابعة أسبوعية",
+    "trust.4":"مناسب للمبتدئات",
+    "cat.kicker":"الكتالوج",
+    "cat.h":"وصفات وكورسات — كلشي بمكان واحد",
+    "cat.p":"اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.",
+    "cat.tabsAria":"نوع المحتوى",
+    "cat.tabR":"وصفات الأكل",
+    "cat.tabC":"الكورسات",
+    "cat.search":"بحث",
+    "cat.clear":"مسح البحث",
+    "cat.filter":"فلترة",
+    "plans.kicker":"الاشتراك",
+    "plans.h":"اختاري الباقة اللي تناسبج",
+    "plans.p":"كل الباقات تشمل خطة أكل بالسعرات وجدول تمارين. الفرق بمستوى المتابعة والتخصيص.",
+    "about.kicker":"عن الكوتش",
+    "rev.kicker":"آراء",
+    "rev.h":"شنو تكولون البنات؟",
+    "rev.p":"تجارب حقيقية من بنات كملن معي البرنامج.",
+    "faq.kicker":"أسئلة شائعة",
+    "faq.h":"أكثر شي يسألون عنه",
+    "cta.h":"جاهزة تبدين؟",
+    "cta.p":"راسليني بالواتساب وأسولّج تقييم مجاني، ونشوف سوية أي باقة تناسب هدفج ووقتج.",
+    "cta.whats":"راسليني بالواتساب",
+    "cta.insta":"تابعيني بالانستغرام",
+    "soc.insta":"انستغرام",
+    "soc.whats":"واتساب",
+    "foot.links":"روابط",
+    "foot.recipes":"الوصفات",
+    "foot.courses":"الكورسات",
+    "foot.contact":"تواصل",
+    "foot.rights":"— كل الحقوق محفوظة",
+
+    /* نصوص تنبني بالجافاسكربت */
+    "searchR":"دوّري على وصفة…",
+    "searchC":"دوّري على كورس…",
+    "unitR":"وصفة",
+    "unitC":"كورس",
+    "all":"الكل",
+    "noRes":"ماكو نتائج",
+    "noResHint":"جرّبي كلمة ثانية أو شيلي الفلتر.",
+    "kcalUnit":"سعرة",
+    "servUnit":"حصة",
+    "protein":"بروتين",
+    "carbs":"كارب",
+    "fat":"دهون",
+    "gram":"غم",
+    "macroAria":"بروتين {p} غرام، كربوهيدرات {c} غرام، دهون {f} غرام",
+    "nutrition":"القيمة الغذائية",
+    "perServing":"للحصة الوحدة",
+    "less":"حصص أقل",
+    "more":"حصص أكثر",
+    "ingredients":"المكونات",
+    "tickHint":"(اضغطي على المكوّن لتعليمه)",
+    "method":"طريقة العمل",
+    "moves":"التمارين",
+    "tickHintMove":"(اضغطي على التمرين لتعليمه)",
+    "videoTitle":"فيديو الشرح",
+    "watchVideo":"شوفي الفيديو",
+    "sheetCta":"تريدين خطة كاملة؟ راسليني",
+    "close":"سكّري",
+    "fiveStars":"خمس نجوم",
+    "subscribeTo":"اشتركي ب{x}"
   },
-  {
-    name:"الباقة الكاملة", tag:"الأكثر طلباً", price:"٤٥,٠٠٠", unit:"د.ع / شهر",
-    desc:"أكل + تمارين + متابعة. هاي اللي أنصح بيها أغلب البنات.",
-    features:["كلشي بخطة الأكل","جدول تمارين بيت أو نادي","فيديو شرح لكل تمرين","متابعة أسبوعية بالواتساب","تعديل الخطة كل أسبوعين"],
-    featured:true
-  },
-  {
-    name:"متابعة VIP", tag:"", price:"٩٠,٠٠٠", unit:"د.ع / شهر",
-    desc:"للي تريد اهتمام شخصي ونتيجة أسرع.",
-    features:["كلشي بالباقة الكاملة","مكالمة أسبوعية ٣٠ دقيقة","رد خلال ساعة","تعديل الخطة أي وقت","خطة مكملات إذا تحتاجين"],
-    featured:false
+
+  tags:{
+    "الكل":"الكل","فطور":"فطور","غداء":"غداء","عشاء":"عشاء","سناك":"سناك",
+    "مبتدئ":"مبتدئ","متوسط":"متوسط","متقدم":"متقدم"
   }
-];
+},
 
-/* ══════════════════════════════════════════════════════════
-   ③  الآراء  ← استبدليها بآراء حقيقية قبل النشر
-   ══════════════════════════════════════════════════════════ */
-const QUOTES = [
-  { t:"أول مرة ألتزم بحمية أكثر من أسبوعين. السبب إني آكل أكل بيتنا نفسه بس بكميات محسوبة.", n:"مريم", r:"٣ أشهر — نزلت ٧ كيلو" },
-  { t:"التمارين البيتية أنقذتني، ما عندي وقت أروح نادي. ١٥ دقيقة باليوم وشفت فرق بالبطن.", n:"زينب", r:"شهرين — برنامج البيت" },
-  { t:"أحسن شي بالموضوع إنها ترد بسرعة وتعدّل الخطة إذا الوزن وكف. ما تخليني أضيع.", n:"هدى", r:"٤ أشهر — متابعة VIP" }
-];
+en:{
+  name:"Coach Zahraa",
+  docTitle:"Coach Zahraa — Fitness courses & healthy recipes",
+  heroEyebrow:"Certified fitness & nutrition coach",
+  heroTitle:"Your body changes with <span class='hl'>food you love</span> and workouts you can stick to",
+  heroSub:"Fitness and nutrition coach. Every program is built on realistic goals and food you cook in your own kitchen — no deprivation, no expensive products.",
+  tagline:"Workouts and recipes — every calorie accounted for",
+  bio:"I started exactly where you are: lost between a thousand diets with no idea where to begin. After years of training and study, my goal is to keep it simple — food you already know, workouts you can actually do, and clear numbers that show your progress week by week.",
+  by:"Site design & development — get in touch",
 
-/* ══════════════════════════════════════════════════════════
-   ④  الأسئلة الشائعة
-   ══════════════════════════════════════════════════════════ */
-const FAQ = [
-  { q:"أحتاج نادي أو أجهزة؟", a:"لا. أغلب البرامج بيتية بالكامل وبدون أجهزة. إذا عندج اشتراك نادي، أكو جداول مخصصة للنادي بعد." },
-  { q:"الأكل يكون غالي أو صعب؟", a:"لا أبداً. كل المكونات موجودة بالسوق المحلي وبأسعار عادية — دجاج، رز، بيض، خضار. ماكو مكملات إجبارية ولا منتجات مستوردة." },
-  { q:"شكد أشوف نتيجة؟", a:"أول تغيير بالطاقة والنوم يجي خلال أسبوع لأسبوعين. تغيير الوزن الواضح عادة من الأسبوع الرابع، حسب التزامج ونقطة البداية." },
-  { q:"إذا عندي مشكلة صحية؟", a:"راسليني قبل الاشتراك ونحچي بالتفاصيل. بحالات معينة (حمل، سكري، ضغط، إصابات) أطلب منج موافقة طبيبج أول." },
-  { q:"شلون أشترك وأدفع؟", a:"اضغطي على زر الواتساب، نحچي عن هدفج، وأرسلج تفاصيل الدفع والباقة المناسبة. تكدرين تلغين بأي وقت." }
-];
+  STATS:[
+    { n:"250+", l:"members coached" },
+    { n:"40+",  l:"tracked recipes" },
+    { n:"5",    l:"years of experience" }
+  ],
+  CREDS:[
+    { icon:"i-shield",   t:"Certified training credential", s:"Personal training & general fitness" },
+    { icon:"i-book",     t:"Applied nutrition studies", s:"Calorie & macro calculation" },
+    { icon:"i-users",    t:"250+ clients", s:"Cutting, gaining, and maintenance" },
+    { icon:"i-calendar", t:"Weekly follow-up", s:"Plan adjusted to your results" }
+  ],
+  PLANS:[
+    { name:"Meal plan", tag:"", price:"25,000", unit:"IQD / month",
+      desc:"For anyone who just wants their food dialled in, without a workout schedule.",
+      features:["Calorie plan built around your goal","4 options for every meal","Weekly shopping list","One revision per month"],
+      featured:false },
+    { name:"Full package", tag:"Most popular", price:"45,000", unit:"IQD / month",
+      desc:"Food + workouts + follow-up. This is the one I recommend to most people.",
+      features:["Everything in the meal plan","Home or gym workout schedule","Video demo for every exercise","Weekly follow-up on WhatsApp","Plan revised every two weeks"],
+      featured:true },
+    { name:"VIP coaching", tag:"", price:"90,000", unit:"IQD / month",
+      desc:"For anyone who wants personal attention and faster results.",
+      features:["Everything in the full package","Weekly 30-minute call","Reply within an hour","Plan revised any time","Supplement plan if you need one"],
+      featured:false }
+  ],
+  QUOTES:[
+    { t:"First time I've stuck to a diet longer than two weeks — because I eat the same home food, just in measured portions.", n:"Mariam", r:"3 months — down 7 kg" },
+    { t:"The home workouts saved me, I have no time for a gym. 15 minutes a day and I saw a real difference.", n:"Zainab", r:"2 months — home program" },
+    { t:"The best part is she replies fast and adjusts the plan whenever the weight stalls. She never lets you drift.", n:"Huda", r:"4 months — VIP coaching" }
+  ],
+  FAQ:[
+    { q:"Do I need a gym or equipment?", a:"No. Most programs are fully home-based with no equipment at all. If you do have a gym membership, there are gym-specific schedules too." },
+    { q:"Is the food expensive or complicated?", a:"Not at all. Every ingredient is available in the local market at normal prices — chicken, rice, eggs, vegetables. No mandatory supplements and no imported products." },
+    { q:"How soon will I see results?", a:"The first change in energy and sleep shows within one to two weeks. Visible weight change usually starts around week four, depending on your consistency and starting point." },
+    { q:"What if I have a health condition?", a:"Message me before subscribing and we'll go through the details. In certain cases (pregnancy, diabetes, blood pressure, injuries) I ask for your doctor's clearance first." },
+    { q:"How do I subscribe and pay?", a:"Tap the WhatsApp button, tell me your goal, and I'll send you the payment details and the package that fits. You can cancel any time." }
+  ],
+
+  ui:{
+    "skip":"Skip to content",
+    "nav.aria":"Main navigation",
+    "nav.catalog":"Recipes & courses",
+    "nav.plans":"Packages",
+    "nav.about":"About the coach",
+    "nav.faq":"FAQ",
+    "nav.lang":"Switch to Arabic",
+    "nav.theme":"Toggle dark mode",
+    "cta.subscribe":"Join the program",
+    "cta.start":"Start with me today",
+    "cta.browse":"Browse the recipes",
+    "fc.a1":"Every recipe is measured",
+    "fc.a2":"Accurate calories and macros",
+    "fc.b1":"Home & gym workouts",
+    "fc.b2":"For every level",
+    "trust.1":"No deprivation",
+    "trust.2":"Local-market ingredients",
+    "trust.3":"Weekly follow-up",
+    "trust.4":"Beginner friendly",
+    "cat.kicker":"Catalogue",
+    "cat.h":"Recipes and courses — all in one place",
+    "cat.p":"Pick a tab, filter by meal or level, and open any card to see the full details and the video.",
+    "cat.tabsAria":"Content type",
+    "cat.tabR":"Recipes",
+    "cat.tabC":"Courses",
+    "cat.search":"Search",
+    "cat.clear":"Clear search",
+    "cat.filter":"Filter",
+    "plans.kicker":"Membership",
+    "plans.h":"Pick the package that fits you",
+    "plans.p":"Every package includes a calorie-based meal plan and a workout schedule. What changes is the level of follow-up and customisation.",
+    "about.kicker":"About the coach",
+    "rev.kicker":"Reviews",
+    "rev.h":"What the members say",
+    "rev.p":"Real experiences from people who finished the program with me.",
+    "faq.kicker":"FAQ",
+    "faq.h":"The questions I get most",
+    "cta.h":"Ready to start?",
+    "cta.p":"Message me on WhatsApp for a free assessment, and we'll work out together which package fits your goal and your schedule.",
+    "cta.whats":"Message me on WhatsApp",
+    "cta.insta":"Follow me on Instagram",
+    "soc.insta":"Instagram",
+    "soc.whats":"WhatsApp",
+    "foot.links":"Links",
+    "foot.recipes":"Recipes",
+    "foot.courses":"Courses",
+    "foot.contact":"Contact",
+    "foot.rights":"— All rights reserved",
+
+    "searchR":"Search for a recipe…",
+    "searchC":"Search for a course…",
+    "unitR":"recipe(s)",
+    "unitC":"course(s)",
+    "all":"All",
+    "noRes":"No results",
+    "noResHint":"Try another word or clear the filter.",
+    "kcalUnit":"kcal",
+    "servUnit":"servings",
+    "protein":"Protein",
+    "carbs":"Carbs",
+    "fat":"Fat",
+    "gram":"g",
+    "macroAria":"Protein {p} grams, carbohydrates {c} grams, fat {f} grams",
+    "nutrition":"Nutrition",
+    "perServing":"per single serving",
+    "less":"Fewer servings",
+    "more":"More servings",
+    "ingredients":"Ingredients",
+    "tickHint":"(tap an ingredient to check it off)",
+    "method":"Method",
+    "moves":"Exercises",
+    "tickHintMove":"(tap an exercise to check it off)",
+    "videoTitle":"Tutorial video",
+    "watchVideo":"Watch the video",
+    "sheetCta":"Want a full plan? Message me",
+    "close":"Close",
+    "fiveStars":"Five stars",
+    "subscribeTo":"Join {x}"
+  },
+
+  tags:{
+    "الكل":"All","فطور":"Breakfast","غداء":"Lunch","عشاء":"Dinner","سناك":"Snack",
+    "مبتدئ":"Beginner","متوسط":"Intermediate","متقدم":"Advanced"
+  }
+}
+};
+
+let LANG = (() => { try { return localStorage.getItem('cz-lang') === 'en' ? 'en' : 'ar' } catch(e){ return 'ar' } })();
+const D  = () => L[LANG];
+const tt = (k, vars) => {
+  let s = (L[LANG].ui[k] ?? L.ar.ui[k] ?? k);
+  if (vars) for (const p in vars) s = s.split('{' + p + '}').join(vars[p]);
+  return s;
+};
+const tg = v => (L[LANG].tags[v] || v);
 
 /* ══════════════════════════════════════════════════════════
    ⑤  الوصفات — القيم للحصة الوحدة
@@ -1253,47 +1486,60 @@ const norm = s => String(s).toLowerCase()
   .replace(/\s+/g, ' ')
   .trim();
 
-/* ── تعبئة المحتوى الثابت ── */
+/* ── تعبئة المحتوى (تنعاد كل ما تتبدل اللغة) ── */
 function boot(){
-  document.title = INFO.name + " — كورسات رياضية ووصفات صحية";
+  const d = D();
+
+  document.documentElement.lang = LANG;
+  document.documentElement.dir  = LANG === 'ar' ? 'rtl' : 'ltr';
+  document.title = d.docTitle;
+
+  /* النصوص الثابتة بالـ HTML */
+  $$('[data-t]').forEach(el => { el.textContent = tt(el.dataset.t) });
+  $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', tt(el.dataset.tAria)) });
+  $('#langTxt').textContent = LANG === 'ar' ? 'EN' : 'ع';
+
   $('#yr').textContent = new Date().getFullYear();
-  ['#mark','#mark2'].forEach(s => $(s).textContent = INFO.initial);
-  ['#logoName','#logoName2','#footName','#aboutName'].forEach(s => $(s).textContent = INFO.name);
-  $('#heroTitle').innerHTML = INFO.heroTitle;
-  $('#heroSub').textContent = INFO.heroSub;
-  $('#bio').textContent     = INFO.bio;
-  $('#footTag').textContent = INFO.tagline;
-  $('#by').textContent      = INFO.by;
+  ['#mark','#mark2'].forEach(s => $(s).textContent = SITE.initial);
+  ['#logoName','#logoName2','#footName','#aboutName'].forEach(s => $(s).textContent = d.name);
+  $('#heroEyebrow').textContent = d.heroEyebrow;
+  $('#heroTitle').innerHTML = d.heroTitle;
+  $('#heroSub').textContent = d.heroSub;
+  $('#bio').textContent     = d.bio;
+  $('#footTag').textContent = d.tagline;
+  $('#by').textContent      = d.by;
 
   const hero = $('#heroImg'), about = $('#aboutImg');
-  hero.src = INFO.heroImage;   hero.onerror  = () => hero.classList.add('failed');
-  about.src = INFO.aboutImage; about.onerror = () => about.classList.add('failed');
+  if (hero.src !== SITE.heroImage){ hero.src = SITE.heroImage; hero.onerror = () => hero.classList.add('failed') }
+  if (about.src !== SITE.aboutImage){ about.src = SITE.aboutImage; about.onerror = () => about.classList.add('failed') }
 
   ['#headerCta','#heroCta1','#ctaWhats','#sWhats','#fWhats','#mobileCtaLink']
-    .forEach(s => $(s).href = INFO.whatsapp);
-  ['#ctaInsta','#sInsta','#fInsta'].forEach(s => $(s).href = INFO.instagram);
+    .forEach(s => $(s).href = SITE.whatsapp);
+  ['#ctaInsta','#sInsta','#fInsta'].forEach(s => $(s).href = SITE.instagram);
 
-  $('#statsRow').innerHTML = STATS.map(s =>
+  $('#q').placeholder = tt(TAB === 'recipes' ? 'searchR' : 'searchC');
+
+  $('#statsRow').innerHTML = d.STATS.map(s =>
     `<div class="stat-box"><b>${esc(s.n)}</b><span>${esc(s.l)}</span></div>`).join('');
 
-  $('#creds').innerHTML = CREDS.map(c =>
+  $('#creds').innerHTML = d.CREDS.map(c =>
     `<div class="cred">${ico(c.icon)}<span><b>${esc(c.t)}</b><span>${esc(c.s)}</span></span></div>`).join('');
 
-  $('#plansGrid').innerHTML = PLANS.map(p => `
+  $('#plansGrid').innerHTML = d.PLANS.map(p => `
     <div class="plan${p.featured ? ' featured' : ''}">
       ${p.tag ? `<span class="plan-tag">${esc(p.tag)}</span>` : ''}
       <h3>${esc(p.name)}</h3>
       <p class="desc">${esc(p.desc)}</p>
       <div class="price"><b class="num">${esc(p.price)}</b><span>${esc(p.unit)}</span></div>
       <ul>${p.features.map(f => `<li>${ico('i-check-circle')}<span>${esc(f)}</span></li>`).join('')}</ul>
-      <a class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'}" href="${esc(INFO.whatsapp)}" target="_blank" rel="noopener">
-        ${ico('i-whatsapp')} اشتركي ب${esc(p.name)}
+      <a class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'}" href="${esc(SITE.whatsapp)}" target="_blank" rel="noopener">
+        ${ico('i-whatsapp')} ${esc(tt('subscribeTo', { x:p.name }))}
       </a>
     </div>`).join('');
 
-  $('#quotesGrid').innerHTML = QUOTES.map(q => `
+  $('#quotesGrid').innerHTML = d.QUOTES.map(q => `
     <figure class="quote" style="margin:0">
-      <div class="stars" aria-label="خمس نجوم">${ico('i-star').repeat(5)}</div>
+      <div class="stars" aria-label="${esc(tt('fiveStars'))}">${ico('i-star').repeat(5)}</div>
       <blockquote style="margin:0"><p>${esc(q.t)}</p></blockquote>
       <figcaption class="who">
         <span class="av">${esc(q.n.charAt(0))}</span>
@@ -1301,27 +1547,38 @@ function boot(){
       </figcaption>
     </figure>`).join('');
 
-  $('#faqList').innerHTML = FAQ.map(f => `
+  $('#faqList').innerHTML = d.FAQ.map(f => `
     <details>
       <summary>${esc(f.q)} ${ico('i-chevron')}</summary>
       <div class="ans">${esc(f.a)}</div>
     </details>`).join('');
 }
 
+/* ── تبديل اللغة ── */
+function toggleLang(){
+  LANG = LANG === 'ar' ? 'en' : 'ar';
+  try { localStorage.setItem('cz-lang', LANG) } catch(e){}
+  boot();
+  syncThemeIcon();
+  render();
+  if ($('#sheet').classList.contains('open')) drawSheet();
+}
+
 /* ── شريط الماكروز ── */
 function macroBar(r){
   const p = r.protein*4, c = r.carbs*4, f = r.fat*9, t = p + c + f || 1;
   const pc = n => (n / t * 100).toFixed(1) + '%';
+  const g = tt('gram');
   return `<div class="macro">
-    <div class="macro-bar" role="img" aria-label="بروتين ${r.protein} غرام، كربوهيدرات ${r.carbs} غرام، دهون ${r.fat} غرام">
+    <div class="macro-bar" role="img" aria-label="${esc(tt('macroAria', { p:r.protein, c:r.carbs, f:r.fat }))}">
       <i style="width:${pc(p)};background:var(--pine)"></i>
       <i style="width:${pc(c)};background:var(--amber)"></i>
       <i style="width:${pc(f)};background:var(--clay)"></i>
     </div>
     <div class="macro-legend" aria-hidden="true">
-      <span><i class="dot" style="background:var(--pine)"></i>بروتين ${r.protein}غم</span>
-      <span><i class="dot" style="background:var(--amber)"></i>كارب ${r.carbs}غم</span>
-      <span><i class="dot" style="background:var(--clay)"></i>دهون ${r.fat}غم</span>
+      <span><i class="dot" style="background:var(--pine)"></i>${esc(tt('protein'))} ${r.protein}${esc(g)}</span>
+      <span><i class="dot" style="background:var(--amber)"></i>${esc(tt('carbs'))} ${r.carbs}${esc(g)}</span>
+      <span><i class="dot" style="background:var(--clay)"></i>${esc(tt('fat'))} ${r.fat}${esc(g)}</span>
     </div>
   </div>`;
 }
@@ -1333,7 +1590,7 @@ function setTab(t){
   $('#q').value = ''; $('#searchBox').classList.remove('has-value');
   $('#tab-recipes').setAttribute('aria-selected', String(TAB === 'recipes'));
   $('#tab-courses').setAttribute('aria-selected', String(TAB === 'courses'));
-  $('#q').placeholder = TAB === 'recipes' ? 'دوّري على وصفة…' : 'دوّري على كورس…';
+  $('#q').placeholder = tt(TAB === 'recipes' ? 'searchR' : 'searchC');
   $('#grid').setAttribute('aria-labelledby', 'tab-' + TAB);
   render();
   $('#catalog').scrollIntoView({ block:'start', behavior:'smooth' });
@@ -1343,7 +1600,7 @@ function setTab(t){
 function render(){
   const tags = ['الكل', ...new Set(data().map(x => x.tag))];
   $('#chips').innerHTML = tags.map(t =>
-    `<button class="chip" type="button" aria-pressed="${t === FILTER}" data-tag="${esc(t)}">${esc(t)}</button>`).join('');
+    `<button class="chip" type="button" aria-pressed="${t === FILTER}" data-tag="${esc(t)}">${esc(tg(t))}</button>`).join('');
 
   const s = norm($('#q').value);
   const items = data().filter(x =>
@@ -1355,14 +1612,14 @@ function render(){
         || (x.moves || []).some(m => norm(m.n).includes(s)))
   );
 
-  const unit = TAB === 'recipes' ? 'وصفة' : 'كورس';
+  const unit = tt(TAB === 'recipes' ? 'unitR' : 'unitC');
   $('#count').textContent = items.length ? `${items.length} ${unit}` : '';
 
   if (!items.length){
     $('#grid').innerHTML = `<div class="empty">
       ${ico('i-empty')}
-      <b>ماكو نتائج</b>
-      جرّبي كلمة ثانية أو شيلي الفلتر.
+      <b>${esc(tt('noRes'))}</b>
+      ${esc(tt('noResHint'))}
     </div>`;
     return;
   }
@@ -1374,8 +1631,8 @@ function render(){
       <span class="thumb">
         <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async"
              onerror="this.classList.add('failed')">
-        <span class="badge">${esc(x.tag)}</span>
-        ${TAB === 'recipes' ? `<span class="kcal-chip">${x.kcal} سعرة</span>` : ''}
+        <span class="badge">${esc(tg(x.tag))}</span>
+        ${TAB === 'recipes' ? `<span class="kcal-chip">${x.kcal} ${esc(tt('kcalUnit'))}</span>` : ''}
         ${x.video ? `<span class="play">${ico('i-play')}</span>` : ''}
       </span>
       <span class="card-body">
@@ -1384,7 +1641,7 @@ function render(){
           <span>${ico('i-clock')} ${esc(x.time)}</span>
           ${TAB === 'courses'
             ? `<span>${ico('i-dumbbell')} ${esc(x.area)}</span>`
-            : `<span>${ico('i-users')} ${x.servings} حصة</span>`}
+            : `<span>${ico('i-users')} ${x.servings} ${esc(tt('servUnit'))}</span>`}
         </span>
         ${TAB === 'recipes' ? macroBar(x) : ''}
       </span>
@@ -1396,10 +1653,10 @@ function render(){
 function embed(url){
   const yt = url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
   if (yt) return `<div class="embed"><iframe src="https://www.youtube.com/embed/${yt[1]}"
-      title="فيديو الشرح" loading="lazy"
+      title="${esc(tt('videoTitle'))}" loading="lazy"
       allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe></div>`;
-  return `<a class="vid" href="${esc(url)}" target="_blank" rel="noopener">${ico('i-play')} شوفي الفيديو</a>`;
+  return `<a class="vid" href="${esc(url)}" target="_blank" rel="noopener">${ico('i-play')} ${esc(tt('watchVideo'))}</a>`;
 }
 
 function openSheet(i){
@@ -1435,13 +1692,13 @@ function drawSheet(){
   let h = `<div class="sheet-hero">
       <span class="grab"></span>
       <img src="${esc(x.cover)}" alt="" decoding="async" onerror="this.classList.add('failed')">
-      <button class="close" type="button" data-act="close" aria-label="سكّري">${ico('i-close')}</button>
+      <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}">${ico('i-close')}</button>
     </div>
     <div class="sheet-body">
       <h2 id="sheetTitle">${esc(x.title)}</h2>
       <div class="sheet-meta">
         <span>${ico('i-clock')} ${esc(x.time)}</span>
-        <span>${ico('i-spark')} ${esc(x.tag)}</span>
+        <span>${ico('i-spark')} ${esc(tg(x.tag))}</span>
         ${x.area ? `<span>${ico('i-dumbbell')} ${esc(x.area)}</span>` : ''}
       </div>`;
 
@@ -1449,24 +1706,24 @@ function drawSheet(){
     const p = Math.round(x.servings * mult);
     h += `<div class="panel">
         <div class="servings">
-          <span class="lbl"><b>القيمة الغذائية</b><span>للحصة الوحدة</span></span>
+          <span class="lbl"><b>${esc(tt('nutrition'))}</b><span>${esc(tt('perServing'))}</span></span>
           <div class="stepper">
-            <button type="button" data-act="minus" aria-label="حصص أقل" ${p <= 1 ? 'disabled' : ''}>${ico('i-minus')}</button>
-            <b aria-live="polite">${p} حصة</b>
-            <button type="button" data-act="plus" aria-label="حصص أكثر" ${p >= 20 ? 'disabled' : ''}>${ico('i-plus')}</button>
+            <button type="button" data-act="minus" aria-label="${esc(tt('less'))}" ${p <= 1 ? 'disabled' : ''}>${ico('i-minus')}</button>
+            <b aria-live="polite">${p} ${esc(tt('servUnit'))}</b>
+            <button type="button" data-act="plus" aria-label="${esc(tt('more'))}" ${p >= 20 ? 'disabled' : ''}>${ico('i-plus')}</button>
           </div>
         </div>
         <div class="stat-row">
-          <div class="stat"><b>${x.kcal}</b><span>سعرة</span></div>
-          <div class="stat"><b style="color:var(--pine-ink)">${x.protein}</b><span>بروتين غم</span></div>
-          <div class="stat"><b style="color:var(--amber-ink)">${x.carbs}</b><span>كارب غم</span></div>
-          <div class="stat"><b style="color:var(--clay-ink)">${x.fat}</b><span>دهون غم</span></div>
+          <div class="stat"><b>${x.kcal}</b><span>${esc(tt('kcalUnit'))}</span></div>
+          <div class="stat"><b style="color:var(--pine-ink)">${x.protein}</b><span>${esc(tt('protein'))} ${esc(tt('gram'))}</span></div>
+          <div class="stat"><b style="color:var(--amber-ink)">${x.carbs}</b><span>${esc(tt('carbs'))} ${esc(tt('gram'))}</span></div>
+          <div class="stat"><b style="color:var(--clay-ink)">${x.fat}</b><span>${esc(tt('fat'))} ${esc(tt('gram'))}</span></div>
         </div>
         ${macroBar(x)}
       </div>
 
       <div class="panel">
-        <h4>المكونات · ${p} حصة <span class="hint">(اضغطي على المكوّن لتعليمه)</span></h4>
+        <h4>${esc(tt('ingredients'))} · ${p} ${esc(tt('servUnit'))} <span class="hint">${esc(tt('tickHint'))}</span></h4>
         <ul class="list">
           ${x.ingredients.map(i => `<li data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
             <span class="nm"><span class="tickbox">${ico('i-check')}</span>${esc(i.n)}</span>
@@ -1475,12 +1732,12 @@ function drawSheet(){
         </ul>
       </div>
 
-      <div class="panel"><h4>طريقة العمل</h4>
+      <div class="panel"><h4>${esc(tt('method'))}</h4>
         <ol class="steps">${x.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
       </div>`;
   } else {
     h += `<div class="panel"><p style="line-height:1.85">${esc(x.desc)}</p></div>
-      <div class="panel"><h4>التمارين <span class="hint">(اضغطي على التمرين لتعليمه)</span></h4>
+      <div class="panel"><h4>${esc(tt('moves'))} <span class="hint">${esc(tt('tickHintMove'))}</span></h4>
         <ul class="list">${x.moves.map(m => `<li data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
           <span class="nm"><span class="tickbox">${ico('i-check')}</span>${esc(m.n)}</span>
           <span class="q">${esc(m.s)}</span>
@@ -1491,8 +1748,8 @@ function drawSheet(){
   if (x.video) h += embed(x.video);
 
   h += `<div class="sheet-cta">
-      <a class="btn btn-primary btn-lg" href="${esc(INFO.whatsapp)}" target="_blank" rel="noopener">
-        ${ico('i-whatsapp')} تريدين خطة كاملة؟ راسليني
+      <a class="btn btn-primary btn-lg" href="${esc(SITE.whatsapp)}" target="_blank" rel="noopener">
+        ${ico('i-whatsapp')} ${esc(tt('sheetCta'))}
       </a>
     </div></div>`;
 
@@ -1508,7 +1765,7 @@ function currentTheme(){
 function syncThemeIcon(){
   const dark = currentTheme() === 'dark';
   $('#themeIcon').querySelector('use').setAttribute('href', dark ? '#i-sun' : '#i-moon');
-  $('#themeBtn').setAttribute('aria-label', dark ? 'تفعيل الوضع النهاري' : 'تفعيل الوضع الليلي');
+  $('#themeBtn').setAttribute('aria-label', tt('nav.theme'));
 }
 function toggleTheme(){
   const next = currentTheme() === 'dark' ? 'light' : 'dark';
@@ -1581,6 +1838,7 @@ function wire(){
   });
 
   $('#themeBtn').addEventListener('click', toggleTheme);
+  $('#langBtn').addEventListener('click', toggleLang);
 
   /* الهيدر عند التمرير + زر الموبايل */
   const header = $('#siteHeader'), mcta = $('#mobileCta');
