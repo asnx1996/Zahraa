@@ -253,7 +253,7 @@ select.inp{cursor:pointer;
    ⑥  التبويبات وشريط الأدوات
    ═══════════════════════════════════════════════════════════ */
 .tabs{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:var(--sunken);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--sunken);
   padding:5px;border-radius:var(--r);border:1px solid var(--line);margin-top:var(--s-5);
 }
 .tab{
@@ -322,6 +322,73 @@ select.inp{cursor:pointer;
 @keyframes sweep{100%{transform:translateX(100%)}}
 
 /* ═══════════════════════════════════════════════════════════
+   ⑦ب  مكتبة الصور
+   ═══════════════════════════════════════════════════════════ */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:var(--s-4)}
+.chip{
+  padding:8px 16px;min-height:40px;border-radius:var(--r-full);background:var(--surface);
+  border:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--soft);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:background-color .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);
+}
+.chip:hover{color:var(--ink);border-color:var(--line-2)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip .n{font-family:var(--f-num);font-size:12px;opacity:.75}
+
+.media-grid{
+  display:grid;gap:var(--s-3);margin-top:var(--s-4);padding-bottom:var(--s-8);
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+}
+.mcard{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;box-shadow:var(--shadow-1);display:flex;flex-direction:column;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease);
+}
+.mcard:hover{border-color:var(--line-2);box-shadow:var(--shadow-2)}
+.mcard .mthumb{
+  position:relative;aspect-ratio:16/11;overflow:hidden;
+  background:linear-gradient(140deg,var(--sunken),var(--brand-wash));display:grid;place-items:center;color:var(--soft);
+}
+.mcard .mthumb img{width:100%;height:100%;object-fit:cover}
+.mcard .mthumb img.failed{opacity:0}
+.mtag{
+  position:absolute;top:8px;inset-inline-start:8px;padding:3px 10px;border-radius:var(--r-full);
+  font-size:11px;font-weight:700;background:var(--glass);border:1px solid var(--line);color:var(--ink);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.muse{
+  position:absolute;bottom:8px;inset-inline-start:8px;inset-inline-end:8px;
+  padding:4px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:600;line-height:1.5;
+  display:flex;align-items:center;gap:5px;overflow:hidden;
+}
+.muse.on{background:var(--pine);color:#fff}
+.muse.off{background:var(--sunken);color:var(--soft);border:1px solid var(--line)}
+.muse span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.muse .icon{font-size:13px;flex:none}
+.mbody{padding:10px 12px;display:grid;gap:3px;flex:1}
+.mname{
+  font-family:var(--f-num);font-size:11.5px;color:var(--ink-2);line-height:1.5;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:start;
+}
+.mmeta{font-size:11px;color:var(--soft);font-family:var(--f-num)}
+.macts{display:flex;gap:4px;padding:0 8px 8px}
+.macts button{
+  flex:1;min-height:38px;border-radius:var(--r-sm);display:inline-flex;align-items:center;
+  justify-content:center;gap:5px;font-size:12.5px;font-weight:600;font-family:var(--f-head);
+  background:var(--sunken);color:var(--ink-2);transition:background-color .18s var(--ease),color .18s var(--ease);
+}
+.macts button:hover{background:var(--line);color:var(--ink)}
+.macts button.danger{flex:none;width:38px;color:var(--clay-ink)}
+.macts button.danger:hover{background:var(--clay-wash)}
+.macts button .icon{font-size:15px}
+
+/* بطاقة قابلة للاختيار داخل نافذة الاختيار */
+.picking .mcard{cursor:pointer}
+.picking .mcard:hover{transform:translateY(-3px);border-color:var(--brand)}
+.picking .macts{display:none}
+.mcard.chosen{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-wash)}
+
+/* ═══════════════════════════════════════════════════════════
    ⑧  المودال / الفورم
    ═══════════════════════════════════════════════════════════ */
 .modal{
@@ -376,6 +443,23 @@ select.inp{cursor:pointer;
 .cover-ctl{display:grid;gap:var(--s-2);align-content:start}
 .up-bar{height:5px;border-radius:var(--r-full);background:var(--sunken);overflow:hidden}
 .up-bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .2s linear}
+.cover-btns{display:flex;gap:6px;flex-wrap:wrap}
+.cover-btns .btn{flex:1;min-width:130px}
+/* شريط يوضّح وين الصورة الحالية ووين راح تنحفظ الجديدة */
+.where{
+  display:grid;gap:5px;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;line-height:1.6;
+}
+.where .wl{display:flex;align-items:flex-start;gap:7px;color:var(--soft)}
+.where .wl .icon{font-size:15px;margin-top:2px;flex:none}
+.where b{color:var(--ink-2);font-weight:600}
+.where code{
+  font-family:var(--f-num);font-size:11.5px;background:var(--sunken);
+  padding:1px 6px;border-radius:6px;direction:ltr;display:inline-block;
+  word-break:break-all;color:var(--brand-ink);
+}
+.where .wl.ext .icon{color:var(--amber-ink)}
+.where .wl.ok .icon{color:var(--pine-ink)}
 
 /* المحررات الديناميكية */
 .rows{display:grid;gap:var(--s-2)}
@@ -473,6 +557,9 @@ select.inp{cursor:pointer;
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.2 9.6h17.6M3.2 14.4h17.6"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><path d="M10.4 13.6a3.6 3.6 0 0 0 5.2 0l2.8-2.8a3.7 3.7 0 0 0-5.2-5.2l-1.4 1.4"/><path d="M13.6 10.4a3.6 3.6 0 0 0-5.2 0l-2.8 2.8a3.7 3.7 0 0 0 5.2 5.2l1.4-1.4"/></symbol>
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M19.6 3.6v4.8h-4.8"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.6" y="8.6" width="11.8" height="11.8" rx="2.4"/><path d="M15.4 5.4H6.2a2.4 2.4 0 0 0-2.4 2.4v9.2"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.4 7.2A2.2 2.2 0 0 1 5.6 5h3.6l2 2.6h7.2a2.2 2.2 0 0 1 2.2 2.2v7.4a2.2 2.2 0 0 1-2.2 2.2H5.6a2.2 2.2 0 0 1-2.2-2.2Z"/></symbol>
     <symbol id="i-external" viewBox="0 0 24 24"><path d="M13.6 4.4H19.6v6"/><path d="M19.6 4.4 11 13"/><path d="M18.4 14v4.4a1.6 1.6 0 0 1-1.6 1.6H5.6A1.6 1.6 0 0 1 4 18.4V7.2a1.6 1.6 0 0 1 1.6-1.6H10"/></symbol>
   </defs>
 </svg>
@@ -557,6 +644,9 @@ select.inp{cursor:pointer;
       <button class="tab" role="tab" id="tab-courses" aria-selected="false" type="button">
         <svg class="icon"><use href="#i-dumbbell"></use></svg><span class="t-txt" data-t="tab.courses">الكورسات</span>
       </button>
+      <button class="tab" role="tab" id="tab-media" aria-selected="false" type="button">
+        <svg class="icon"><use href="#i-image"></use></svg><span class="t-txt" data-t="tab.media">الصور</span>
+      </button>
       <button class="tab" role="tab" id="tab-info" aria-selected="false" type="button">
         <svg class="icon"><use href="#i-info"></use></svg><span class="t-txt" data-t="tab.info">معلومات الموقع</span>
       </button>
@@ -578,6 +668,29 @@ select.inp{cursor:pointer;
         </div>
       </div>
       <div class="list" id="list"></div>
+    </section>
+
+    <!-- مكتبة الصور -->
+    <section id="mediaPane" hidden>
+      <div class="toolbar">
+        <p style="color:var(--soft);font-size:13.5px;line-height:1.7;margin:0" data-t="media.intro">
+          كل صورة ترفعينها تنحفظ ببكت <code>media</code> داخل مجلد حسب نوعها. من هنا تشوفين
+          كل الصور، وين محفوظة، وأي وصفة أو كورس يستعملها.
+        </p>
+        <div class="tool-end">
+          <span class="count" id="mediaCount"></span>
+          <button class="btn btn-ghost" id="mediaRefresh" type="button">
+            <svg class="icon"><use href="#i-refresh"></use></svg><span data-t="media.refresh">تحديث</span>
+          </button>
+          <button class="btn btn-primary" id="mediaUpBtn" type="button">
+            <svg class="icon"><use href="#i-upload"></use></svg><span data-t="media.upload">رفع صور</span>
+          </button>
+          <input type="file" id="mediaFile" accept="image/*" multiple hidden>
+        </div>
+      </div>
+      <div class="chips" id="mediaChips" role="group" data-t-aria="media.folders"></div>
+      <div class="up-bar" id="mediaBar" hidden style="margin-top:12px"><i></i></div>
+      <div class="media-grid" id="mediaGrid"></div>
     </section>
 
     <!-- معلومات الموقع -->
@@ -615,10 +728,19 @@ select.inp{cursor:pointer;
             <div class="cover-ctl">
               <input class="inp" id="i-avatar" dir="ltr" placeholder="https://…">
               <input type="file" id="i-file" accept="image/*" hidden>
-              <button class="btn btn-ghost btn-sm" type="button" id="i-upBtn">
-                <svg class="icon"><use href="#i-upload"></use></svg><span data-t="info.upload">رفع صورة</span>
-              </button>
+              <div class="cover-btns">
+                <button class="btn btn-ghost btn-sm" type="button" id="i-upBtn">
+                  <svg class="icon"><use href="#i-upload"></use></svg><span data-t="info.upload">رفع صورة</span>
+                </button>
+                <button class="btn btn-ghost btn-sm" type="button" id="i-pickBtn">
+                  <svg class="icon"><use href="#i-image"></use></svg><span data-t="media.pick">اختيار من المكتبة</span>
+                </button>
+              </div>
               <div class="up-bar" id="i-bar" hidden><i></i></div>
+              <div class="where">
+                <span class="wl"><svg class="icon"><use href="#i-folder"></use></svg><span>
+                  <b data-t="cov.dest">الصور الجديدة تنحفظ بمجلد</b> <code>media/avatar/</code></span></span>
+              </div>
             </div>
           </div>
         </div>
@@ -662,6 +784,22 @@ select.inp{cursor:pointer;
         <button class="btn btn-primary" id="saveBtn" type="submit" data-t="app.save">حفظ</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- ══ اختيار صورة من المكتبة ══ -->
+<div class="modal" id="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="pickerTitle" data-t="media.pickTitle">اختاري صورة من المكتبة</h2>
+      <button class="icon-btn sq" type="button" id="pickClose" data-t-aria="app.close">
+        <svg class="icon"><use href="#i-close"></use></svg>
+      </button>
+    </div>
+    <div class="modal-body picking" style="gap:var(--s-3)">
+      <div class="chips" id="pickChips" role="group" style="margin-top:0"></div>
+      <div class="media-grid" id="pickGrid" style="margin-top:0;padding-bottom:0"></div>
+    </div>
   </div>
 </div>
 
@@ -743,7 +881,44 @@ const T = {
 
     "tab.recipes":"الوصفات",
     "tab.courses":"الكورسات",
+    "tab.media":"الصور",
     "tab.info":"معلومات الموقع",
+
+    "media.intro":"كل صورة ترفعينها تنحفظ ببكت media داخل مجلد حسب نوعها. من هنا تشوفين كل الصور، وين محفوظة، وأي وصفة أو كورس يستعملها.",
+    "media.upload":"رفع صور",
+    "media.refresh":"تحديث",
+    "media.folders":"مجلدات الصور",
+    "media.all":"الكل",
+    "media.fRecipes":"صور الوصفات",
+    "media.fCourses":"صور الكورسات",
+    "media.fAvatar":"الصورة الشخصية",
+    "media.count":"صورة",
+    "media.empty":"ماكو صور مرفوعة",
+    "media.emptyHint":"ارفعي أول صورة من الزر فوق، أو ارفعيها مباشرة وأنتِ تضيفين وصفة.",
+    "media.emptyFolder":"هذا المجلد فارغ",
+    "media.copy":"نسخ الرابط",
+    "media.copied":"انتسخ الرابط",
+    "media.copyFail":"ما كدرنا ننسخ — انسخيه يدوياً من الحقل.",
+    "media.usedBy":"مستعملة بـ: {x}",
+    "media.unused":"ما مستعملة بأي مكان",
+    "media.avatarUse":"الصورة الشخصية",
+    "media.pick":"اختيار من المكتبة",
+    "media.pickTitle":"اختاري صورة من المكتبة",
+    "media.pickEmpty":"ماكو صور بالمكتبة — ارفعي وحدة أول.",
+    "media.delTitle":"حذف الصورة؟",
+    "media.delText":"راح تنحذف «{x}» من التخزين نهائياً.",
+    "media.delUsed":"⚠️ هاي الصورة مستعملة بـ: {x} — إذا حذفتيها راح تختفي من الموقع.",
+    "media.deleted":"انحذفت الصورة",
+    "media.delErr":"ما انحذفت الصورة.",
+    "media.loadErr":"ما كدرنا نجيب الصور.",
+    "media.uploadedN":"انرفعت {n} صورة",
+
+    "cov.current":"الصورة الحالية",
+    "cov.stored":"محفوظة بالتخزين:",
+    "cov.external":"رابط خارجي (مو من تخزينك) — إذا انحذف من مصدره راح تختفي.",
+    "cov.none":"ماكو صورة محددة",
+    "cov.dest":"الصور الجديدة تنحفظ بمجلد",
+    "cov.remove":"إزالة الصورة",
 
     "f.newRecipe":"وصفة جديدة",
     "f.editRecipe":"تعديل الوصفة",
@@ -868,7 +1043,44 @@ const T = {
 
     "tab.recipes":"Recipes",
     "tab.courses":"Courses",
+    "tab.media":"Images",
     "tab.info":"Site info",
+
+    "media.intro":"Every image you upload is stored in the media bucket, inside a folder based on what it is for. From here you can see every image, where it lives, and which recipe or course uses it.",
+    "media.upload":"Upload images",
+    "media.refresh":"Refresh",
+    "media.folders":"Image folders",
+    "media.all":"All",
+    "media.fRecipes":"Recipe images",
+    "media.fCourses":"Course images",
+    "media.fAvatar":"Profile photo",
+    "media.count":"image(s)",
+    "media.empty":"No images uploaded",
+    "media.emptyHint":"Upload your first image with the button above, or upload one directly while adding a recipe.",
+    "media.emptyFolder":"This folder is empty",
+    "media.copy":"Copy link",
+    "media.copied":"Link copied",
+    "media.copyFail":"Could not copy — copy it manually from the field.",
+    "media.usedBy":"Used by: {x}",
+    "media.unused":"Not used anywhere",
+    "media.avatarUse":"Profile photo",
+    "media.pick":"Pick from library",
+    "media.pickTitle":"Pick an image from the library",
+    "media.pickEmpty":"The library is empty — upload one first.",
+    "media.delTitle":"Delete this image?",
+    "media.delText":"“{x}” will be permanently removed from storage.",
+    "media.delUsed":"⚠️ This image is used by: {x} — deleting it will make it disappear from the site.",
+    "media.deleted":"Image deleted",
+    "media.delErr":"Could not delete the image.",
+    "media.loadErr":"Could not load the images.",
+    "media.uploadedN":"{n} image(s) uploaded",
+
+    "cov.current":"Current image",
+    "cov.stored":"Stored at:",
+    "cov.external":"External link (not your storage) — if it is removed at the source it will disappear here.",
+    "cov.none":"No image selected",
+    "cov.dest":"New images are saved to folder",
+    "cov.remove":"Remove image",
 
     "f.newRecipe":"New recipe",
     "f.editRecipe":"Edit recipe",
@@ -1000,7 +1212,8 @@ function applyLang(){
   $('#gateLangTxt').textContent = LANG === 'ar' ? 'EN' : 'ع';
   $('#q').placeholder = t('app.searchPh');
   $('#newTxt').textContent = TAB === 'courses' ? t('app.newCourse') : t('app.new');
-  if (!$('#app').hidden) render();
+  if (!$('#app').hidden){ TAB === 'media' ? renderMedia() : render() }
+  if (!$('#picker').hidden) renderPicker();
   if (!$('#modal').hidden){ syncRows(); syncBase(); drawForm() }   /* ما نضيّع اللي انكتب */
 }
 function toggleLang(){
@@ -1027,7 +1240,7 @@ function toggleTheme(){
 /* ══════════════════════════════════════════════════════════
    ⑤  الحالة
    ══════════════════════════════════════════════════════════ */
-let TAB     = 'recipes';   // recipes | courses | info
+let TAB     = 'recipes';   // recipes | courses | media | info
 let ROWS    = { recipes:[], courses:[] };
 let INFO    = null;
 let EDITING = null;        // الصف قيد التعديل أو null للإضافة
@@ -1035,7 +1248,47 @@ let DRAFT   = null;        // نسخة عمل من الصفوف الدينامي
 let PENDING_DELETE = null;
 let lastFocus = null;
 
+/* ── مكتبة الصور ── */
+const FOLDERS  = ['recipes','courses','avatar'];
+const FOLDER_T = { recipes:'media.fRecipes', courses:'media.fCourses', avatar:'media.fAvatar' };
+let MEDIA      = [];        // [{name, path, folder, url, size, created}]
+let MFILTER    = '*';       // '*' أو اسم مجلد
+let PICK_TARGET = null;     // 'cover' أو 'avatar' لما تكون نافذة الاختيار مفتوحة
+
 const table = () => TAB === 'courses' ? 'courses' : 'recipes';
+
+/* المجلد اللي راح تنحفظ بيه صورة الفورم الحالي */
+const destFolder = () => TAB === 'courses' ? 'courses' : 'recipes';
+
+const fmtSize = b => !b ? '—'
+  : b < 1024 ? b + ' B'
+  : b < 1048576 ? (b / 1024).toFixed(0) + ' KB'
+  : (b / 1048576).toFixed(1) + ' MB';
+
+const fmtDate = s => {
+  if (!s) return '';
+  const d = new Date(s);
+  return isNaN(d) ? '' : d.toLocaleDateString(LANG === 'ar' ? 'ar-IQ' : 'en-GB',
+    { year:'numeric', month:'short', day:'numeric' });
+};
+
+/* وين مستعملة هاي الصورة؟ يرجع مصفوفة أسماء */
+function usedBy(url){
+  if (!url) return [];
+  const hits = [];
+  ROWS.recipes.forEach(r => { if (r.cover === url) hits.push(r.title) });
+  ROWS.courses.forEach(c => { if (c.cover === url) hits.push(c.title) });
+  if (INFO && INFO.avatar_url === url) hits.push(t('media.avatarUse'));
+  return hits;
+}
+
+/* هل هذا الرابط من تخزيننا؟ يرجع المسار الداخلي أو null */
+function storagePath(url){
+  if (!url) return null;
+  const marker = `/storage/v1/object/public/${BUCKET}/`;
+  const i = url.indexOf(marker);
+  return i === -1 ? null : decodeURIComponent(url.slice(i + marker.length).split('?')[0]);
+}
 
 /* ══════════════════════════════════════════════════════════
    ⑥  الجلب والعرض
@@ -1121,17 +1374,150 @@ function render(){
 }
 
 /* ══════════════════════════════════════════════════════════
+   ⑥ب  مكتبة الصور
+   ══════════════════════════════════════════════════════════ */
+async function loadMedia(){
+  $('#mediaGrid').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+  const out = [];
+  for (const f of FOLDERS){
+    const { data, error } = await sb.storage.from(BUCKET)
+      .list(f, { limit:300, sortBy:{ column:'created_at', order:'desc' } });
+    if (error) continue;
+    (data || []).forEach(o => {
+      if (!o.id) return;                       /* تخطّي المجلدات الفرعية */
+      const path = f + '/' + o.name;
+      out.push({
+        name: o.name,
+        path,
+        folder: f,
+        url: sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl,
+        size: o.metadata?.size || 0,
+        created: o.created_at || o.updated_at || ''
+      });
+    });
+  }
+  MEDIA = out;
+  renderMedia();
+}
+
+function mediaCard(m, pick){
+  const hits = usedBy(m.url);
+  const use  = hits.length
+    ? `<span class="muse on">${ico('i-check-circle')}<span>${esc(t('media.usedBy', { x:hits.join('، ') }))}</span></span>`
+    : `<span class="muse off">${ico('i-info')}<span>${esc(t('media.unused'))}</span></span>`;
+
+  return `<article class="mcard" data-path="${esc(m.path)}" data-url="${esc(m.url)}">
+    <span class="mthumb">
+      <img src="${esc(m.url)}" alt="" loading="lazy" onerror="this.classList.add('failed')">
+      <span class="mtag">${esc(t(FOLDER_T[m.folder]))}</span>
+      ${use}
+    </span>
+    <div class="mbody">
+      <span class="mname" title="${esc(m.path)}">${esc(m.path)}</span>
+      <span class="mmeta">${esc(fmtSize(m.size))}${m.created ? ' · ' + esc(fmtDate(m.created)) : ''}</span>
+    </div>
+    ${pick ? '' : `<div class="macts">
+      <button type="button" data-m="copy">${ico('i-copy')}<span>${esc(t('media.copy'))}</span></button>
+      <button type="button" class="danger" data-m="del" aria-label="${esc(t('app.delete'))}">${ico('i-trash')}</button>
+    </div>`}
+  </article>`;
+}
+
+function folderChips(boxSel, active){
+  const counts = { '*':MEDIA.length };
+  FOLDERS.forEach(f => counts[f] = MEDIA.filter(m => m.folder === f).length);
+  const items = [['*', t('media.all')], ...FOLDERS.map(f => [f, t(FOLDER_T[f])])];
+  $(boxSel).innerHTML = items.map(([v, label]) =>
+    `<button class="chip" type="button" data-f="${esc(v)}" aria-pressed="${v === active}">
+       ${v === '*' ? ico('i-image') : ico('i-folder')}${esc(label)}<span class="n">${counts[v]}</span>
+     </button>`).join('');
+}
+
+function renderMedia(){
+  folderChips('#mediaChips', MFILTER);
+  const items = MFILTER === '*' ? MEDIA : MEDIA.filter(m => m.folder === MFILTER);
+  $('#mediaCount').textContent = items.length ? `${items.length} ${t('media.count')}` : '';
+
+  if (!items.length){
+    $('#mediaGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">
+      ${ico('i-image')}
+      <b>${esc(MEDIA.length ? t('media.emptyFolder') : t('media.empty'))}</b>
+      <span>${esc(t('media.emptyHint'))}</span>
+    </div>`;
+    return;
+  }
+  $('#mediaGrid').innerHTML = items.map(m => mediaCard(m, false)).join('');
+}
+
+/* ── نافذة اختيار صورة ── */
+function openPicker(target){
+  PICK_TARGET = target;
+  const p = $('#picker');
+  p.hidden = false;
+  requestAnimationFrame(() => p.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+  renderPicker();
+  if (!MEDIA.length) loadMedia().then(renderPicker);
+  requestAnimationFrame(() => $('#pickClose').focus());
+}
+function closePicker(){
+  const p = $('#picker');
+  p.classList.remove('open');
+  setTimeout(() => p.hidden = true, 220);
+  if ($('#modal').hidden) document.body.style.overflow = '';
+  PICK_TARGET = null;
+}
+function renderPicker(){
+  folderChips('#pickChips', MFILTER);
+  const items = MFILTER === '*' ? MEDIA : MEDIA.filter(m => m.folder === MFILTER);
+  $('#pickGrid').innerHTML = items.length
+    ? items.map(m => mediaCard(m, true)).join('')
+    : `<div class="empty" style="grid-column:1/-1">${ico('i-image')}
+         <b>${esc(t('media.pickEmpty'))}</b></div>`;
+}
+function choosePicked(url){
+  if (PICK_TARGET === 'avatar'){
+    $('#i-avatar').value = url;
+    setPreview($('#i-prev'), url);
+  } else if (DRAFT){
+    DRAFT.cover = url;
+    $('#f-cover').value = url;
+    setPreview($('#f-prev'), url);
+    refreshWhere();
+  }
+  closePicker();
+}
+
+/* ── حذف صورة من التخزين ── */
+function askDeleteMedia(path){
+  const m = MEDIA.find(x => x.path === path); if (!m) return;
+  const hits = usedBy(m.url);
+  PENDING_DELETE = { kind:'media', path, title:m.name };
+  $('#confirmTitle').textContent = t('media.delTitle');
+  $('#confirmText').innerHTML = esc(t('media.delText', { x:m.name }))
+    + (hits.length ? `<br><br><b style="color:var(--clay-ink)">${esc(t('media.delUsed', { x:hits.join('، ') }))}</b>` : '');
+  const c = $('#confirm');
+  lastFocus = document.activeElement;
+  c.hidden = false;
+  requestAnimationFrame(() => c.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => $('#delNo').focus());
+}
+
+/* ══════════════════════════════════════════════════════════
    ⑦  التبويبات
    ══════════════════════════════════════════════════════════ */
 function setTab(nextTab){
   TAB = nextTab;
-  ['recipes','courses','info'].forEach(k =>
+  ['recipes','courses','media','info'].forEach(k =>
     $('#tab-' + k).setAttribute('aria-selected', String(k === TAB)));
-  $('#listPane').hidden = TAB === 'info';
-  $('#infoPane').hidden = TAB !== 'info';
+  $('#listPane').hidden  = TAB === 'info' || TAB === 'media';
+  $('#mediaPane').hidden = TAB !== 'media';
+  $('#infoPane').hidden  = TAB !== 'info';
   $('#newTxt').textContent = TAB === 'courses' ? t('app.newCourse') : t('app.new');
   $('#q').value = '';
-  render();
+  if (TAB === 'media'){ MEDIA.length ? renderMedia() : loadMedia() }
+  else render();
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1173,6 +1559,29 @@ function closeForm(){
   lastFocus?.focus?.();
 }
 
+/* شريط يوضّح: الصورة الحالية وين محفوظة، ووين راح تنحفظ الجديدة */
+function whereHtml(url){
+  const p = storagePath(url);
+  let cur;
+  if (!url){
+    cur = `<span class="wl">${ico('i-info')}<span>${esc(t('cov.none'))}</span></span>`;
+  } else if (p){
+    cur = `<span class="wl ok">${ico('i-check-circle')}<span>
+             <b>${esc(t('cov.stored'))}</b> <code>${esc(BUCKET)}/${esc(p)}</code></span></span>`;
+  } else {
+    cur = `<span class="wl ext">${ico('i-alert')}<span>${esc(t('cov.external'))}</span></span>`;
+  }
+  return `<div class="where" id="f-where">
+    ${cur}
+    <span class="wl">${ico('i-folder')}<span>
+      <b>${esc(t('cov.dest'))}</b> <code>${esc(BUCKET)}/${esc(destFolder())}/</code></span></span>
+  </div>`;
+}
+function refreshWhere(){
+  const box = $('#f-where');
+  if (box) box.outerHTML = whereHtml(DRAFT ? DRAFT.cover : '');
+}
+
 function coverBlock(){
   const c = DRAFT.cover;
   return `<div class="fset">
@@ -1186,11 +1595,19 @@ function coverBlock(){
         <input class="inp" id="f-cover" dir="ltr" placeholder="https://…" value="${esc(c)}"
                aria-label="${esc(t('f.coverUrl'))}">
         <input type="file" id="f-file" accept="image/*" hidden>
-        <button class="btn btn-ghost btn-sm" type="button" id="f-upBtn">
-          ${ico('i-upload')}<span>${esc(t('f.upload'))}</span>
-        </button>
+        <div class="cover-btns">
+          <button class="btn btn-ghost btn-sm" type="button" id="f-upBtn">
+            ${ico('i-upload')}<span>${esc(t('f.upload'))}</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" type="button" id="f-pickBtn">
+            ${ico('i-image')}<span>${esc(t('media.pick'))}</span>
+          </button>
+          ${c ? `<button class="btn btn-quiet btn-sm" type="button" id="f-clearCover"
+                   style="color:var(--clay-ink);flex:none;min-width:0">
+                   ${ico('i-close')}<span>${esc(t('cov.remove'))}</span></button>` : ''}
+        </div>
         <div class="up-bar" id="f-bar" hidden><i></i></div>
-        <span class="hint">${esc(t('f.coverUrl'))}</span>
+        ${whereHtml(c)}
       </div>
     </div>
   </div>`;
@@ -1412,6 +1829,11 @@ async function uploadImage(file, folder, barEl, btnEl){
   if (barEl){ barEl.firstElementChild.style.width = '100%'; setTimeout(() => { barEl.hidden = true; barEl.firstElementChild.style.width = '0' }, 500) }
 
   const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+  /* ضيفها للمكتبة فوراً حتى تبين بدون إعادة تحميل */
+  MEDIA.unshift({
+    name: path.split('/').pop(), path, folder,
+    url: data.publicUrl, size: file.size, created: new Date().toISOString()
+  });
   toast(t('ok.uploaded'));
   return data.publicUrl;
 }
@@ -1505,7 +1927,8 @@ async function togglePublish(id){
 function askDelete(id){
   const row = ROWS[table()].find(x => x.id === id); if (!row) return;
   PENDING_DELETE = { id, table:table(), title:row.title };
-  $('#confirmText').textContent = t('del.text', { x:row.title });
+  $('#confirmTitle').textContent = t('del.title');
+  $('#confirmText').textContent  = t('del.text', { x:row.title });
   const c = $('#confirm');
   lastFocus = document.activeElement;
   c.hidden = false;
@@ -1523,8 +1946,24 @@ function closeConfirm(){
 }
 async function doDelete(){
   if (!PENDING_DELETE) return;
-  const { id, table:tb } = PENDING_DELETE;
   const btn = $('#delYes'); btn.disabled = true;
+
+  /* حذف صورة من التخزين */
+  if (PENDING_DELETE.kind === 'media'){
+    const { path } = PENDING_DELETE;
+    const { error } = await sb.storage.from(BUCKET).remove([path]);
+    btn.disabled = false;
+    if (error){ toast(t('media.delErr') + ' — ' + error.message, 'bad'); closeConfirm(); return }
+    MEDIA = MEDIA.filter(m => m.path !== path);
+    closeConfirm();
+    renderMedia();
+    if (!$('#picker').hidden) renderPicker();
+    toast(t('media.deleted'));
+    return;
+  }
+
+  /* حذف وصفة أو كورس */
+  const { id, table:tb } = PENDING_DELETE;
   const { error } = await sb.from(tb).delete().eq('id', id);
   btn.disabled = false;
   if (error){ toast(t('err.delete') + ' — ' + error.message, 'bad'); closeConfirm(); return }
@@ -1639,8 +2078,50 @@ function wire(){
   $('#themeBtn').addEventListener('click', toggleTheme);
   $('#gateTheme').addEventListener('click', toggleTheme);
 
-  ['recipes','courses','info'].forEach(k =>
+  ['recipes','courses','media','info'].forEach(k =>
     $('#tab-' + k).addEventListener('click', () => setTab(k)));
+
+  /* ── مكتبة الصور ── */
+  $('#mediaChips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    MFILTER = c.dataset.f; renderMedia();
+  });
+  $('#mediaRefresh').addEventListener('click', loadMedia);
+  $('#mediaUpBtn').addEventListener('click', () => $('#mediaFile').click());
+  $('#mediaFile').addEventListener('change', async e => {
+    const files = [...(e.target.files || [])]; e.target.value = '';
+    if (!files.length) return;
+    /* المجلد الافتراضي للرفع من تبويب الصور = حسب الفلتر المختار، وإلا recipes */
+    const folder = FOLDERS.includes(MFILTER) ? MFILTER : 'recipes';
+    let ok = 0;
+    for (const f of files){
+      const url = await uploadImage(f, folder, $('#mediaBar'), $('#mediaUpBtn'));
+      if (url) ok++;
+    }
+    renderMedia();
+    if (ok > 1) toast(t('media.uploadedN', { n:ok }));
+  });
+  $('#mediaGrid').addEventListener('click', e => {
+    const card = e.target.closest('.mcard'); if (!card) return;
+    const btn = e.target.closest('[data-m]'); if (!btn) return;
+    if (btn.dataset.m === 'del') return askDeleteMedia(card.dataset.path);
+    if (btn.dataset.m === 'copy'){
+      const url = card.dataset.url;
+      (navigator.clipboard?.writeText(url) ?? Promise.reject())
+        .then(() => toast(t('media.copied')))
+        .catch(() => toast(t('media.copyFail'), 'bad'));
+    }
+  });
+
+  /* ── نافذة اختيار صورة ── */
+  $('#pickClose').addEventListener('click', closePicker);
+  $('#picker').addEventListener('click', e => {
+    if (e.target === e.currentTarget) return closePicker();
+    const c = e.target.closest('.chip');
+    if (c){ MFILTER = c.dataset.f; renderPicker(); return }
+    const card = e.target.closest('.mcard');
+    if (card) choosePicked(card.dataset.url);
+  });
 
   let dq;
   $('#q').addEventListener('input', () => { clearTimeout(dq); dq = setTimeout(render, 130) });
@@ -1681,24 +2162,35 @@ function wire(){
       return;
     }
 
-    if (e.target.closest('#f-upBtn')) $('#f-file').click();
+    if (e.target.closest('#f-upBtn'))   return $('#f-file').click();
+    if (e.target.closest('#f-pickBtn')) return openPicker('cover');
+    if (e.target.closest('#f-clearCover')){
+      DRAFT.cover = '';
+      $('#f-cover').value = '';
+      setPreview($('#f-prev'), '');
+      refreshWhere();
+      e.target.closest('#f-clearCover').remove();
+    }
   });
 
   $('#modal').addEventListener('change', async e => {
     if (e.target.id === 'f-file'){
       const file = e.target.files?.[0]; if (!file) return;
-      const url = await uploadImage(file, table(), $('#f-bar'), $('#f-upBtn'));
+      const url = await uploadImage(file, destFolder(), $('#f-bar'), $('#f-upBtn'));
       e.target.value = '';
       if (!url) return;
       DRAFT.cover = url;
       $('#f-cover').value = url;
       setPreview($('#f-prev'), url);
+      refreshWhere();
     }
   });
+  let wt;
   $('#modal').addEventListener('input', e => {
     if (e.target.id === 'f-cover'){
       DRAFT.cover = e.target.value.trim();
       setPreview($('#f-prev'), DRAFT.cover);
+      clearTimeout(wt); wt = setTimeout(refreshWhere, 350);
     }
   });
 
@@ -1707,6 +2199,7 @@ function wire(){
   /* معلومات الموقع */
   $('#infoForm').addEventListener('submit', saveInfo);
   $('#i-upBtn').addEventListener('click', () => $('#i-file').click());
+  $('#i-pickBtn').addEventListener('click', () => openPicker('avatar'));
   $('#i-file').addEventListener('change', async e => {
     const file = e.target.files?.[0]; if (!file) return;
     const url = await uploadImage(file, 'avatar', $('#i-bar'), $('#i-upBtn'));
@@ -1726,6 +2219,7 @@ function wire(){
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (!$('#confirm').hidden) return closeConfirm();
+    if (!$('#picker').hidden)  return closePicker();
     if (!$('#modal').hidden)   return closeForm();
   });
 

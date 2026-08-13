@@ -531,6 +531,9 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .socials{display:flex;gap:9px;margin-top:16px}
 .foot-col h4{font-size:14px;font-family:var(--f-head);font-weight:600;margin-bottom:12px}
 .foot-col a{display:flex;align-items:center;min-height:44px;color:var(--soft);font-size:14px;transition:color .2s var(--ease)}
+.foot-col a.admin-link{gap:8px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line);color:var(--brand-ink);font-weight:600}
+.foot-col a.admin-link:hover{color:var(--brand-hi)}
+.foot-col a.admin-link .icon{font-size:16px}
 .foot-col a:hover{color:var(--ink)}
 .foot-bottom{margin-top:var(--s-6);padding-top:var(--s-5);border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;color:var(--soft);font-size:12.5px}
@@ -686,6 +689,7 @@ ol.steps li::before{
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.8A1.8 1.8 0 0 1 5.8 3H19v18H5.8A1.8 1.8 0 0 1 4 19.2Z"/><path d="M4 17.2h15"/></symbol>
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.2 9.6h17.6M3.2 14.4h17.6"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.4"/><path d="M8.2 10.4V7.6a3.8 3.8 0 0 1 7.6 0v2.8"/></symbol>
   </defs>
 </svg>
 
@@ -913,6 +917,10 @@ ol.steps li::before{
         <a id="fWhats" href="#" target="_blank" rel="noopener" data-t="soc.whats">واتساب</a>
         <a id="fInsta" href="#" target="_blank" rel="noopener" data-t="soc.insta">انستغرام</a>
         <a href="#faq" data-t="nav.faq">أسئلة شائعة</a>
+        <a class="admin-link" href="admin.html">
+          <svg class="icon"><use href="#i-lock"></use></svg>
+          <span data-t="foot.admin">لوحة التحكم</span>
+        </a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -1046,6 +1054,7 @@ ar:{
     "foot.recipes":"الوصفات",
     "foot.courses":"الكورسات",
     "foot.contact":"تواصل",
+    "foot.admin":"لوحة التحكم",
     "foot.rights":"— كل الحقوق محفوظة",
 
     /* نصوص تنبني بالجافاسكربت */
@@ -1182,6 +1191,7 @@ en:{
     "foot.recipes":"Recipes",
     "foot.courses":"Courses",
     "foot.contact":"Contact",
+    "foot.admin":"Dashboard",
     "foot.rights":"— All rights reserved",
 
     "searchR":"Search for a recipe…",
