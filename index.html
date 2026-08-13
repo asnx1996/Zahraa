@@ -8,9 +8,17 @@
 <meta name="theme-color" content="#F6F5F2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F1512" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="كوتش زهراء — كورسات رياضية ووصفات صحية">
-<meta property="og:description" content="كورسات رياضية ووصفات أكل صحي محسوبة بالسعرات والماكروز.">
-<meta property="og:locale" content="ar_IQ">
+<meta property="og:title" content="كوتش زهراء — كورسات رياضية ووصفات صحية" id="ogTitle">
+<meta property="og:description" content="كورسات رياضية ووصفات أكل صحي محسوبة بالسعرات والماكروز." id="ogDesc">
+<meta property="og:image" content="" id="ogImage">
+<meta property="og:url" content="" id="ogUrl">
+<meta property="og:locale" content="ar_IQ" id="ogLocale">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="canonical" href="" id="canonical">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230E7C66'/%3E%3Ctext x='32' y='45' font-size='38' font-family='Cairo,sans-serif' font-weight='700' fill='%23fff' text-anchor='middle'%3E%D8%B2%3C/text%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -656,6 +664,132 @@ ol.steps li::before{
   .site-header,.toolbar,.mobile-cta,.sheet,.cta-band,.hero::before,.hero::after{display:none!important}
   body{background:#fff;color:#000}
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ⑯  حالات التحميل والخطأ
+   ═══════════════════════════════════════════════════════════ */
+.sk{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;position:relative;
+}
+.sk::after{
+  content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,var(--sunken),transparent);animation:sweep 1.2s infinite;
+}
+:root[dir=rtl] .sk::after{animation-name:sweepR}
+@keyframes sweep{100%{transform:translateX(100%)}}
+@keyframes sweepR{100%{transform:translateX(-200%)}}
+.sk-thumb{aspect-ratio:16/10;background:var(--sunken)}
+.sk-body{padding:14px;display:grid;gap:9px}
+.sk-line{height:12px;border-radius:6px;background:var(--sunken)}
+.sk-line.w70{width:70%} .sk-line.w45{width:45%} .sk-line.w90{width:90%}
+
+.state{
+  grid-column:1/-1;text-align:center;padding:clamp(36px,7vw,64px) 20px;
+  border:1.5px dashed var(--line-2);border-radius:var(--r-lg);display:grid;gap:10px;justify-items:center;
+}
+.state .icon{font-size:40px;color:var(--line-2)}
+.state.bad .icon{color:var(--clay)}
+.state b{font-family:var(--f-head);font-size:18px;color:var(--ink)}
+.state span{color:var(--soft);font-size:14.5px;max-width:46ch;line-height:1.75}
+.state .btn{margin-top:8px}
+
+/* ═══════════════════════════════════════════════════════════
+   ⑰  قائمة التسوّق
+   ═══════════════════════════════════════════════════════════ */
+.pick-btn{
+  position:absolute;top:10px;inset-inline-end:10px;z-index:3;
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:var(--glass);border:1px solid var(--line);color:var(--ink);font-size:17px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:background-color .18s var(--ease),color .18s var(--ease),transform .18s var(--ease);
+}
+.pick-btn:hover{transform:scale(1.08)}
+.pick-btn.on{background:var(--pine);color:#fff;border-color:var(--pine)}
+
+.cart-fab{
+  position:fixed;z-index:70;inset-block-end:calc(18px + env(safe-area-inset-bottom));
+  inset-inline-end:18px;display:none;align-items:center;gap:9px;
+  padding:13px 20px;border-radius:var(--r-full);background:var(--pine);color:#fff;
+  font-family:var(--f-head);font-weight:700;font-size:14.5px;
+  box-shadow:0 12px 30px -10px rgba(14,124,102,.9);
+  animation:pop .3s var(--back);
+}
+.cart-fab.show{display:inline-flex}
+.cart-fab .n{
+  min-width:23px;height:23px;border-radius:var(--r-full);background:rgba(255,255,255,.25);
+  display:grid;place-items:center;font-family:var(--f-num);font-size:12.5px;padding-inline:6px;
+}
+@media(max-width:899px){ .mobile-cta.show ~ .cart-fab.show{inset-block-end:calc(84px + env(safe-area-inset-bottom))} }
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
+
+.cart-list{display:grid;gap:2px}
+.cart-line{
+  display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--r-sm);
+  transition:background-color .15s var(--ease);
+}
+.cart-line:nth-child(odd){background:var(--sunken)}
+.cart-line.done{opacity:.45}
+.cart-line.done .cl-n{text-decoration:line-through}
+.cl-tick{
+  width:22px;height:22px;border-radius:7px;border:2px solid var(--line-2);flex:none;
+  display:grid;place-items:center;font-size:13px;color:transparent;transition:all .15s var(--ease);
+}
+.cart-line.done .cl-tick{background:var(--pine);border-color:var(--pine);color:#fff}
+.cl-n{flex:1;min-width:0;font-size:14.5px;line-height:1.6}
+.cl-q{font-family:var(--f-num);font-size:13.5px;color:var(--pine-ink);font-weight:600;white-space:nowrap}
+.cart-src{
+  display:flex;flex-wrap:wrap;gap:7px;margin-bottom:var(--s-4);
+}
+.cart-src .cs{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:var(--r-full);
+  background:var(--sunken);font-size:12.5px;font-weight:600;
+}
+.cart-src .cs button{width:18px;height:18px;display:grid;place-items:center;font-size:12px;color:var(--soft);border-radius:50%}
+.cart-src .cs button:hover{background:var(--line-2);color:var(--ink)}
+.cart-tot{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-2);margin-bottom:var(--s-4);
+}
+.cart-tot .ct{background:var(--sunken);border-radius:var(--r-sm);padding:10px 6px;text-align:center}
+.cart-tot .ct b{display:block;font-family:var(--f-num);font-size:17px;line-height:1.2}
+.cart-tot .ct span{font-size:11px;color:var(--soft)}
+
+/* ═══════════════════════════════════════════════════════════
+   ⑱  حاسبة السعرات
+   ═══════════════════════════════════════════════════════════ */
+.calc{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
+  padding:clamp(20px,4vw,34px);box-shadow:var(--shadow-2);display:grid;gap:var(--s-5);
+  max-width:920px;margin-inline:auto;
+}
+.calc-grid{display:grid;gap:var(--s-3)}
+@media(min-width:620px){.calc-grid{grid-template-columns:1fr 1fr}}
+.calc .field{display:grid;gap:7px}
+.calc label{font-size:13.5px;font-weight:600;color:var(--ink-2);font-family:var(--f-head)}
+.calc .inp{
+  width:100%;padding:12px 14px;min-height:48px;border-radius:var(--r-sm);
+  border:1px solid var(--line);background:var(--surface-2);outline:none;font-size:15.5px;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.calc .inp:focus{border-color:var(--brand);box-shadow:0 0 0 3.5px var(--brand-wash)}
+.calc input.inp{font-family:var(--f-num)}
+.seg{display:grid;grid-auto-flow:column;gap:4px;background:var(--sunken);padding:4px;border-radius:var(--r);border:1px solid var(--line)}
+.seg button{
+  padding:10px 6px;min-height:44px;border-radius:10px;font-size:14px;font-weight:600;
+  font-family:var(--f-head);color:var(--soft);transition:background-color .18s var(--ease),color .18s var(--ease);
+}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
+.calc-out{
+  border-top:1px solid var(--line);padding-top:var(--s-5);display:grid;gap:var(--s-4);
+}
+.calc-big{text-align:center}
+.calc-big b{display:block;font-family:var(--f-num);font-size:clamp(38px,8vw,60px);line-height:1.1;color:var(--brand-ink)}
+.calc-big span{color:var(--soft);font-size:14px}
+.calc-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3)}
+.calc-macros .m{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:14px 10px;text-align:center}
+.calc-macros .m b{display:block;font-family:var(--f-num);font-size:clamp(20px,4vw,26px);line-height:1.2}
+.calc-macros .m span{font-size:12px;color:var(--soft)}
+.calc-note{font-size:13px;color:var(--soft);text-align:center;line-height:1.7}
 </style>
 </head>
 <body>
@@ -690,6 +824,13 @@ ol.steps li::before{
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.2 9.6h17.6M3.2 14.4h17.6"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.4"/><path d="M8.2 10.4V7.6a3.8 3.8 0 0 1 7.6 0v2.8"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><path d="M2.8 3.6h2.6l2.2 11.2h9.8l2-8.2H6.4"/><circle cx="9.4" cy="19.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.2" cy="19.4" r="1.5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-cart-plus" viewBox="0 0 24 24"><path d="M12 7.4v5.2M9.4 10h5.2"/><circle cx="12" cy="10" r="7.4"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="17.6" cy="5.6" r="2.6"/><circle cx="6.4" cy="12" r="2.6"/><circle cx="17.6" cy="18.4" r="2.6"/><path d="m8.7 10.7 6.6-3.8M8.7 13.3l6.6 3.8"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.6" y="8.6" width="11.8" height="11.8" rx="2.4"/><path d="M15.4 5.4H6.2a2.4 2.4 0 0 0-2.4 2.4v9.2"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect x="4.6" y="2.8" width="14.8" height="18.4" rx="2.6"/><path d="M8 7h8"/><path d="M8.6 11.6h.01M12 11.6h.01M15.4 11.6h.01M8.6 15.2h.01M12 15.2h.01M15.4 15.2h.01M8.6 18.4h6.8"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M19.6 3.6v4.8h-4.8"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.8h5V7M6 7l1 13.2h10L18 7"/></symbol>
   </defs>
 </svg>
 
@@ -815,8 +956,79 @@ ol.steps li::before{
     </div>
   </section>
 
+  <!-- ══ حاسبة السعرات ══ -->
+  <section class="sec" id="calc">
+    <div class="wrap">
+      <div class="sec-head center rv">
+        <span class="kicker" data-t="calc.kicker">مجاناً</span>
+        <h2 data-t="calc.h">شكد سعرة تحتاجين باليوم؟</h2>
+        <p data-t="calc.p">احسبيها بثواني. الرقم هذا هو نقطة البداية لأي خطة أكل — وبعدها نظبطه سوية حسب نتيجتج.</p>
+      </div>
+
+      <form class="calc rv" id="calcForm" novalidate>
+        <div class="calc-grid">
+          <div class="field">
+            <span class="lbl-txt"><label data-t="calc.sex">الجنس</label></span>
+            <div class="seg" id="cSex" role="group">
+              <button type="button" data-v="f" aria-pressed="true" data-t="calc.female">أنثى</button>
+              <button type="button" data-v="m" aria-pressed="false" data-t="calc.male">ذكر</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="cAge" data-t="calc.age">العمر (سنة)</label>
+            <input class="inp" id="cAge" type="number" min="14" max="90" step="1" value="27" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="cWeight" data-t="calc.weight">الوزن (كغم)</label>
+            <input class="inp" id="cWeight" type="number" min="30" max="250" step="0.5" value="70" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="cHeight" data-t="calc.height">الطول (سم)</label>
+            <input class="inp" id="cHeight" type="number" min="120" max="230" step="1" value="165" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="cAct" data-t="calc.activity">مستوى النشاط</label>
+            <select class="inp" id="cAct">
+              <option value="1.2"  data-t="calc.a1">جالسة أغلب اليوم</option>
+              <option value="1.375" data-t="calc.a2">نشاط خفيف — ١-٣ أيام</option>
+              <option value="1.55" selected data-t="calc.a3">نشاط متوسط — ٣-٥ أيام</option>
+              <option value="1.725" data-t="calc.a4">نشاط عالي — ٦-٧ أيام</option>
+              <option value="1.9"  data-t="calc.a5">نشاط شديد أو شغل بدني</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cGoal" data-t="calc.goal">الهدف</label>
+            <select class="inp" id="cGoal">
+              <option value="-0.2" data-t="calc.g1">تنشيف ونزول وزن</option>
+              <option value="0" selected data-t="calc.g2">ثبات على الوزن</option>
+              <option value="0.15" data-t="calc.g3">زيادة وزن وعضل</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-out">
+          <div class="calc-big">
+            <b class="num" id="cKcal">—</b>
+            <span data-t="calc.perDay">سعرة باليوم</span>
+          </div>
+          <div class="calc-macros">
+            <div class="m"><b class="num" id="cP" style="color:var(--pine-ink)">—</b><span data-t="calc.protein">بروتين غم</span></div>
+            <div class="m"><b class="num" id="cC" style="color:var(--amber-ink)">—</b><span data-t="calc.carbs">كارب غم</span></div>
+            <div class="m"><b class="num" id="cF" style="color:var(--clay-ink)">—</b><span data-t="calc.fat">دهون غم</span></div>
+          </div>
+          <p class="calc-note" data-t="calc.note">
+            الحساب تقديري بمعادلة Mifflin-St Jeor. الرقم الحقيقي يتظبط بعد أسبوعين من المتابعة.
+          </p>
+          <a class="btn btn-primary btn-lg" id="cCta" href="#" target="_blank" rel="noopener" style="justify-self:center">
+            <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="calc.cta">تريدين خطة على هذا الرقم؟</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
+
   <!-- ══ الباقات ══ -->
-  <section class="sec" id="plans">
+  <section class="sec sec-alt" id="plans">
     <div class="wrap">
       <div class="sec-head center rv">
         <span class="kicker" data-t="plans.kicker">الاشتراك</span>
@@ -828,7 +1040,7 @@ ol.steps li::before{
   </section>
 
   <!-- ══ عن الكوتش ══ -->
-  <section class="sec sec-alt" id="about">
+  <section class="sec" id="about">
     <div class="wrap">
       <div class="about-grid">
         <div class="about-photo rv">
@@ -845,7 +1057,7 @@ ol.steps li::before{
   </section>
 
   <!-- ══ آراء المشتركات ══ -->
-  <section class="sec" id="reviews">
+  <section class="sec sec-alt" id="reviews">
     <div class="wrap">
       <div class="sec-head center rv">
         <span class="kicker" data-t="rev.kicker">آراء</span>
@@ -857,7 +1069,7 @@ ol.steps li::before{
   </section>
 
   <!-- ══ الأسئلة ══ -->
-  <section class="sec sec-alt" id="faq">
+  <section class="sec" id="faq">
     <div class="wrap">
       <div class="sec-head center rv">
         <span class="kicker" data-t="faq.kicker">أسئلة شائعة</span>
@@ -937,558 +1149,377 @@ ol.steps li::before{
   </a>
 </div>
 
-<!-- ══ الشيت ══ -->
+<!-- ══ زر قائمة التسوّق ══ -->
+<button class="cart-fab" id="cartFab" type="button">
+  <svg class="icon"><use href="#i-cart"></use></svg>
+  <span data-t="cart.btn">قائمة التسوّق</span>
+  <span class="n num" id="cartN">0</span>
+</button>
+
+<!-- ══ الشيت (التفاصيل + قائمة التسوّق) ══ -->
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
   <div class="sheet-inner" id="sheetInner"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════
-   ①  إعدادات مشتركة بين اللغتين  ← الصور والروابط
+   موقع كوتش زهراء — كل البيانات تجي من Supabase
+   عدّلي المحتوى من admin.html، مو من هنا.
    ══════════════════════════════════════════════════════════ */
-const SITE = {
-  initial: "ز",
-  heroImage: "https://images.unsplash.com/photo-1518611012118-696072aa579a?fm=jpg&q=75&w=900&auto=format&fit=crop",
-  aboutImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fm=jpg&q=75&w=800&auto=format&fit=crop",
-  instagram: "https://instagram.com/",
-  whatsapp: "https://wa.me/9647700000000"
-};
-
-/* ══════════════════════════════════════════════════════════
-   ②  المحتوى — عربي / إنكليزي
-   ══════════════════════════════════════════════════════════ */
-const L = {
-ar:{
-  name:"كوتش زهراء",
-  docTitle:"كوتش زهراء — كورسات رياضية ووصفات صحية",
-  heroEyebrow:"مدرّبة لياقة وتغذية معتمدة",
-  heroTitle:"جسمج يتغيّر بـ <span class='hl'>أكل تحبينه</span> وتمارين تكدرين تلتزمين بيها",
-  heroSub:"مدربة لياقة وتغذية. كل برنامج مبني على أهداف واقعية وأكل تسوينه بمطبخج — بدون حرمان وبدون منتجات غالية.",
-  tagline:"تمارين ووصفات — كلشي محسوب بالسعرات",
-  bio:"بديت رحلتي بنفس مكانج بالضبط: محتارة بين آلاف الحميات وما أعرف منين أبدي. اليوم بعد سنين من التدريب والدراسة، صار هدفي أخلّي الموضوع بسيط — أكل تعرفينه، تمارين تكدرين تسوينها، وأرقام واضحة تشوفين بيها تقدمج أسبوع بأسبوع.",
-  by:"تصميم وتطوير الموقع — للتواصل",
-
-  STATS:[
-    { n:"+٢٥٠", l:"مشتركة" },
-    { n:"+٤٠",  l:"وصفة محسوبة" },
-    { n:"٥",    l:"سنوات خبرة" }
-  ],
-  CREDS:[
-    { icon:"i-shield",   t:"شهادة تدريب معتمدة", s:"تدريب شخصي ولياقة عامة" },
-    { icon:"i-book",     t:"دراسة تغذية تطبيقية", s:"حساب سعرات وماكروز" },
-    { icon:"i-users",    t:"+٢٥٠ حالة", s:"تنشيف، زيادة وزن، وثبات" },
-    { icon:"i-calendar", t:"متابعة أسبوعية", s:"تعديل الخطة حسب النتيجة" }
-  ],
-  PLANS:[
-    { name:"خطة الأكل", tag:"", price:"٢٥,٠٠٠", unit:"د.ع / شهر",
-      desc:"للي تريد تظبط أكلها بس، بدون جدول تمارين.",
-      features:["خطة سعرات مخصصة لهدفج","٤ خيارات لكل وجبة","قائمة تسوّق أسبوعية","تعديل مرة بالشهر"],
-      featured:false },
-    { name:"الباقة الكاملة", tag:"الأكثر طلباً", price:"٤٥,٠٠٠", unit:"د.ع / شهر",
-      desc:"أكل + تمارين + متابعة. هاي اللي أنصح بيها أغلب البنات.",
-      features:["كلشي بخطة الأكل","جدول تمارين بيت أو نادي","فيديو شرح لكل تمرين","متابعة أسبوعية بالواتساب","تعديل الخطة كل أسبوعين"],
-      featured:true },
-    { name:"متابعة VIP", tag:"", price:"٩٠,٠٠٠", unit:"د.ع / شهر",
-      desc:"للي تريد اهتمام شخصي ونتيجة أسرع.",
-      features:["كلشي بالباقة الكاملة","مكالمة أسبوعية ٣٠ دقيقة","رد خلال ساعة","تعديل الخطة أي وقت","خطة مكملات إذا تحتاجين"],
-      featured:false }
-  ],
-  QUOTES:[
-    { t:"أول مرة ألتزم بحمية أكثر من أسبوعين. السبب إني آكل أكل بيتنا نفسه بس بكميات محسوبة.", n:"مريم", r:"٣ أشهر — نزلت ٧ كيلو" },
-    { t:"التمارين البيتية أنقذتني، ما عندي وقت أروح نادي. ١٥ دقيقة باليوم وشفت فرق بالبطن.", n:"زينب", r:"شهرين — برنامج البيت" },
-    { t:"أحسن شي بالموضوع إنها ترد بسرعة وتعدّل الخطة إذا الوزن وكف. ما تخليني أضيع.", n:"هدى", r:"٤ أشهر — متابعة VIP" }
-  ],
-  FAQ:[
-    { q:"أحتاج نادي أو أجهزة؟", a:"لا. أغلب البرامج بيتية بالكامل وبدون أجهزة. إذا عندج اشتراك نادي، أكو جداول مخصصة للنادي بعد." },
-    { q:"الأكل يكون غالي أو صعب؟", a:"لا أبداً. كل المكونات موجودة بالسوق المحلي وبأسعار عادية — دجاج، رز، بيض، خضار. ماكو مكملات إجبارية ولا منتجات مستوردة." },
-    { q:"شكد أشوف نتيجة؟", a:"أول تغيير بالطاقة والنوم يجي خلال أسبوع لأسبوعين. تغيير الوزن الواضح عادة من الأسبوع الرابع، حسب التزامج ونقطة البداية." },
-    { q:"إذا عندي مشكلة صحية؟", a:"راسليني قبل الاشتراك ونحچي بالتفاصيل. بحالات معينة (حمل، سكري، ضغط، إصابات) أطلب منج موافقة طبيبج أول." },
-    { q:"شلون أشترك وأدفع؟", a:"اضغطي على زر الواتساب، نحچي عن هدفج، وأرسلج تفاصيل الدفع والباقة المناسبة. تكدرين تلغين بأي وقت." }
-  ],
-
-  ui:{
-    "skip":"تخطَّ إلى المحتوى",
-    "nav.aria":"التنقل الرئيسي",
-    "nav.catalog":"الوصفات والكورسات",
-    "nav.plans":"الباقات",
-    "nav.about":"عن الكوتش",
-    "nav.faq":"أسئلة شائعة",
-    "nav.lang":"التبديل للإنكليزية",
-    "nav.theme":"تبديل الوضع الليلي",
-    "cta.subscribe":"اشتركي بالبرنامج",
-    "cta.start":"ابدئي معي اليوم",
-    "cta.browse":"شوفي الوصفات",
-    "fc.a1":"كل وصفة محسوبة",
-    "fc.a2":"سعرات وماكروز دقيقة",
-    "fc.b1":"تمارين بيت ونادي",
-    "fc.b2":"لكل المستويات",
-    "trust.1":"بدون حرمان",
-    "trust.2":"أكل من السوق المحلي",
-    "trust.3":"متابعة أسبوعية",
-    "trust.4":"مناسب للمبتدئات",
-    "cat.kicker":"الكتالوج",
-    "cat.h":"وصفات وكورسات — كلشي بمكان واحد",
-    "cat.p":"اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.",
-    "cat.tabsAria":"نوع المحتوى",
-    "cat.tabR":"وصفات الأكل",
-    "cat.tabC":"الكورسات",
-    "cat.search":"بحث",
-    "cat.clear":"مسح البحث",
-    "cat.filter":"فلترة",
-    "plans.kicker":"الاشتراك",
-    "plans.h":"اختاري الباقة اللي تناسبج",
-    "plans.p":"كل الباقات تشمل خطة أكل بالسعرات وجدول تمارين. الفرق بمستوى المتابعة والتخصيص.",
-    "about.kicker":"عن الكوتش",
-    "rev.kicker":"آراء",
-    "rev.h":"شنو تكولون البنات؟",
-    "rev.p":"تجارب حقيقية من بنات كملن معي البرنامج.",
-    "faq.kicker":"أسئلة شائعة",
-    "faq.h":"أكثر شي يسألون عنه",
-    "cta.h":"جاهزة تبدين؟",
-    "cta.p":"راسليني بالواتساب وأسولّج تقييم مجاني، ونشوف سوية أي باقة تناسب هدفج ووقتج.",
-    "cta.whats":"راسليني بالواتساب",
-    "cta.insta":"تابعيني بالانستغرام",
-    "soc.insta":"انستغرام",
-    "soc.whats":"واتساب",
-    "foot.links":"روابط",
-    "foot.recipes":"الوصفات",
-    "foot.courses":"الكورسات",
-    "foot.contact":"تواصل",
-    "foot.admin":"لوحة التحكم",
-    "foot.rights":"— كل الحقوق محفوظة",
-
-    /* نصوص تنبني بالجافاسكربت */
-    "searchR":"دوّري على وصفة…",
-    "searchC":"دوّري على كورس…",
-    "unitR":"وصفة",
-    "unitC":"كورس",
-    "all":"الكل",
-    "noRes":"ماكو نتائج",
-    "noResHint":"جرّبي كلمة ثانية أو شيلي الفلتر.",
-    "kcalUnit":"سعرة",
-    "servUnit":"حصة",
-    "protein":"بروتين",
-    "carbs":"كارب",
-    "fat":"دهون",
-    "gram":"غم",
-    "macroAria":"بروتين {p} غرام، كربوهيدرات {c} غرام، دهون {f} غرام",
-    "nutrition":"القيمة الغذائية",
-    "perServing":"للحصة الوحدة",
-    "less":"حصص أقل",
-    "more":"حصص أكثر",
-    "ingredients":"المكونات",
-    "tickHint":"(اضغطي على المكوّن لتعليمه)",
-    "method":"طريقة العمل",
-    "moves":"التمارين",
-    "tickHintMove":"(اضغطي على التمرين لتعليمه)",
-    "videoTitle":"فيديو الشرح",
-    "watchVideo":"شوفي الفيديو",
-    "sheetCta":"تريدين خطة كاملة؟ راسليني",
-    "close":"سكّري",
-    "fiveStars":"خمس نجوم",
-    "subscribeTo":"اشتركي ب{x}"
-  },
-
-  tags:{
-    "الكل":"الكل","فطور":"فطور","غداء":"غداء","عشاء":"عشاء","سناك":"سناك",
-    "مبتدئ":"مبتدئ","متوسط":"متوسط","متقدم":"متقدم"
-  }
-},
-
-en:{
-  name:"Coach Zahraa",
-  docTitle:"Coach Zahraa — Fitness courses & healthy recipes",
-  heroEyebrow:"Certified fitness & nutrition coach",
-  heroTitle:"Your body changes with <span class='hl'>food you love</span> and workouts you can stick to",
-  heroSub:"Fitness and nutrition coach. Every program is built on realistic goals and food you cook in your own kitchen — no deprivation, no expensive products.",
-  tagline:"Workouts and recipes — every calorie accounted for",
-  bio:"I started exactly where you are: lost between a thousand diets with no idea where to begin. After years of training and study, my goal is to keep it simple — food you already know, workouts you can actually do, and clear numbers that show your progress week by week.",
-  by:"Site design & development — get in touch",
-
-  STATS:[
-    { n:"250+", l:"members coached" },
-    { n:"40+",  l:"tracked recipes" },
-    { n:"5",    l:"years of experience" }
-  ],
-  CREDS:[
-    { icon:"i-shield",   t:"Certified training credential", s:"Personal training & general fitness" },
-    { icon:"i-book",     t:"Applied nutrition studies", s:"Calorie & macro calculation" },
-    { icon:"i-users",    t:"250+ clients", s:"Cutting, gaining, and maintenance" },
-    { icon:"i-calendar", t:"Weekly follow-up", s:"Plan adjusted to your results" }
-  ],
-  PLANS:[
-    { name:"Meal plan", tag:"", price:"25,000", unit:"IQD / month",
-      desc:"For anyone who just wants their food dialled in, without a workout schedule.",
-      features:["Calorie plan built around your goal","4 options for every meal","Weekly shopping list","One revision per month"],
-      featured:false },
-    { name:"Full package", tag:"Most popular", price:"45,000", unit:"IQD / month",
-      desc:"Food + workouts + follow-up. This is the one I recommend to most people.",
-      features:["Everything in the meal plan","Home or gym workout schedule","Video demo for every exercise","Weekly follow-up on WhatsApp","Plan revised every two weeks"],
-      featured:true },
-    { name:"VIP coaching", tag:"", price:"90,000", unit:"IQD / month",
-      desc:"For anyone who wants personal attention and faster results.",
-      features:["Everything in the full package","Weekly 30-minute call","Reply within an hour","Plan revised any time","Supplement plan if you need one"],
-      featured:false }
-  ],
-  QUOTES:[
-    { t:"First time I've stuck to a diet longer than two weeks — because I eat the same home food, just in measured portions.", n:"Mariam", r:"3 months — down 7 kg" },
-    { t:"The home workouts saved me, I have no time for a gym. 15 minutes a day and I saw a real difference.", n:"Zainab", r:"2 months — home program" },
-    { t:"The best part is she replies fast and adjusts the plan whenever the weight stalls. She never lets you drift.", n:"Huda", r:"4 months — VIP coaching" }
-  ],
-  FAQ:[
-    { q:"Do I need a gym or equipment?", a:"No. Most programs are fully home-based with no equipment at all. If you do have a gym membership, there are gym-specific schedules too." },
-    { q:"Is the food expensive or complicated?", a:"Not at all. Every ingredient is available in the local market at normal prices — chicken, rice, eggs, vegetables. No mandatory supplements and no imported products." },
-    { q:"How soon will I see results?", a:"The first change in energy and sleep shows within one to two weeks. Visible weight change usually starts around week four, depending on your consistency and starting point." },
-    { q:"What if I have a health condition?", a:"Message me before subscribing and we'll go through the details. In certain cases (pregnancy, diabetes, blood pressure, injuries) I ask for your doctor's clearance first." },
-    { q:"How do I subscribe and pay?", a:"Tap the WhatsApp button, tell me your goal, and I'll send you the payment details and the package that fits. You can cancel any time." }
-  ],
-
-  ui:{
-    "skip":"Skip to content",
-    "nav.aria":"Main navigation",
-    "nav.catalog":"Recipes & courses",
-    "nav.plans":"Packages",
-    "nav.about":"About the coach",
-    "nav.faq":"FAQ",
-    "nav.lang":"Switch to Arabic",
-    "nav.theme":"Toggle dark mode",
-    "cta.subscribe":"Join the program",
-    "cta.start":"Start with me today",
-    "cta.browse":"Browse the recipes",
-    "fc.a1":"Every recipe is measured",
-    "fc.a2":"Accurate calories and macros",
-    "fc.b1":"Home & gym workouts",
-    "fc.b2":"For every level",
-    "trust.1":"No deprivation",
-    "trust.2":"Local-market ingredients",
-    "trust.3":"Weekly follow-up",
-    "trust.4":"Beginner friendly",
-    "cat.kicker":"Catalogue",
-    "cat.h":"Recipes and courses — all in one place",
-    "cat.p":"Pick a tab, filter by meal or level, and open any card to see the full details and the video.",
-    "cat.tabsAria":"Content type",
-    "cat.tabR":"Recipes",
-    "cat.tabC":"Courses",
-    "cat.search":"Search",
-    "cat.clear":"Clear search",
-    "cat.filter":"Filter",
-    "plans.kicker":"Membership",
-    "plans.h":"Pick the package that fits you",
-    "plans.p":"Every package includes a calorie-based meal plan and a workout schedule. What changes is the level of follow-up and customisation.",
-    "about.kicker":"About the coach",
-    "rev.kicker":"Reviews",
-    "rev.h":"What the members say",
-    "rev.p":"Real experiences from people who finished the program with me.",
-    "faq.kicker":"FAQ",
-    "faq.h":"The questions I get most",
-    "cta.h":"Ready to start?",
-    "cta.p":"Message me on WhatsApp for a free assessment, and we'll work out together which package fits your goal and your schedule.",
-    "cta.whats":"Message me on WhatsApp",
-    "cta.insta":"Follow me on Instagram",
-    "soc.insta":"Instagram",
-    "soc.whats":"WhatsApp",
-    "foot.links":"Links",
-    "foot.recipes":"Recipes",
-    "foot.courses":"Courses",
-    "foot.contact":"Contact",
-    "foot.admin":"Dashboard",
-    "foot.rights":"— All rights reserved",
-
-    "searchR":"Search for a recipe…",
-    "searchC":"Search for a course…",
-    "unitR":"recipe(s)",
-    "unitC":"course(s)",
-    "all":"All",
-    "noRes":"No results",
-    "noResHint":"Try another word or clear the filter.",
-    "kcalUnit":"kcal",
-    "servUnit":"servings",
-    "protein":"Protein",
-    "carbs":"Carbs",
-    "fat":"Fat",
-    "gram":"g",
-    "macroAria":"Protein {p} grams, carbohydrates {c} grams, fat {f} grams",
-    "nutrition":"Nutrition",
-    "perServing":"per single serving",
-    "less":"Fewer servings",
-    "more":"More servings",
-    "ingredients":"Ingredients",
-    "tickHint":"(tap an ingredient to check it off)",
-    "method":"Method",
-    "moves":"Exercises",
-    "tickHintMove":"(tap an exercise to check it off)",
-    "videoTitle":"Tutorial video",
-    "watchVideo":"Watch the video",
-    "sheetCta":"Want a full plan? Message me",
-    "close":"Close",
-    "fiveStars":"Five stars",
-    "subscribeTo":"Join {x}"
-  },
-
-  tags:{
-    "الكل":"All","فطور":"Breakfast","غداء":"Lunch","عشاء":"Dinner","سناك":"Snack",
-    "مبتدئ":"Beginner","متوسط":"Intermediate","متقدم":"Advanced"
-  }
-}
-};
-
-let LANG = (() => { try { return localStorage.getItem('cz-lang') === 'en' ? 'en' : 'ar' } catch(e){ return 'ar' } })();
-const D  = () => L[LANG];
-const tt = (k, vars) => {
-  let s = (L[LANG].ui[k] ?? L.ar.ui[k] ?? k);
-  if (vars) for (const p in vars) s = s.split('{' + p + '}').join(vars[p]);
-  return s;
-};
-const tg = v => (L[LANG].tags[v] || v);
-
-/* ══════════════════════════════════════════════════════════
-   ⑤  الوصفات — القيم للحصة الوحدة
-   ══════════════════════════════════════════════════════════ */
-const RECIPES = [
-  {
-    title:"دجاج مشوي مع رز وسلطة",
-    cover:"https://images.unsplash.com/photo-1781334266250-a7e72fdf539f?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"غداء", time:"30 دقيقة", servings:2,
-    kcal:540, protein:46, carbs:55, fat:13,
-    video:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-    ingredients:[
-      {q:300,u:"غم",n:"صدر دجاج"},
-      {q:160,u:"غم",n:"رز (وزن ناشف)"},
-      {q:1,u:"معلقة",n:"زيت زيتون"},
-      {q:2,u:"حبة",n:"طماطة"},
-      {q:1,u:"حبة",n:"خيار"},
-      {q:0.5,u:"معلقة صغيرة",n:"بابريكا"},
-      {q:1,u:"رشة",n:"ملح وفلفل أسود"}
-    ],
-    steps:[
-      "تبّل الدجاج بالزيت والبابريكا والملح وخلّيه ١٠ دقائق.",
-      "اطبخ الرز على نار هادئة لحد ما ينضج.",
-      "اشوِ الدجاج ٦ دقائق لكل جهة على نار متوسطة.",
-      "قطّع الطماطة والخيار وقدّمهم سلطة جنب الصحن."
-    ]
-  },
-  {
-    title:"بول بروتين باللحم والخضار",
-    cover:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"غداء", time:"25 دقيقة", servings:2,
-    kcal:610, protein:42, carbs:48, fat:22,
-    video:"",
-    ingredients:[
-      {q:300,u:"غم",n:"لحم قليل الدهن مقطّع"},
-      {q:150,u:"غم",n:"كينوا أو رز"},
-      {q:1,u:"حبة",n:"أفوكادو"},
-      {q:100,u:"غم",n:"ذرة حلوة"},
-      {q:1,u:"معلقة",n:"زيت زيتون"},
-      {q:1,u:"معلقة",n:"عصير ليمون"}
-    ],
-    steps:[
-      "اقلي اللحم بمقلاة حارة مع رشة ملح ٧ دقائق.",
-      "اسلق الكينوا وصفّيها.",
-      "رتّب البول: كينوا بالقاع، وبعدين اللحم والخضار.",
-      "رش الزيت والليمون فوق قبل التقديم."
-    ]
-  },
-  {
-    title:"بيض بوشيه مع خضار",
-    cover:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"فطور", time:"12 دقيقة", servings:1,
-    kcal:330, protein:22, carbs:18, fat:19,
-    video:"",
-    ingredients:[
-      {q:2,u:"حبة",n:"بيض"},
-      {q:100,u:"غم",n:"طماطة كرزية"},
-      {q:50,u:"غم",n:"جرجير"},
-      {q:1,u:"معلقة صغيرة",n:"زيت زيتون"},
-      {q:1,u:"رشة",n:"ملح وفلفل"}
-    ],
-    steps:[
-      "غلي الماي وحط معلقة خل، وسوّي دوامة وكسّر البيضة بيها.",
-      "اتركها ٣ دقائق وطلّعها بمصفاة.",
-      "رتّب الجرجير والطماطة بالصحن وحط البيض فوق.",
-      "رش الزيت والملح والفلفل."
-    ]
-  },
-  {
-    title:"ساندويچ صحي بالبيض المسلوق",
-    cover:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"فطور", time:"10 دقائق", servings:1,
-    kcal:390, protein:24, carbs:38, fat:16,
-    video:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-    ingredients:[
-      {q:2,u:"قطعة",n:"خبز أسمر"},
-      {q:2,u:"حبة",n:"بيض مسلوق"},
-      {q:0.5,u:"حبة",n:"أفوكادو"},
-      {q:30,u:"غم",n:"خس"},
-      {q:1,u:"رشة",n:"ملح وفلفل"}
-    ],
-    steps:[
-      "حمّص الخبز بالتوستر أو المقلاة بدون زيت.",
-      "اهرس الأفوكادو وافرده على الخبز.",
-      "قطّع البيض شرائح وحطه فوق مع الخس.",
-      "رشة ملح وفلفل وجاهز."
-    ]
-  },
-  {
-    title:"سلطة تونة عالية البروتين",
-    cover:"https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"سناك", time:"10 دقائق", servings:2,
-    kcal:290, protein:32, carbs:14, fat:11,
-    video:"",
-    ingredients:[
-      {q:2,u:"علبة",n:"تونة بالماي"},
-      {q:100,u:"غم",n:"خس"},
-      {q:1,u:"حبة",n:"خيار"},
-      {q:2,u:"حبة",n:"طماطة"},
-      {q:2,u:"معلقة",n:"لبن يوناني"},
-      {q:1,u:"معلقة",n:"عصير ليمون"}
-    ],
-    steps:[
-      "صفّي التونة زين من الماي.",
-      "قطّع الخضار وخلّطهم بالسلطانية.",
-      "اخلط اللبن مع الليمون وصبّه فوق وقلّب."
-    ]
-  },
-  {
-    title:"سلطة فواكه مع لبن يوناني",
-    cover:"https://images.unsplash.com/photo-1493770348161-369560ae357d?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"سناك", time:"7 دقائق", servings:2,
-    kcal:245, protein:16, carbs:34, fat:5,
-    video:"",
-    ingredients:[
-      {q:250,u:"غم",n:"لبن يوناني"},
-      {q:1,u:"حبة",n:"موز"},
-      {q:100,u:"غم",n:"فراولة"},
-      {q:1,u:"معلقة",n:"عسل"},
-      {q:10,u:"غم",n:"جوز مفروم"}
-    ],
-    steps:[
-      "قطّع الفواكه مكعبات صغيرة.",
-      "وزّع اللبن بالسلطانيات وحط الفواكه فوق.",
-      "رش العسل والجوز قبل التقديم."
-    ]
-  },
-  {
-    title:"صحن خضار وحبوب متوازن",
-    cover:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"عشاء", time:"20 دقيقة", servings:2,
-    kcal:420, protein:19, carbs:52, fat:15,
-    video:"",
-    ingredients:[
-      {q:150,u:"غم",n:"حمص مسلوق"},
-      {q:120,u:"غم",n:"برغل"},
-      {q:100,u:"غم",n:"ملفوف أحمر"},
-      {q:1,u:"حبة",n:"جزر"},
-      {q:2,u:"معلقة",n:"طحينة"},
-      {q:1,u:"معلقة",n:"عصير ليمون"}
-    ],
-    steps:[
-      "اسلق البرغل وخلّيه يبرد شوية.",
-      "ابشر الجزر وقطّع الملفوف ناعم.",
-      "اخلط الطحينة مع الليمون وشوية ماي حتى تصير صوص.",
-      "رتّب كلشي بالصحن وصبّ الصوص فوق."
-    ]
-  },
-  {
-    title:"بول رز مع خضار سوتيه",
-    cover:"https://images.unsplash.com/photo-1606756790138-261d2b21cd75?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"عشاء", time:"22 دقيقة", servings:2,
-    kcal:465, protein:28, carbs:60, fat:12,
-    video:"",
-    ingredients:[
-      {q:160,u:"غم",n:"رز (وزن ناشف)"},
-      {q:200,u:"غم",n:"دجاج مقطّع"},
-      {q:150,u:"غم",n:"بروكلي"},
-      {q:1,u:"حبة",n:"فلفل حلو"},
-      {q:1,u:"معلقة",n:"صويا صوص"},
-      {q:1,u:"معلقة صغيرة",n:"زيت سمسم"}
-    ],
-    steps:[
-      "اطبخ الرز وخلّه جانباً.",
-      "اقلي الدجاج بنار عالية ٥ دقائق.",
-      "ضيف الخضار وقلّب ٣ دقائق حتى تبقى مقرمشة.",
-      "ضيف الصويا وزيت السمسم وقدّمه فوق الرز."
-    ]
-  }
-];
-
-/* ══════════════════════════════════════════════════════════
-   ⑥  الكورسات الرياضية
-   ══════════════════════════════════════════════════════════ */
-const COURSES = [
-  {
-    title:"تمارين البطن — ١٤ يوم",
-    cover:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"مبتدئ", area:"بطن وكور", time:"15 دقيقة/يوم",
-    video:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-    desc:"برنامج بيتي بدون أجهزة، ٤ أيام بالأسبوع. يركّز على تقوية عضلات الكور قبل ما ننتقل لتمارين أصعب.",
-    moves:[
-      {n:"بلانك",s:"3 × 40 ثانية"},
-      {n:"كرنش",s:"3 × 20 عدة"},
-      {n:"ليغ رِيز",s:"3 × 15 عدة"},
-      {n:"ماونتن كلايمبر",s:"3 × 30 ثانية"},
-      {n:"بلانك جانبي",s:"2 × 30 ثانية لكل جهة"}
-    ]
-  },
-  {
-    title:"جدول الجسم الكامل بالنادي",
-    cover:"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"متوسط", area:"جسم كامل", time:"50 دقيقة",
-    video:"",
-    desc:"٣ حصص بالأسبوع بالنادي، مبني على الحركات المركبة اللي تعطي أفضل نتيجة بأقل وقت.",
-    moves:[
-      {n:"سكوات",s:"4 × 10 عدات"},
-      {n:"ديدليفت",s:"4 × 8 عدات"},
-      {n:"بنش برس",s:"3 × 10 عدات"},
-      {n:"سحب أرضي",s:"3 × 12 عدة"},
-      {n:"ضغط أكتاف",s:"3 × 12 عدة"}
-    ]
-  },
-  {
-    title:"كارديو حرق دهون HIIT",
-    cover:"https://images.unsplash.com/photo-1549576490-b0b4831ef60a?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"متقدم", area:"كارديو", time:"20 دقيقة",
-    video:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-    desc:"٨ جولات عالية الشدة — ٤٠ ثانية شغل و٢٠ ثانية راحة. لا تبدين بيه إذا هسه بديتي رياضة.",
-    moves:[
-      {n:"بيربي",s:"40 ثانية"},
-      {n:"جامب سكوات",s:"40 ثانية"},
-      {n:"هاي نيز",s:"40 ثانية"},
-      {n:"سكيترز",s:"40 ثانية"}
-    ]
-  },
-  {
-    title:"إطالة ومرونة بعد التمرين",
-    cover:"https://images.unsplash.com/photo-1518611012118-696072aa579a?fm=jpg&q=70&w=1000&auto=format&fit=crop",
-    tag:"مبتدئ", area:"مرونة", time:"12 دقيقة",
-    video:"",
-    desc:"روتين إطالة تسوينه بعد أي تمرين، يقلل شد العضلات ويساعد بالاستشفاء.",
-    moves:[
-      {n:"إطالة الفخذ الخلفي",s:"2 × 30 ثانية"},
-      {n:"إطالة الورك",s:"2 × 30 ثانية"},
-      {n:"وضعية الطفل",s:"60 ثانية"},
-      {n:"إطالة الصدر والكتف",s:"2 × 20 ثانية"}
-    ]
-  }
-];
-
-/* ══════════ ما تحتاج تغيّر شي تحت هذا السطر ══════════ */
 (function(){
 "use strict";
 
-const $  = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
+const SUPABASE_URL = "https://kjpwcvhsjfuwzketkjkk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_7Sq6BeRa9KQPR1zy1VFHFg_WOhUoUt0";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth:{ persistSession:false }
+});
+
+/* ══════════════════════════════════════════════════════════
+   ①  نصوص الواجهة (المحتوى نفسه يجي من الداتابيس)
+   ══════════════════════════════════════════════════════════ */
+const UI = {
+ar:{
+  "skip":"تخطَّ إلى المحتوى",
+  "nav.aria":"التنقل الرئيسي",
+  "nav.catalog":"الوصفات والكورسات",
+  "nav.calc":"حاسبة السعرات",
+  "nav.plans":"الباقات",
+  "nav.about":"عن الكوتش",
+  "nav.faq":"أسئلة شائعة",
+  "nav.lang":"التبديل للإنكليزية",
+  "nav.theme":"تبديل الوضع الليلي",
+  "cta.subscribe":"اشتركي بالبرنامج",
+  "cta.start":"ابدئي معي اليوم",
+  "cta.browse":"شوفي الوصفات",
+  "fc.a1":"كل وصفة محسوبة",
+  "fc.a2":"سعرات وماكروز دقيقة",
+  "fc.b1":"تمارين بيت ونادي",
+  "fc.b2":"لكل المستويات",
+  "trust.1":"بدون حرمان",
+  "trust.2":"أكل من السوق المحلي",
+  "trust.3":"متابعة أسبوعية",
+  "trust.4":"مناسب للمبتدئات",
+  "cat.kicker":"الكتالوج",
+  "cat.h":"وصفات وكورسات — كلشي بمكان واحد",
+  "cat.p":"اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.",
+  "cat.tabsAria":"نوع المحتوى",
+  "cat.tabR":"وصفات الأكل",
+  "cat.tabC":"الكورسات",
+  "cat.search":"بحث",
+  "cat.clear":"مسح البحث",
+  "cat.filter":"فلترة",
+  "plans.kicker":"الاشتراك",
+  "plans.h":"اختاري الباقة اللي تناسبج",
+  "plans.p":"كل الباقات تشمل خطة أكل بالسعرات وجدول تمارين. الفرق بمستوى المتابعة والتخصيص.",
+  "about.kicker":"عن الكوتش",
+  "rev.kicker":"آراء",
+  "rev.h":"شنو تكولون البنات؟",
+  "rev.p":"تجارب حقيقية من بنات كملن معي البرنامج.",
+  "faq.kicker":"أسئلة شائعة",
+  "faq.h":"أكثر شي يسألون عنه",
+  "cta.h":"جاهزة تبدين؟",
+  "cta.p":"راسليني بالواتساب وأسولّج تقييم مجاني، ونشوف سوية أي باقة تناسب هدفج ووقتج.",
+  "cta.whats":"راسليني بالواتساب",
+  "cta.insta":"تابعيني بالانستغرام",
+  "soc.insta":"انستغرام",
+  "soc.whats":"واتساب",
+  "foot.links":"روابط",
+  "foot.recipes":"الوصفات",
+  "foot.courses":"الكورسات",
+  "foot.contact":"تواصل",
+  "foot.admin":"لوحة التحكم",
+  "foot.rights":"— كل الحقوق محفوظة",
+
+  "searchR":"دوّري على وصفة…",
+  "searchC":"دوّري على كورس…",
+  "unitR":"وصفة",
+  "unitC":"كورس",
+  "all":"الكل",
+  "noRes":"ماكو نتائج",
+  "noResHint":"جرّبي كلمة ثانية أو شيلي الفلتر.",
+  "kcalUnit":"سعرة",
+  "servUnit":"حصة",
+  "protein":"بروتين",
+  "carbs":"كارب",
+  "fat":"دهون",
+  "gram":"غم",
+  "macroAria":"بروتين {p} غرام، كربوهيدرات {c} غرام، دهون {f} غرام",
+  "nutrition":"القيمة الغذائية",
+  "perServing":"للحصة الوحدة",
+  "less":"حصص أقل",
+  "more":"حصص أكثر",
+  "ingredients":"المكونات",
+  "tickHint":"(اضغطي على المكوّن لتعليمه)",
+  "method":"طريقة العمل",
+  "moves":"التمارين",
+  "tickHintMove":"(اضغطي على التمرين لتعليمه)",
+  "videoTitle":"فيديو الشرح",
+  "watchVideo":"شوفي الفيديو",
+  "sheetCta":"تريدين خطة كاملة؟ راسليني",
+  "close":"سكّري",
+  "fiveStars":"خمس نجوم",
+  "subscribeTo":"اشتركي ب{x}",
+
+  /* التحميل والأخطاء */
+  "loadErr":"ما كدرنا نجيب المحتوى",
+  "loadErrHint":"يمكن الإنترنت مقطوع أو السيرفر مشغول. جرّبي مرة ثانية.",
+  "retry":"حاولي مرة ثانية",
+  "emptyCat":"لا يوجد محتوى منشور بعد",
+  "emptyCatHint":"راجعينا بعد شوية — الكوتش تحدّث المحتوى باستمرار.",
+
+  /* المشاركة */
+  "share":"مشاركة",
+  "copyLink":"نسخ الرابط",
+  "linkCopied":"انتسخ الرابط ✓",
+  "copyFail":"ما كدرنا ننسخ الرابط",
+
+  /* قائمة التسوّق */
+  "cart.btn":"قائمة التسوّق",
+  "cart.add":"ضيفيها لقائمة التسوّق",
+  "cart.remove":"شيليها من القائمة",
+  "cart.added":"انضافت للقائمة",
+  "cart.removed":"انشالت من القائمة",
+  "cart.title":"قائمة التسوّق",
+  "cart.sub":"كل المكونات مجموعة ومنظّمة — المتكرر انجمع سوية.",
+  "cart.empty":"القائمة فارغة",
+  "cart.emptyHint":"اضغطي على علامة ➕ فوق أي وصفة حتى تضيفينها.",
+  "cart.recipes":"الوصفات المختارة",
+  "cart.items":"المكونات",
+  "cart.totals":"مجموع الوصفات المختارة",
+  "cart.copy":"نسخ القائمة",
+  "cart.whats":"إرسالها واتساب",
+  "cart.clear":"إفراغ القائمة",
+  "cart.copied":"انتسخت القائمة ✓",
+  "cart.cleared":"انفرغت القائمة",
+  "cart.head":"🛒 قائمة التسوّق",
+
+  /* الحاسبة */
+  "calc.kicker":"مجاناً",
+  "calc.h":"شكد سعرة تحتاجين باليوم؟",
+  "calc.p":"احسبيها بثواني. الرقم هذا هو نقطة البداية لأي خطة أكل — وبعدها نظبطه سوية حسب نتيجتج.",
+  "calc.sex":"الجنس",
+  "calc.female":"أنثى",
+  "calc.male":"ذكر",
+  "calc.age":"العمر (سنة)",
+  "calc.weight":"الوزن (كغم)",
+  "calc.height":"الطول (سم)",
+  "calc.activity":"مستوى النشاط",
+  "calc.a1":"جالسة أغلب اليوم",
+  "calc.a2":"نشاط خفيف — ١-٣ أيام",
+  "calc.a3":"نشاط متوسط — ٣-٥ أيام",
+  "calc.a4":"نشاط عالي — ٦-٧ أيام",
+  "calc.a5":"نشاط شديد أو شغل بدني",
+  "calc.goal":"الهدف",
+  "calc.g1":"تنشيف ونزول وزن",
+  "calc.g2":"ثبات على الوزن",
+  "calc.g3":"زيادة وزن وعضل",
+  "calc.perDay":"سعرة باليوم",
+  "calc.protein":"بروتين غم",
+  "calc.carbs":"كارب غم",
+  "calc.fat":"دهون غم",
+  "calc.note":"الحساب تقديري بمعادلة Mifflin-St Jeor. الرقم الحقيقي يتظبط بعد أسبوعين من المتابعة.",
+  "calc.cta":"تريدين خطة على هذا الرقم؟",
+  "calc.msg":"هلو! سويت الحساب بالموقع وطلعلي {k} سعرة باليوم ({p}غم بروتين / {c}غم كارب / {f}غم دهون). أريد خطة على هذا الرقم."
+},
+en:{
+  "skip":"Skip to content",
+  "nav.aria":"Main navigation",
+  "nav.catalog":"Recipes & courses",
+  "nav.calc":"Calorie calculator",
+  "nav.plans":"Packages",
+  "nav.about":"About the coach",
+  "nav.faq":"FAQ",
+  "nav.lang":"Switch to Arabic",
+  "nav.theme":"Toggle dark mode",
+  "cta.subscribe":"Join the program",
+  "cta.start":"Start with me today",
+  "cta.browse":"Browse the recipes",
+  "fc.a1":"Every recipe is measured",
+  "fc.a2":"Accurate calories and macros",
+  "fc.b1":"Home & gym workouts",
+  "fc.b2":"For every level",
+  "trust.1":"No deprivation",
+  "trust.2":"Local-market ingredients",
+  "trust.3":"Weekly follow-up",
+  "trust.4":"Beginner friendly",
+  "cat.kicker":"Catalogue",
+  "cat.h":"Recipes and courses — all in one place",
+  "cat.p":"Pick a tab, filter by meal or level, and open any card to see the full details and the video.",
+  "cat.tabsAria":"Content type",
+  "cat.tabR":"Recipes",
+  "cat.tabC":"Courses",
+  "cat.search":"Search",
+  "cat.clear":"Clear search",
+  "cat.filter":"Filter",
+  "plans.kicker":"Membership",
+  "plans.h":"Pick the package that fits you",
+  "plans.p":"Every package includes a calorie-based meal plan and a workout schedule. What changes is the level of follow-up and customisation.",
+  "about.kicker":"About the coach",
+  "rev.kicker":"Reviews",
+  "rev.h":"What the members say",
+  "rev.p":"Real experiences from people who finished the program with me.",
+  "faq.kicker":"FAQ",
+  "faq.h":"The questions I get most",
+  "cta.h":"Ready to start?",
+  "cta.p":"Message me on WhatsApp for a free assessment, and we'll work out together which package fits your goal and your schedule.",
+  "cta.whats":"Message me on WhatsApp",
+  "cta.insta":"Follow me on Instagram",
+  "soc.insta":"Instagram",
+  "soc.whats":"WhatsApp",
+  "foot.links":"Links",
+  "foot.recipes":"Recipes",
+  "foot.courses":"Courses",
+  "foot.contact":"Contact",
+  "foot.admin":"Dashboard",
+  "foot.rights":"— All rights reserved",
+
+  "searchR":"Search for a recipe…",
+  "searchC":"Search for a course…",
+  "unitR":"recipe(s)",
+  "unitC":"course(s)",
+  "all":"All",
+  "noRes":"No results",
+  "noResHint":"Try another word or clear the filter.",
+  "kcalUnit":"kcal",
+  "servUnit":"servings",
+  "protein":"Protein",
+  "carbs":"Carbs",
+  "fat":"Fat",
+  "gram":"g",
+  "macroAria":"Protein {p} grams, carbohydrates {c} grams, fat {f} grams",
+  "nutrition":"Nutrition",
+  "perServing":"per single serving",
+  "less":"Fewer servings",
+  "more":"More servings",
+  "ingredients":"Ingredients",
+  "tickHint":"(tap an ingredient to check it off)",
+  "method":"Method",
+  "moves":"Exercises",
+  "tickHintMove":"(tap an exercise to check it off)",
+  "videoTitle":"Tutorial video",
+  "watchVideo":"Watch the video",
+  "sheetCta":"Want a full plan? Message me",
+  "close":"Close",
+  "fiveStars":"Five stars",
+  "subscribeTo":"Join {x}",
+
+  "loadErr":"Could not load the content",
+  "loadErrHint":"Your connection may be down or the server is busy. Please try again.",
+  "retry":"Try again",
+  "emptyCat":"Nothing published yet",
+  "emptyCatHint":"Check back soon — the coach updates the content regularly.",
+
+  "share":"Share",
+  "copyLink":"Copy link",
+  "linkCopied":"Link copied ✓",
+  "copyFail":"Could not copy the link",
+
+  "cart.btn":"Shopping list",
+  "cart.add":"Add to shopping list",
+  "cart.remove":"Remove from list",
+  "cart.added":"Added to the list",
+  "cart.removed":"Removed from the list",
+  "cart.title":"Shopping list",
+  "cart.sub":"Every ingredient gathered and tidied — duplicates are merged.",
+  "cart.empty":"Your list is empty",
+  "cart.emptyHint":"Tap the ➕ badge on any recipe to add it.",
+  "cart.recipes":"Selected recipes",
+  "cart.items":"Ingredients",
+  "cart.totals":"Total for the selected recipes",
+  "cart.copy":"Copy list",
+  "cart.whats":"Send on WhatsApp",
+  "cart.clear":"Clear list",
+  "cart.copied":"List copied ✓",
+  "cart.cleared":"List cleared",
+  "cart.head":"🛒 Shopping list",
+
+  "calc.kicker":"Free",
+  "calc.h":"How many calories do you need a day?",
+  "calc.p":"Work it out in seconds. That number is the starting point for any meal plan — then we fine-tune it together based on your results.",
+  "calc.sex":"Sex",
+  "calc.female":"Female",
+  "calc.male":"Male",
+  "calc.age":"Age (years)",
+  "calc.weight":"Weight (kg)",
+  "calc.height":"Height (cm)",
+  "calc.activity":"Activity level",
+  "calc.a1":"Mostly sitting",
+  "calc.a2":"Light — 1-3 days a week",
+  "calc.a3":"Moderate — 3-5 days a week",
+  "calc.a4":"High — 6-7 days a week",
+  "calc.a5":"Very high or physical job",
+  "calc.goal":"Goal",
+  "calc.g1":"Cut and lose weight",
+  "calc.g2":"Maintain weight",
+  "calc.g3":"Gain weight and muscle",
+  "calc.perDay":"calories a day",
+  "calc.protein":"Protein g",
+  "calc.carbs":"Carbs g",
+  "calc.fat":"Fat g",
+  "calc.note":"An estimate using the Mifflin-St Jeor equation. The real number is dialled in after two weeks of follow-up.",
+  "calc.cta":"Want a plan built on this number?",
+  "calc.msg":"Hi! I used the calculator on your site and got {k} calories a day ({p}g protein / {c}g carbs / {f}g fat). I'd like a plan built on that."
+}
+};
+
+const TAGS = {
+  ar:{ "الكل":"الكل","فطور":"فطور","غداء":"غداء","عشاء":"عشاء","سناك":"سناك",
+       "مبتدئ":"مبتدئ","متوسط":"متوسط","متقدم":"متقدم" },
+  en:{ "الكل":"All","فطور":"Breakfast","غداء":"Lunch","عشاء":"Dinner","سناك":"Snack",
+       "مبتدئ":"Beginner","متوسط":"Intermediate","متقدم":"Advanced" }
+};
+
+/* ══════════════════════════════════════════════════════════
+   ②  الحالة
+   ══════════════════════════════════════════════════════════ */
+let LANG = (() => { try { return localStorage.getItem('cz-lang') === 'en' ? 'en' : 'ar' } catch(e){ return 'ar' } })();
+let SITE     = null;
+let RECIPES  = [];
+let COURSES  = [];
+let LOADING  = true;
+let LOAD_ERR = null;
 
 let TAB = 'recipes', FILTER = 'الكل', mult = 1, current = null, lastFocus = null;
+let VIEW = 'item';                 /* شنو معروض بالشيت: item أو cart */
+let CART = [];                     /* [{id, servings}] */
 
-/* ── أدوات ── */
-const esc  = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const num  = n => { const v = Math.round(n*10)/10; return v % 1 === 0 ? String(v) : v.toFixed(1) };
+/* ══════════════════════════════════════════════════════════
+   ③  أدوات
+   ══════════════════════════════════════════════════════════ */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ico = (id, cls) => `<svg class="icon${cls ? ' ' + cls : ''}" aria-hidden="true"><use href="#${id}"></use></svg>`;
+const num = n => { const v = Math.round(n * 10) / 10; return v % 1 === 0 ? String(v) : v.toFixed(1) };
+const nz  = v => { const n = Number(v); return Number.isFinite(n) ? n : 0 };
+
+const tt = (k, vars) => {
+  let s = UI[LANG][k] ?? UI.ar[k] ?? k;
+  if (vars) for (const p in vars) s = s.split('{' + p + '}').join(vars[p]);
+  return s;
+};
+const tg = v => (TAGS[LANG][v] || v);
+
+/* حقل ثنائي اللغة مخزون كـ {ar,en} */
+const bi = v => {
+  if (v == null) return '';
+  if (typeof v === 'string') return v;
+  return v[LANG] || v.ar || v.en || '';
+};
+const biArr = v => {
+  if (!v) return [];
+  if (Array.isArray(v)) return v;
+  const a = v[LANG] || v.ar || v.en;
+  return Array.isArray(a) ? a : [];
+};
+
 const data = () => TAB === 'recipes' ? RECIPES : COURSES;
-const ico  = (id, cls) => `<svg class="icon${cls?' '+cls:''}" aria-hidden="true"><use href="#${id}"></use></svg>`;
 
 /* تطبيع البحث العربي: يتجاهل الهمزات والتاء المربوطة والتشكيل */
-const norm = s => String(s).toLowerCase()
-  .replace(/[ً-ْـٰ]/g, '')
+const norm = s => String(s ?? '').toLowerCase()
+  .replace(/[ً-ْٰـ]/g, '')
   .replace(/[أإآٱ]/g, 'ا')
   .replace(/[ىئ]/g, 'ي')
   .replace(/ؤ/g, 'و')
@@ -1496,87 +1527,183 @@ const norm = s => String(s).toLowerCase()
   .replace(/\s+/g, ' ')
   .trim();
 
-/* ── تعبئة المحتوى (تنعاد كل ما تتبدل اللغة) ── */
-function boot(){
-  const d = D();
+function toast(msg){
+  let box = $('#toastBox');
+  if (!box){
+    box = document.createElement('div');
+    box.id = 'toastBox';
+    box.setAttribute('aria-live', 'polite');
+    box.style.cssText = 'position:fixed;z-index:300;inset-block-end:calc(84px + env(safe-area-inset-bottom));' +
+      'inset-inline-start:50%;transform:translateX(-50%);display:grid;gap:8px;pointer-events:none';
+    if (document.documentElement.dir === 'rtl') box.style.transform = 'translateX(50%)';
+    document.body.appendChild(box);
+  }
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.style.cssText = 'background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:14px;' +
+    'font-size:14.5px;font-weight:600;box-shadow:var(--shadow-2);white-space:nowrap;animation:pop .3s';
+  box.appendChild(el);
+  setTimeout(() => { el.style.transition = 'opacity .3s'; el.style.opacity = '0' }, 2200);
+  setTimeout(() => el.remove(), 2600);
+}
 
+/* ══════════════════════════════════════════════════════════
+   ④  جلب البيانات
+   ══════════════════════════════════════════════════════════ */
+async function fetchAll(){
+  LOADING = true; LOAD_ERR = null;
+  renderGrid();
+
+  const [r, c, s] = await Promise.all([
+    sb.from('recipes').select('*').eq('is_published', true)
+      .order('sort_order', { ascending:true }).order('created_at', { ascending:false }),
+    sb.from('courses').select('*').eq('is_published', true)
+      .order('sort_order', { ascending:true }).order('created_at', { ascending:false }),
+    sb.from('site_info').select('*').eq('id', 1).maybeSingle()
+  ]);
+
+  LOADING = false;
+
+  if (r.error || c.error || s.error){
+    LOAD_ERR = (r.error || c.error || s.error).message;
+    renderGrid();
+    return;
+  }
+
+  RECIPES = (r.data || []).map(x => ({
+    ...x,
+    time: x.duration || '',
+    ingredients: Array.isArray(x.ingredients) ? x.ingredients : [],
+    steps: Array.isArray(x.steps) ? x.steps : [],
+    protein: nz(x.protein), carbs: nz(x.carbs), fat: nz(x.fat),
+    kcal: nz(x.kcal), servings: Math.max(1, nz(x.servings))
+  }));
+  COURSES = (c.data || []).map(x => ({
+    ...x,
+    time: x.duration || '',
+    desc: x.description || '',
+    moves: Array.isArray(x.moves) ? x.moves : []
+  }));
+  SITE = s.data || {};
+
+  loadCart();
+  paintSite();
+  renderGrid();
+  openFromHash();
+}
+
+/* ══════════════════════════════════════════════════════════
+   ⑤  تعبئة محتوى الموقع من site_info
+   ══════════════════════════════════════════════════════════ */
+function siteName(){ return (LANG === 'en' && SITE?.name_en) ? SITE.name_en : (SITE?.name || 'كوتش زهراء') }
+function siteTag(){  return (LANG === 'en' && SITE?.tagline_en) ? SITE.tagline_en : (SITE?.tagline || '') }
+function siteBio(){  return (LANG === 'en' && SITE?.bio_en) ? SITE.bio_en : (SITE?.bio || '') }
+const whats = () => SITE?.whatsapp || '#';
+const insta = () => SITE?.instagram || '#';
+
+function paintSite(){
+  if (!SITE) return;
+  const name = siteName();
+
+  document.title = name + (LANG === 'ar' ? ' — كورسات رياضية ووصفات صحية' : ' — Fitness courses & healthy recipes');
+  $('#ogTitle')?.setAttribute('content', document.title);
+  $('#ogDesc')?.setAttribute('content', bi(SITE.hero_sub) || siteTag());
+  $('#ogLocale')?.setAttribute('content', LANG === 'ar' ? 'ar_IQ' : 'en_US');
+  const base = location.origin + location.pathname;
+  $('#ogUrl')?.setAttribute('content', base);
+  $('#canonical')?.setAttribute('href', base);
+  if (SITE.hero_image) $('#ogImage')?.setAttribute('content', SITE.hero_image);
+
+  ['#mark','#mark2'].forEach(s => $(s).textContent = SITE.initial || 'ز');
+  ['#logoName','#logoName2','#footName','#aboutName'].forEach(s => $(s).textContent = name);
+  $('#heroEyebrow').textContent = bi(SITE.hero_eyebrow);
+  $('#heroTitle').innerHTML     = bi(SITE.hero_title);   /* يسمح بـ <span class="hl"> */
+  $('#heroSub').textContent     = bi(SITE.hero_sub);
+  $('#bio').textContent         = siteBio();
+  $('#footTag').textContent     = siteTag();
+  $('#by').textContent          = bi(SITE.credit);
+
+  const hero = $('#heroImg'), about = $('#aboutImg');
+  if (SITE.hero_image && hero.getAttribute('src') !== SITE.hero_image){
+    hero.src = SITE.hero_image; hero.onerror = () => hero.classList.add('failed');
+  }
+  if (SITE.about_image && about.getAttribute('src') !== SITE.about_image){
+    about.src = SITE.about_image; about.onerror = () => about.classList.add('failed');
+  }
+
+  ['#headerCta','#heroCta1','#ctaWhats','#sWhats','#fWhats','#mobileCtaLink']
+    .forEach(s => $(s).href = whats());
+  ['#ctaInsta','#sInsta','#fInsta'].forEach(s => $(s).href = insta());
+
+  $('#statsRow').innerHTML = (SITE.stats || []).map(x =>
+    `<div class="stat-box"><b>${esc(bi(x.n))}</b><span>${esc(bi(x.l))}</span></div>`).join('');
+
+  $('#creds').innerHTML = (SITE.creds || []).map(c =>
+    `<div class="cred">${ico(c.icon || 'i-check-circle')}<span><b>${esc(bi(c.t))}</b><span>${esc(bi(c.s))}</span></span></div>`).join('');
+
+  $('#plansGrid').innerHTML = (SITE.plans || []).map(p => {
+    const nm = bi(p.name), tag = bi(p.tag);
+    return `<div class="plan${p.featured ? ' featured' : ''}">
+      ${tag ? `<span class="plan-tag">${esc(tag)}</span>` : ''}
+      <h3>${esc(nm)}</h3>
+      <p class="desc">${esc(bi(p.desc))}</p>
+      <div class="price"><b class="num">${esc(bi(p.price))}</b><span>${esc(bi(p.unit))}</span></div>
+      <ul>${biArr(p.features).map(f => `<li>${ico('i-check-circle')}<span>${esc(f)}</span></li>`).join('')}</ul>
+      <a class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'}" href="${esc(whats())}" target="_blank" rel="noopener">
+        ${ico('i-whatsapp')} ${esc(tt('subscribeTo', { x:nm }))}
+      </a>
+    </div>`;
+  }).join('');
+
+  $('#quotesGrid').innerHTML = (SITE.quotes || []).map(q => {
+    const n = bi(q.n);
+    return `<figure class="quote" style="margin:0">
+      <div class="stars" aria-label="${esc(tt('fiveStars'))}">${ico('i-star').repeat(5)}</div>
+      <blockquote style="margin:0"><p>${esc(bi(q.t))}</p></blockquote>
+      <figcaption class="who">
+        <span class="av">${esc(n.charAt(0))}</span>
+        <span><b>${esc(n)}</b><span>${esc(bi(q.r))}</span></span>
+      </figcaption>
+    </figure>`;
+  }).join('');
+
+  $('#faqList').innerHTML = (SITE.faq || []).map(f => `
+    <details>
+      <summary>${esc(bi(f.q))} ${ico('i-chevron')}</summary>
+      <div class="ans">${esc(bi(f.a))}</div>
+    </details>`).join('');
+
+  calcRun();
+}
+
+/* النصوص الثابتة + اللغة */
+function paintUI(){
   document.documentElement.lang = LANG;
   document.documentElement.dir  = LANG === 'ar' ? 'rtl' : 'ltr';
-  document.title = d.docTitle;
-
-  /* النصوص الثابتة بالـ HTML */
   $$('[data-t]').forEach(el => { el.textContent = tt(el.dataset.t) });
   $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', tt(el.dataset.tAria)) });
   $('#langTxt').textContent = LANG === 'ar' ? 'EN' : 'ع';
-
-  $('#yr').textContent = new Date().getFullYear();
-  ['#mark','#mark2'].forEach(s => $(s).textContent = SITE.initial);
-  ['#logoName','#logoName2','#footName','#aboutName'].forEach(s => $(s).textContent = d.name);
-  $('#heroEyebrow').textContent = d.heroEyebrow;
-  $('#heroTitle').innerHTML = d.heroTitle;
-  $('#heroSub').textContent = d.heroSub;
-  $('#bio').textContent     = d.bio;
-  $('#footTag').textContent = d.tagline;
-  $('#by').textContent      = d.by;
-
-  const hero = $('#heroImg'), about = $('#aboutImg');
-  if (hero.src !== SITE.heroImage){ hero.src = SITE.heroImage; hero.onerror = () => hero.classList.add('failed') }
-  if (about.src !== SITE.aboutImage){ about.src = SITE.aboutImage; about.onerror = () => about.classList.add('failed') }
-
-  ['#headerCta','#heroCta1','#ctaWhats','#sWhats','#fWhats','#mobileCtaLink']
-    .forEach(s => $(s).href = SITE.whatsapp);
-  ['#ctaInsta','#sInsta','#fInsta'].forEach(s => $(s).href = SITE.instagram);
-
   $('#q').placeholder = tt(TAB === 'recipes' ? 'searchR' : 'searchC');
-
-  $('#statsRow').innerHTML = d.STATS.map(s =>
-    `<div class="stat-box"><b>${esc(s.n)}</b><span>${esc(s.l)}</span></div>`).join('');
-
-  $('#creds').innerHTML = d.CREDS.map(c =>
-    `<div class="cred">${ico(c.icon)}<span><b>${esc(c.t)}</b><span>${esc(c.s)}</span></span></div>`).join('');
-
-  $('#plansGrid').innerHTML = d.PLANS.map(p => `
-    <div class="plan${p.featured ? ' featured' : ''}">
-      ${p.tag ? `<span class="plan-tag">${esc(p.tag)}</span>` : ''}
-      <h3>${esc(p.name)}</h3>
-      <p class="desc">${esc(p.desc)}</p>
-      <div class="price"><b class="num">${esc(p.price)}</b><span>${esc(p.unit)}</span></div>
-      <ul>${p.features.map(f => `<li>${ico('i-check-circle')}<span>${esc(f)}</span></li>`).join('')}</ul>
-      <a class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'}" href="${esc(SITE.whatsapp)}" target="_blank" rel="noopener">
-        ${ico('i-whatsapp')} ${esc(tt('subscribeTo', { x:p.name }))}
-      </a>
-    </div>`).join('');
-
-  $('#quotesGrid').innerHTML = d.QUOTES.map(q => `
-    <figure class="quote" style="margin:0">
-      <div class="stars" aria-label="${esc(tt('fiveStars'))}">${ico('i-star').repeat(5)}</div>
-      <blockquote style="margin:0"><p>${esc(q.t)}</p></blockquote>
-      <figcaption class="who">
-        <span class="av">${esc(q.n.charAt(0))}</span>
-        <span><b>${esc(q.n)}</b><span>${esc(q.r)}</span></span>
-      </figcaption>
-    </figure>`).join('');
-
-  $('#faqList').innerHTML = d.FAQ.map(f => `
-    <details>
-      <summary>${esc(f.q)} ${ico('i-chevron')}</summary>
-      <div class="ans">${esc(f.a)}</div>
-    </details>`).join('');
+  $('#yr').textContent = new Date().getFullYear();
+  syncThemeIcon();
 }
 
-/* ── تبديل اللغة ── */
 function toggleLang(){
   LANG = LANG === 'ar' ? 'en' : 'ar';
   try { localStorage.setItem('cz-lang', LANG) } catch(e){}
-  boot();
-  syncThemeIcon();
-  render();
+  $('#toastBox')?.remove();
+  paintUI();
+  paintSite();
+  renderGrid();
   if ($('#sheet').classList.contains('open')) drawSheet();
+  syncCartFab();
 }
 
-/* ── شريط الماكروز ── */
+/* ══════════════════════════════════════════════════════════
+   ⑥  شريط الماكروز
+   ══════════════════════════════════════════════════════════ */
 function macroBar(r){
-  const p = r.protein*4, c = r.carbs*4, f = r.fat*9, t = p + c + f || 1;
+  const p = r.protein * 4, c = r.carbs * 4, f = r.fat * 9, t = p + c + f || 1;
   const pc = n => (n / t * 100).toFixed(1) + '%';
   const g = tt('gram');
   return `<div class="macro">
@@ -1593,7 +1720,9 @@ function macroBar(r){
   </div>`;
 }
 
-/* ── التبويبات ── */
+/* ══════════════════════════════════════════════════════════
+   ⑦  الكتالوج
+   ══════════════════════════════════════════════════════════ */
 function setTab(t){
   if (TAB === t) return;
   TAB = t; FILTER = 'الكل';
@@ -1602,18 +1731,51 @@ function setTab(t){
   $('#tab-courses').setAttribute('aria-selected', String(TAB === 'courses'));
   $('#q').placeholder = tt(TAB === 'recipes' ? 'searchR' : 'searchC');
   $('#grid').setAttribute('aria-labelledby', 'tab-' + TAB);
-  render();
+  renderGrid();
   $('#catalog').scrollIntoView({ block:'start', behavior:'smooth' });
 }
 
-/* ── العرض ── */
-function render(){
-  const tags = ['الكل', ...new Set(data().map(x => x.tag))];
+function skeletonCards(n){
+  return Array.from({ length:n }, () => `<div class="sk">
+    <div class="sk-thumb"></div>
+    <div class="sk-body">
+      <div class="sk-line w90"></div>
+      <div class="sk-line w45"></div>
+      <div class="sk-line w70"></div>
+    </div>
+  </div>`).join('');
+}
+
+function renderGrid(){
+  const grid = $('#grid');
+
+  if (LOADING){
+    $('#chips').innerHTML = '';
+    $('#count').textContent = '';
+    grid.innerHTML = skeletonCards(8);
+    return;
+  }
+
+  if (LOAD_ERR){
+    $('#chips').innerHTML = '';
+    $('#count').textContent = '';
+    grid.innerHTML = `<div class="state bad">
+      ${ico('i-alert')}
+      <b>${esc(tt('loadErr'))}</b>
+      <span>${esc(tt('loadErrHint'))}</span>
+      <button class="btn btn-primary" type="button" id="retryBtn">${ico('i-refresh')} ${esc(tt('retry'))}</button>
+    </div>`;
+    $('#retryBtn').addEventListener('click', fetchAll);
+    return;
+  }
+
+  const all = data();
+  const tags = ['الكل', ...new Set(all.map(x => x.tag))];
   $('#chips').innerHTML = tags.map(t =>
     `<button class="chip" type="button" aria-pressed="${t === FILTER}" data-tag="${esc(t)}">${esc(tg(t))}</button>`).join('');
 
   const s = norm($('#q').value);
-  const items = data().filter(x =>
+  const items = all.filter(x =>
     (FILTER === 'الكل' || x.tag === FILTER) &&
     (!s || norm(x.title).includes(s)
         || norm(x.tag).includes(s)
@@ -1625,41 +1787,197 @@ function render(){
   const unit = tt(TAB === 'recipes' ? 'unitR' : 'unitC');
   $('#count').textContent = items.length ? `${items.length} ${unit}` : '';
 
-  if (!items.length){
-    $('#grid').innerHTML = `<div class="empty">
-      ${ico('i-empty')}
-      <b>${esc(tt('noRes'))}</b>
-      ${esc(tt('noResHint'))}
+  if (!all.length){
+    grid.innerHTML = `<div class="state">
+      ${ico('i-empty')}<b>${esc(tt('emptyCat'))}</b><span>${esc(tt('emptyCatHint'))}</span>
     </div>`;
     return;
   }
 
-  $('#grid').innerHTML = items.map((x, n) => {
-    const i = data().indexOf(x);
-    return `<button class="card" type="button" style="--i:${n}" data-i="${i}"
-              aria-label="${esc(x.title)} — افتحي التفاصيل">
+  if (!items.length){
+    grid.innerHTML = `<div class="state">
+      ${ico('i-empty')}<b>${esc(tt('noRes'))}</b><span>${esc(tt('noResHint'))}</span>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((x, n) => {
+    const inCart = TAB === 'recipes' && CART.some(c => c.id === x.id);
+    return `<div class="card" style="--i:${n}">
       <span class="thumb">
         <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async"
              onerror="this.classList.add('failed')">
         <span class="badge">${esc(tg(x.tag))}</span>
         ${TAB === 'recipes' ? `<span class="kcal-chip">${x.kcal} ${esc(tt('kcalUnit'))}</span>` : ''}
         ${x.video ? `<span class="play">${ico('i-play')}</span>` : ''}
+        ${TAB === 'recipes'
+          ? `<button class="pick-btn${inCart ? ' on' : ''}" type="button" data-cart="${esc(x.id)}"
+               aria-pressed="${inCart}" aria-label="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}"
+               title="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}">
+               ${ico(inCart ? 'i-check' : 'i-plus')}</button>` : ''}
       </span>
-      <span class="card-body">
+      <button class="card-body" type="button" data-open="${esc(x.id)}"
+              aria-label="${esc(x.title)}">
         <h3>${esc(x.title)}</h3>
         <span class="meta">
           <span>${ico('i-clock')} ${esc(x.time)}</span>
           ${TAB === 'courses'
-            ? `<span>${ico('i-dumbbell')} ${esc(x.area)}</span>`
+            ? `<span>${ico('i-dumbbell')} ${esc(x.area || '')}</span>`
             : `<span>${ico('i-users')} ${x.servings} ${esc(tt('servUnit'))}</span>`}
         </span>
         ${TAB === 'recipes' ? macroBar(x) : ''}
-      </span>
-    </button>`;
+      </button>
+    </div>`;
   }).join('');
 }
 
-/* ── الشيت ── */
+/* ══════════════════════════════════════════════════════════
+   ⑧  قائمة التسوّق
+   ══════════════════════════════════════════════════════════ */
+function saveCart(){ try { localStorage.setItem('cz-cart', JSON.stringify(CART)) } catch(e){} }
+function loadCart(){
+  try {
+    const raw = JSON.parse(localStorage.getItem('cz-cart') || '[]');
+    CART = (Array.isArray(raw) ? raw : []).filter(c => RECIPES.some(r => r.id === c.id));
+  } catch(e){ CART = [] }
+  syncCartFab();
+}
+function syncCartFab(){
+  const fab = $('#cartFab');
+  $('#cartN').textContent = CART.length;
+  fab.classList.toggle('show', CART.length > 0);
+  fab.querySelector('[data-t="cart.btn"]').textContent = tt('cart.btn');
+}
+/* يحدّث أزرار السلة بمكانها بدل ما يعيد رسم الشبكة كلها
+   (إعادة الرسم كانت تعيد أنيميشن كل الكروت مع كل ضغطة) */
+function syncCartButtons(){
+  $$('[data-cart]').forEach(b => {
+    const on  = CART.some(c => c.id === b.dataset.cart);
+    const lbl = tt(on ? 'cart.remove' : 'cart.add');
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+    b.setAttribute('aria-label', lbl);
+    b.title = lbl;
+    b.querySelector('use')?.setAttribute('href', on ? '#i-check' : '#i-plus');
+  });
+}
+
+function toggleCart(id){
+  const i = CART.findIndex(c => c.id === id);
+  if (i > -1){ CART.splice(i, 1); toast(tt('cart.removed')) }
+  else {
+    const r = RECIPES.find(x => x.id === id); if (!r) return;
+    CART.push({ id, servings:r.servings });
+    toast(tt('cart.added'));
+  }
+  saveCart(); syncCartFab(); syncCartButtons();
+}
+
+/* يجمع مكونات كل الوصفات المختارة ويوحّد المتكرر */
+function cartAggregate(){
+  const map = new Map();
+  const tot = { kcal:0, protein:0, carbs:0, fat:0 };
+
+  CART.forEach(c => {
+    const r = RECIPES.find(x => x.id === c.id); if (!r) return;
+    const k = c.servings / r.servings;          /* معامل التوسيع */
+    tot.kcal    += r.kcal * k;
+    tot.protein += r.protein * k;
+    tot.carbs   += r.carbs * k;
+    tot.fat     += r.fat * k;
+
+    r.ingredients.forEach(ing => {
+      const key = norm(ing.n) + '|' + norm(ing.u);
+      const prev = map.get(key);
+      if (prev) prev.q += nz(ing.q) * k;
+      else map.set(key, { n:ing.n, u:ing.u, q:nz(ing.q) * k });
+    });
+  });
+
+  return { lines:[...map.values()], tot };
+}
+
+function cartText(){
+  const { lines } = cartAggregate();
+  const names = CART.map(c => RECIPES.find(r => r.id === c.id)?.title).filter(Boolean);
+  return tt('cart.head') + '\n\n'
+    + lines.map(l => `• ${l.n} — ${num(l.q)} ${l.u}`.trim()).join('\n')
+    + '\n\n' + tt('cart.recipes') + ': ' + names.join('، ');
+}
+
+function drawCart(){
+  const { lines, tot } = cartAggregate();
+
+  if (!CART.length){
+    $('#sheetInner').innerHTML = `<div class="sheet-body" style="padding-top:26px">
+      <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}"
+              style="position:static;margin-inline-start:auto">${ico('i-close')}</button>
+      <div class="state">${ico('i-cart')}<b>${esc(tt('cart.empty'))}</b><span>${esc(tt('cart.emptyHint'))}</span></div>
+    </div>`;
+    return;
+  }
+
+  const chips = CART.map(c => {
+    const r = RECIPES.find(x => x.id === c.id); if (!r) return '';
+    return `<span class="cs">${esc(r.title)}
+      <button type="button" data-act="uncart" data-id="${esc(c.id)}"
+              aria-label="${esc(tt('cart.remove'))}">${ico('i-close')}</button></span>`;
+  }).join('');
+
+  $('#sheetInner').innerHTML = `<div class="sheet-body" style="padding-top:26px">
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:6px">
+      <div style="flex:1">
+        <h2 id="sheetTitle">${ico('i-cart')} ${esc(tt('cart.title'))}</h2>
+        <p style="color:var(--soft);font-size:14px;margin-top:6px">${esc(tt('cart.sub'))}</p>
+      </div>
+      <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}"
+              style="position:static">${ico('i-close')}</button>
+    </div>
+
+    <div class="panel">
+      <h4>${esc(tt('cart.recipes'))}</h4>
+      <div class="cart-src">${chips}</div>
+
+      <h4>${esc(tt('cart.totals'))}</h4>
+      <div class="cart-tot">
+        <div class="ct"><b>${Math.round(tot.kcal)}</b><span>${esc(tt('kcalUnit'))}</span></div>
+        <div class="ct"><b style="color:var(--pine-ink)">${Math.round(tot.protein)}</b><span>${esc(tt('protein'))}</span></div>
+        <div class="ct"><b style="color:var(--amber-ink)">${Math.round(tot.carbs)}</b><span>${esc(tt('carbs'))}</span></div>
+        <div class="ct"><b style="color:var(--clay-ink)">${Math.round(tot.fat)}</b><span>${esc(tt('fat'))}</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h4>${esc(tt('cart.items'))} <span class="hint">${esc(tt('tickHint'))}</span></h4>
+      <div class="cart-list">
+        ${lines.map((l, i) => `<div class="cart-line" data-act="ctick" data-i="${i}" tabindex="0"
+                                    role="checkbox" aria-checked="false">
+          <span class="cl-tick">${ico('i-check')}</span>
+          <span class="cl-n">${esc(l.n)}</span>
+          <span class="cl-q">${num(l.q)} ${esc(l.u)}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="sheet-cta" style="display:grid;gap:10px">
+      <a class="btn btn-primary btn-lg" id="cartWhats" href="#" target="_blank" rel="noopener">
+        ${ico('i-whatsapp')} ${esc(tt('cart.whats'))}
+      </a>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="btn btn-ghost" type="button" data-act="ccopy">${ico('i-copy')} ${esc(tt('cart.copy'))}</button>
+        <button class="btn btn-quiet" type="button" data-act="cclear" style="color:var(--clay-ink)">
+          ${ico('i-trash')} ${esc(tt('cart.clear'))}</button>
+      </div>
+    </div>
+  </div>`;
+
+  const w = whats().replace(/\?.*$/, '');
+  $('#cartWhats').href = w + (w.includes('?') ? '&' : '?') + 'text=' + encodeURIComponent(cartText());
+}
+
+/* ══════════════════════════════════════════════════════════
+   ⑨  الشيت
+   ══════════════════════════════════════════════════════════ */
 function embed(url){
   const yt = url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
   if (yt) return `<div class="embed"><iframe src="https://www.youtube.com/embed/${yt[1]}"
@@ -1669,16 +1987,36 @@ function embed(url){
   return `<a class="vid" href="${esc(url)}" target="_blank" rel="noopener">${ico('i-play')} ${esc(tt('watchVideo'))}</a>`;
 }
 
-function openSheet(i){
-  current = i; mult = 1;
+function itemLink(x){
+  return location.origin + location.pathname + '#/' + (TAB === 'recipes' ? 'r' : 'c') + '/' + x.id;
+}
+
+function openSheet(id, fromHash){
+  const x = data().find(i => i.id === id);
+  if (!x) return;
+  VIEW = 'item'; current = id; mult = 1;
   lastFocus = document.activeElement;
   const sh = $('#sheet');
   sh.hidden = false; sh.classList.add('open');
   document.body.style.overflow = 'hidden';
-  history.pushState({ sheet:true }, '');
+  const url = '#/' + (TAB === 'recipes' ? 'r' : 'c') + '/' + id;
+  if (fromHash) history.replaceState({ sheet:true }, '', url);
+  else history.pushState({ sheet:true }, '', url);
   drawSheet();
   requestAnimationFrame(() => $('#sheet .close')?.focus());
 }
+
+function openCart(){
+  VIEW = 'cart'; current = null;
+  lastFocus = document.activeElement;
+  const sh = $('#sheet');
+  sh.hidden = false; sh.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  history.pushState({ sheet:true }, '', '#/cart');
+  drawSheet();
+  requestAnimationFrame(() => $('#sheet .close')?.focus());
+}
+
 function closeUI(){
   const sh = $('#sheet');
   sh.classList.remove('open'); sh.hidden = true;
@@ -1686,19 +2024,26 @@ function closeUI(){
   lastFocus?.focus?.();
 }
 function closeSheet(){
-  if (history.state && history.state.sheet) history.back(); else closeUI();
+  if (history.state && history.state.sheet) history.back();
+  else { history.replaceState({}, '', location.pathname); closeUI() }
 }
 
 function setMult(d){
-  const base = data()[current].servings;
-  const next = Math.max(1, Math.min(20, Math.round(base * mult) + d));
-  mult = next / base;
+  const x = data().find(i => i.id === current); if (!x) return;
+  const next = Math.max(1, Math.min(20, Math.round(x.servings * mult) + d));
+  mult = next / x.servings;
   drawSheet();
   $('#sheet .stepper button:last-child')?.focus();
 }
 
 function drawSheet(){
-  const x = data()[current];
+  if (VIEW === 'cart') return drawCart();
+
+  const x = data().find(i => i.id === current);
+  if (!x) return closeUI();
+
+  const inCart = TAB === 'recipes' && CART.some(c => c.id === x.id);
+
   let h = `<div class="sheet-hero">
       <span class="grab"></span>
       <img src="${esc(x.cover)}" alt="" decoding="async" onerror="this.classList.add('failed')">
@@ -1710,6 +2055,18 @@ function drawSheet(){
         <span>${ico('i-clock')} ${esc(x.time)}</span>
         <span>${ico('i-spark')} ${esc(tg(x.tag))}</span>
         ${x.area ? `<span>${ico('i-dumbbell')} ${esc(x.area)}</span>` : ''}
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+        <button class="btn btn-ghost btn-sm" type="button" data-act="share">
+          ${ico('i-share')} ${esc(tt('copyLink'))}
+        </button>
+        ${TAB === 'recipes'
+          ? `<button class="btn ${inCart ? 'btn-quiet' : 'btn-ghost'} btn-sm" type="button"
+                     data-act="cart" data-id="${esc(x.id)}"
+                     style="${inCart ? 'color:var(--pine-ink)' : ''}">
+               ${ico(inCart ? 'i-check' : 'i-cart-plus')} ${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}
+             </button>` : ''}
       </div>`;
 
   if (TAB === 'recipes'){
@@ -1737,7 +2094,7 @@ function drawSheet(){
         <ul class="list">
           ${x.ingredients.map(i => `<li data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
             <span class="nm"><span class="tickbox">${ico('i-check')}</span>${esc(i.n)}</span>
-            <span class="q">${num(i.q * mult)} ${esc(i.u)}</span>
+            <span class="q">${num(nz(i.q) * mult)} ${esc(i.u)}</span>
           </li>`).join('')}
         </ul>
       </div>
@@ -1758,7 +2115,7 @@ function drawSheet(){
   if (x.video) h += embed(x.video);
 
   h += `<div class="sheet-cta">
-      <a class="btn btn-primary btn-lg" href="${esc(SITE.whatsapp)}" target="_blank" rel="noopener">
+      <a class="btn btn-primary btn-lg" href="${esc(whats())}" target="_blank" rel="noopener">
         ${ico('i-whatsapp')} ${esc(tt('sheetCta'))}
       </a>
     </div></div>`;
@@ -1767,7 +2124,74 @@ function drawSheet(){
   $('#sheetInner').scrollTop = 0;
 }
 
-/* ── الثيم ── */
+/* فتح عنصر من الرابط المباشر */
+function openFromHash(){
+  const m = location.hash.match(/^#\/(r|c|cart)(?:\/(.+))?$/);
+  if (!m) return;
+  if (m[1] === 'cart'){ if (CART.length){ VIEW = 'cart'; openCart() } return }
+  const wantTab = m[1] === 'r' ? 'recipes' : 'courses';
+  const id = decodeURIComponent(m[2] || '');
+  const list = wantTab === 'recipes' ? RECIPES : COURSES;
+  if (!list.some(x => x.id === id)) return;
+  if (TAB !== wantTab){
+    TAB = wantTab; FILTER = 'الكل';
+    $('#tab-recipes').setAttribute('aria-selected', String(TAB === 'recipes'));
+    $('#tab-courses').setAttribute('aria-selected', String(TAB === 'courses'));
+    renderGrid();
+  }
+  openSheet(id, true);
+}
+
+function copyText(txt, okMsg){
+  const done = () => toast(okMsg);
+  if (navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(fallback);
+  } else fallback();
+  function fallback(){
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done() } catch(e){ toast(tt('copyFail')) }
+    ta.remove();
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   ⑩  حاسبة السعرات
+   ══════════════════════════════════════════════════════════ */
+function calcRun(){
+  const sexBtn = $('#cSex [aria-pressed="true"]');
+  const male   = sexBtn?.dataset.v === 'm';
+  const age    = nz($('#cAge').value), w = nz($('#cWeight').value), ht = nz($('#cHeight').value);
+  const act    = nz($('#cAct').value) || 1.55;
+  const goal   = nz($('#cGoal').value);
+
+  if (age < 14 || w < 30 || ht < 120){
+    ['#cKcal','#cP','#cC','#cF'].forEach(s => $(s).textContent = '—');
+    return;
+  }
+
+  /* Mifflin-St Jeor */
+  const bmr  = 10 * w + 6.25 * ht - 5 * age + (male ? 5 : -161);
+  const kcal = Math.round(bmr * act * (1 + goal) / 10) * 10;
+
+  const protein = Math.round(w * 1.8);                       /* ١.٨ غم لكل كغم */
+  const fat     = Math.round(kcal * 0.25 / 9);               /* ٢٥٪ من السعرات */
+  const carbs   = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
+
+  $('#cKcal').textContent = kcal;
+  $('#cP').textContent = protein;
+  $('#cC').textContent = carbs;
+  $('#cF').textContent = fat;
+
+  const w2 = whats().replace(/\?.*$/, '');
+  $('#cCta').href = w2 + (w2.includes('?') ? '&' : '?') + 'text=' +
+    encodeURIComponent(tt('calc.msg', { k:kcal, p:protein, c:carbs, f:fat }));
+}
+
+/* ══════════════════════════════════════════════════════════
+   ⑪  الثيم
+   ══════════════════════════════════════════════════════════ */
 function currentTheme(){
   return document.documentElement.dataset.theme
       || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -1784,7 +2208,9 @@ function toggleTheme(){
   syncThemeIcon();
 }
 
-/* ── ربط الأحداث ── */
+/* ══════════════════════════════════════════════════════════
+   ⑫  ربط الأحداث
+   ══════════════════════════════════════════════════════════ */
 function wire(){
   $('#tab-recipes').addEventListener('click', () => setTab('recipes'));
   $('#tab-courses').addEventListener('click', () => setTab('courses'));
@@ -1793,42 +2219,57 @@ function wire(){
   let t;
   q.addEventListener('input', () => {
     $('#searchBox').classList.toggle('has-value', q.value.length > 0);
-    clearTimeout(t); t = setTimeout(render, 140);
+    clearTimeout(t); t = setTimeout(renderGrid, 140);
   });
   $('#clearBtn').addEventListener('click', () => {
-    q.value = ''; $('#searchBox').classList.remove('has-value'); render(); q.focus();
+    q.value = ''; $('#searchBox').classList.remove('has-value'); renderGrid(); q.focus();
   });
 
   $('#chips').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
-    FILTER = b.dataset.tag; render();
+    FILTER = b.dataset.tag; renderGrid();
   });
 
   $('#grid').addEventListener('click', e => {
-    const c = e.target.closest('.card'); if (!c) return;
-    openSheet(Number(c.dataset.i));
+    const cartBtn = e.target.closest('[data-cart]');
+    if (cartBtn){ e.stopPropagation(); return toggleCart(cartBtn.dataset.cart) }
+    const open = e.target.closest('[data-open]');
+    if (open) openSheet(open.dataset.open);
   });
+
+  $('#cartFab').addEventListener('click', openCart);
 
   $('#sheet').addEventListener('click', e => {
     if (e.target === e.currentTarget) return closeSheet();
     const el = e.target.closest('[data-act]'); if (!el) return;
     const a = el.dataset.act;
-    if (a === 'close') closeSheet();
-    else if (a === 'plus')  setMult(1);
-    else if (a === 'minus') setMult(-1);
-    else if (a === 'tick'){
+    if (a === 'close')  return closeSheet();
+    if (a === 'plus')   return setMult(1);
+    if (a === 'minus')  return setMult(-1);
+    if (a === 'share'){
+      const x = data().find(i => i.id === current);
+      return x && copyText(itemLink(x), tt('linkCopied'));
+    }
+    if (a === 'cart'){ toggleCart(el.dataset.id); return drawSheet() }
+    if (a === 'uncart'){ toggleCart(el.dataset.id); return drawSheet() }
+    if (a === 'ccopy')  return copyText(cartText(), tt('cart.copied'));
+    if (a === 'cclear'){
+      CART = []; saveCart(); syncCartFab(); syncCartButtons();
+      toast(tt('cart.cleared')); return drawSheet();
+    }
+    if (a === 'tick' || a === 'ctick'){
       const on = el.classList.toggle('done');
       el.setAttribute('aria-checked', String(on));
     }
   });
+
   $('#sheet').addEventListener('keydown', e => {
-    const li = e.target.closest('[data-act="tick"]');
+    const li = e.target.closest('[data-act="tick"],[data-act="ctick"]');
     if (li && (e.key === 'Enter' || e.key === ' ')){
       e.preventDefault();
       const on = li.classList.toggle('done');
       li.setAttribute('aria-checked', String(on));
     }
-    /* حصر التركيز داخل النافذة */
     if (e.key === 'Tab'){
       const f = [...$('#sheet').querySelectorAll('a[href],button:not([disabled]),iframe,[tabindex="0"]')]
                   .filter(el => el.offsetParent !== null);
@@ -1839,7 +2280,11 @@ function wire(){
     }
   });
 
-  addEventListener('popstate', () => { if ($('#sheet').classList.contains('open')) closeUI() });
+  addEventListener('popstate', () => {
+    if ($('#sheet').classList.contains('open')) closeUI();
+    else openFromHash();
+  });
+
   addEventListener('keydown', e => {
     if (e.key === 'Escape' && $('#sheet').classList.contains('open')) closeSheet();
     if (e.key === '/' && document.activeElement !== q && !$('#sheet').classList.contains('open')){
@@ -1849,6 +2294,16 @@ function wire(){
 
   $('#themeBtn').addEventListener('click', toggleTheme);
   $('#langBtn').addEventListener('click', toggleLang);
+
+  /* الحاسبة */
+  $('#calcForm').addEventListener('submit', e => e.preventDefault());
+  $('#calcForm').addEventListener('input', calcRun);
+  $('#calcForm').addEventListener('change', calcRun);
+  $('#cSex').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    $$('#cSex button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    calcRun();
+  });
 
   /* الهيدر عند التمرير + زر الموبايل */
   const header = $('#siteHeader'), mcta = $('#mobileCta');
@@ -1871,11 +2326,18 @@ function wire(){
   }
 }
 
-/* ── الإقلاع ── */
-boot();
-syncThemeIcon();
+/* ══════════════════════════════════════════════════════════
+   ⑬  الإقلاع
+   ══════════════════════════════════════════════════════════ */
+paintUI();
 wire();
-render();
+calcRun();
+fetchAll();
+
+/* تسجيل الـ service worker (يخلي الموقع يشتغل حتى لو النت ضعيف) */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 })();
 </script>
 </body>

@@ -253,9 +253,10 @@ select.inp{cursor:pointer;
    ⑥  التبويبات وشريط الأدوات
    ═══════════════════════════════════════════════════════════ */
 .tabs{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--sunken);
+  display:grid;grid-template-columns:repeat(5,1fr);gap:5px;background:var(--sunken);
   padding:5px;border-radius:var(--r);border:1px solid var(--line);margin-top:var(--s-5);
 }
+@media(max-width:640px){.tabs{grid-template-columns:repeat(3,1fr)}}
 .tab{
   display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;
   padding:9px 8px;border-radius:10px;font-family:var(--f-head);font-weight:600;font-size:14.5px;color:var(--soft);
@@ -302,7 +303,16 @@ select.inp{cursor:pointer;
 }
 .pill.on{background:var(--pine-wash);color:var(--pine-ink)}
 .pill.offp{background:var(--clay-wash);color:var(--clay-ink)}
-.row-acts{display:flex;gap:6px;flex-wrap:wrap;grid-column:1/-1;padding-top:var(--s-2);border-top:1px dashed var(--line)}
+.row-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center;grid-column:1/-1;padding-top:var(--s-2);border-top:1px dashed var(--line)}
+.sorter{display:inline-flex;flex-direction:column;gap:2px;flex:none}
+.sorter button{
+  width:34px;height:19px;display:grid;place-items:center;font-size:14px;
+  background:var(--sunken);color:var(--ink-2);transition:background-color .15s var(--ease)
+}
+.sorter button:first-child{border-radius:var(--r-sm) var(--r-sm) 4px 4px}
+.sorter button:last-child{border-radius:4px 4px var(--r-sm) var(--r-sm)}
+.sorter button:hover:not(:disabled){background:var(--brand-wash);color:var(--brand-ink)}
+.sorter button:disabled{opacity:.35;cursor:default}
 @media(min-width:820px){
   .row{grid-template-columns:auto 1fr auto}
   .row-acts{grid-column:auto;padding-top:0;border-top:0}
@@ -389,8 +399,34 @@ select.inp{cursor:pointer;
 .mcard.chosen{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-wash)}
 
 /* ═══════════════════════════════════════════════════════════
-   ⑧  المودال / الفورم
+   ⑦ج  محرر المحتوى ثنائي اللغة
    ═══════════════════════════════════════════════════════════ */
+.bi{display:grid;gap:var(--s-2)}
+@media(min-width:720px){.bi{grid-template-columns:1fr 1fr;gap:var(--s-3)}}
+.bi .side{display:grid;gap:5px}
+.bi .flag{
+  font-size:11px;font-weight:700;color:var(--soft);font-family:var(--f-head);
+  letter-spacing:.4px;display:flex;align-items:center;gap:5px;
+}
+.bi .flag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand);flex:none}
+.bi .side.en{direction:ltr;text-align:left}
+.bi .side.en .flag{flex-direction:row}
+
+.blk{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:var(--s-4);display:grid;gap:var(--s-3);box-shadow:var(--shadow-1);
+}
+.blk-head{display:flex;align-items:center;gap:var(--s-2);flex-wrap:wrap}
+.blk-head h5{
+  font-family:var(--f-head);font-size:14px;font-weight:700;margin:0;flex:1;
+  display:flex;align-items:center;gap:8px;
+}
+.blk-head .idx{
+  width:24px;height:24px;border-radius:8px;display:grid;place-items:center;flex:none;
+  background:var(--brand-wash);color:var(--brand-ink);font-family:var(--f-num);font-size:12px;font-weight:600;
+}
+.feat-list{display:grid;gap:6px}
+.feat-row{display:grid;grid-template-columns:1fr 40px;gap:6px;align-items:center}
 .modal{
   position:fixed;inset:0;z-index:100;background:rgba(10,18,14,.55);
   backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
@@ -557,6 +593,9 @@ select.inp{cursor:pointer;
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.2 9.6h17.6M3.2 14.4h17.6"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><path d="M10.4 13.6a3.6 3.6 0 0 0 5.2 0l2.8-2.8a3.7 3.7 0 0 0-5.2-5.2l-1.4 1.4"/><path d="M13.6 10.4a3.6 3.6 0 0 0-5.2 0l-2.8 2.8a3.7 3.7 0 0 0 5.2 5.2l1.4-1.4"/></symbol>
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 14.5 6-6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9.5 6 6 6-6"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.8" y="5" width="18.4" height="14" rx="2.6"/><path d="m3.4 6.6 8.6 6 8.6-6"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M19.6 3.6v4.8h-4.8"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.6" y="8.6" width="11.8" height="11.8" rx="2.4"/><path d="M15.4 5.4H6.2a2.4 2.4 0 0 0-2.4 2.4v9.2"/></symbol>
     <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.4 7.2A2.2 2.2 0 0 1 5.6 5h3.6l2 2.6h7.2a2.2 2.2 0 0 1 2.2 2.2v7.4a2.2 2.2 0 0 1-2.2 2.2H5.6a2.2 2.2 0 0 1-2.2-2.2Z"/></symbol>
@@ -601,7 +640,8 @@ select.inp{cursor:pointer;
       <button class="btn btn-primary btn-block" id="loginBtn" type="submit" data-t="gate.submit">دخول</button>
     </form>
 
-    <p class="gate-foot">
+    <p class="gate-foot" style="display:grid;gap:8px">
+      <a href="#" id="forgotLink" data-t="gate.forgot">نسيتي كلمة السر؟</a>
       <a href="index.html" data-t="gate.back">← رجوع للموقع</a>
     </p>
   </div>
@@ -646,6 +686,9 @@ select.inp{cursor:pointer;
       </button>
       <button class="tab" role="tab" id="tab-media" aria-selected="false" type="button">
         <svg class="icon"><use href="#i-image"></use></svg><span class="t-txt" data-t="tab.media">الصور</span>
+      </button>
+      <button class="tab" role="tab" id="tab-content" aria-selected="false" type="button">
+        <svg class="icon"><use href="#i-book"></use></svg><span class="t-txt" data-t="tab.content">محتوى الصفحة</span>
       </button>
       <button class="tab" role="tab" id="tab-info" aria-selected="false" type="button">
         <svg class="icon"><use href="#i-info"></use></svg><span class="t-txt" data-t="tab.info">معلومات الموقع</span>
@@ -693,6 +736,15 @@ select.inp{cursor:pointer;
       <div class="media-grid" id="mediaGrid"></div>
     </section>
 
+    <!-- محتوى الصفحة الرئيسية -->
+    <section id="contentPane" hidden>
+      <p style="color:var(--soft);font-size:13.5px;line-height:1.7;margin-top:var(--s-5)" data-t="ct.intro">
+        كل النصوص اللي تظهر بالصفحة الرئيسية. اكتبي النص بالعربي وبالإنكليزي — الزائر يشوف
+        حسب اللغة اللي يختارها.
+      </p>
+      <div id="contentBody" style="display:grid;gap:var(--s-5);margin-top:var(--s-5);padding-bottom:var(--s-8)"></div>
+    </section>
+
     <!-- معلومات الموقع -->
     <section id="infoPane" hidden>
       <form id="infoForm" style="margin-top:var(--s-5);display:grid;gap:var(--s-5);padding-bottom:var(--s-8)" novalidate>
@@ -710,12 +762,24 @@ select.inp{cursor:pointer;
             </div>
           </div>
           <div class="field">
+            <label for="i-nameEn" data-t="info.nameEn">الاسم بالإنكليزي</label>
+            <input class="inp" id="i-nameEn" dir="ltr">
+          </div>
+          <div class="field">
             <label for="i-tagline" data-t="info.tagline">السطر التعريفي</label>
             <input class="inp" id="i-tagline">
           </div>
           <div class="field">
+            <label for="i-taglineEn" data-t="info.taglineEn">السطر التعريفي بالإنكليزي</label>
+            <input class="inp" id="i-taglineEn" dir="ltr">
+          </div>
+          <div class="field">
             <label for="i-bio" data-t="info.bio">النبذة</label>
             <textarea class="inp" id="i-bio"></textarea>
+          </div>
+          <div class="field">
+            <label for="i-bioEn" data-t="info.bioEn">النبذة بالإنكليزي</label>
+            <textarea class="inp" id="i-bioEn" dir="ltr"></textarea>
           </div>
         </div>
 
@@ -867,6 +931,17 @@ const T = {
     "app.close":"سكّري",
     "app.edit":"تعديل",
     "app.delete":"حذف",
+    "app.duplicate":"نسخة",
+    "app.preview":"معاينة",
+    "app.moveUp":"حرّكيها فوق",
+    "app.moveDown":"حرّكيها تحت",
+    "app.copySuffix":"نسخة",
+    "ok.duplicated":"انسوّت نسخة — عدّليها وانشريها",
+    "ok.reordered":"انتغيّر الترتيب",
+    "gate.forgot":"نسيتي كلمة السر؟",
+    "gate.resetSent":"دزّينالج رابط الاستعادة على إيميلج ✉️",
+    "gate.resetNeedEmail":"اكتبي إيميلج أول، وبعدها اضغطي على الرابط.",
+    "gate.resetErr":"ما كدرنا ندز رابط الاستعادة.",
     "app.publish":"نشر",
     "app.unpublish":"إخفاء",
     "app.published":"منشور",
@@ -882,7 +957,47 @@ const T = {
     "tab.recipes":"الوصفات",
     "tab.courses":"الكورسات",
     "tab.media":"الصور",
+    "tab.content":"محتوى الصفحة",
     "tab.info":"معلومات الموقع",
+
+    "ct.intro":"كل النصوص اللي تظهر بالصفحة الرئيسية. اكتبي النص بالعربي وبالإنكليزي — الزائر يشوف حسب اللغة اللي يختارها.",
+    "ct.emptyList":"ماكو عناصر — ضيفي أول واحد.",
+    "ct.hero":"الواجهة الرئيسية",
+    "ct.eyebrow":"السطر الصغير فوق العنوان",
+    "ct.title":"العنوان الكبير",
+    "ct.titleHint":"تكدرين تلوّنين كلمة بوضعها بين <span class='hl'>و</span>",
+    "ct.sub":"النص تحت العنوان",
+    "ct.heroImg":"صورة الواجهة",
+    "ct.aboutImg":"صورة قسم «عن الكوتش»",
+    "ct.stat":"رقم",
+    "ct.addStat":"إضافة رقم",
+    "ct.statN":"الرقم",
+    "ct.statL":"وصف الرقم",
+    "ct.cred":"شهادة / خبرة",
+    "ct.addCred":"إضافة شهادة",
+    "ct.icon":"الأيقونة",
+    "ct.credT":"العنوان",
+    "ct.credS":"التفاصيل",
+    "ct.plan":"باقة",
+    "ct.addPlan":"إضافة باقة",
+    "ct.featured":"الباقة المميّزة",
+    "ct.planName":"اسم الباقة",
+    "ct.planTag":"الشارة (مثل: الأكثر طلباً)",
+    "ct.planPrice":"السعر",
+    "ct.planUnit":"الوحدة (مثل: د.ع / شهر)",
+    "ct.planDesc":"الوصف",
+    "ct.features":"المزايا",
+    "ct.addFeature":"إضافة ميزة",
+    "ct.quote":"رأي مشتركة",
+    "ct.addQuote":"إضافة رأي",
+    "ct.quoteT":"نص الرأي",
+    "ct.quoteN":"الاسم",
+    "ct.quoteR":"النتيجة (مثل: ٣ أشهر — نزلت ٧ كيلو)",
+    "ct.faq":"سؤال",
+    "ct.addFaq":"إضافة سؤال",
+    "ct.faqQ":"السؤال",
+    "ct.faqA":"الجواب",
+    "ct.credit":"سطر الحقوق بالأسفل",
 
     "media.intro":"كل صورة ترفعينها تنحفظ ببكت media داخل مجلد حسب نوعها. من هنا تشوفين كل الصور، وين محفوظة، وأي وصفة أو كورس يستعملها.",
     "media.upload":"رفع صور",
@@ -936,6 +1051,7 @@ const T = {
     "f.coverNone":"ماكو صورة",
     "f.upload":"رفع صورة",
     "f.uploading":"جاري الرفع…",
+    "f.shrinking":"جاري الضغط…",
     "f.coverUrl":"أو الصقي رابط الصورة",
     "f.nutrition":"القيمة الغذائية (للحصة الوحدة)",
     "f.servings":"عدد الحصص",
@@ -970,6 +1086,9 @@ const T = {
 
     "info.identity":"هوية الموقع",
     "info.name":"الاسم",
+    "info.nameEn":"الاسم بالإنكليزي",
+    "info.taglineEn":"السطر التعريفي بالإنكليزي",
+    "info.bioEn":"النبذة بالإنكليزي",
     "info.initial":"الحرف المختصر",
     "info.initialHint":"الحرف اللي يظهر بالشعار",
     "info.tagline":"السطر التعريفي",
@@ -989,11 +1108,12 @@ const T = {
     "ok.published":"صار منشور",
     "ok.unpublished":"صار مخفي",
     "ok.uploaded":"انرفعت الصورة",
+    "ok.shrunk":"انضغطت الصورة — وفّرنا {n}٪ من الحجم",
     "err.save":"ما انحفظ — جرّبي مرة ثانية.",
     "err.delete":"ما انحذف — جرّبي مرة ثانية.",
     "err.upload":"ما كدرنا نرفع الصورة.",
     "err.imgType":"لازم تكون صورة (jpg أو png أو webp).",
-    "err.imgSize":"حجم الصورة أكبر من ٥ ميغا.",
+    "err.imgSize":"الصورة كبيرة جداً حتى بعد الضغط — جرّبي صورة ثانية.",
 
     tags:{
       "فطور":"فطور","غداء":"غداء","عشاء":"عشاء","سناك":"سناك",
@@ -1029,6 +1149,17 @@ const T = {
     "app.close":"Close",
     "app.edit":"Edit",
     "app.delete":"Delete",
+    "app.duplicate":"Duplicate",
+    "app.preview":"Preview",
+    "app.moveUp":"Move up",
+    "app.moveDown":"Move down",
+    "app.copySuffix":"copy",
+    "ok.duplicated":"Copy created — edit it and publish",
+    "ok.reordered":"Order updated",
+    "gate.forgot":"Forgot your password?",
+    "gate.resetSent":"We sent a reset link to your email ✉️",
+    "gate.resetNeedEmail":"Enter your email first, then click the link.",
+    "gate.resetErr":"Could not send the reset link.",
     "app.publish":"Publish",
     "app.unpublish":"Hide",
     "app.published":"Published",
@@ -1044,7 +1175,47 @@ const T = {
     "tab.recipes":"Recipes",
     "tab.courses":"Courses",
     "tab.media":"Images",
+    "tab.content":"Page content",
     "tab.info":"Site info",
+
+    "ct.intro":"Every piece of text on the home page. Write it in Arabic and in English — visitors see whichever language they pick.",
+    "ct.emptyList":"Nothing here — add the first one.",
+    "ct.hero":"Hero section",
+    "ct.eyebrow":"Small line above the headline",
+    "ct.title":"Main headline",
+    "ct.titleHint":"You can highlight a word by wrapping it in <span class='hl'> and </span>",
+    "ct.sub":"Text below the headline",
+    "ct.heroImg":"Hero image",
+    "ct.aboutImg":"“About the coach” image",
+    "ct.stat":"Stat",
+    "ct.addStat":"Add stat",
+    "ct.statN":"Number",
+    "ct.statL":"Label",
+    "ct.cred":"Credential",
+    "ct.addCred":"Add credential",
+    "ct.icon":"Icon",
+    "ct.credT":"Title",
+    "ct.credS":"Details",
+    "ct.plan":"Package",
+    "ct.addPlan":"Add package",
+    "ct.featured":"Featured package",
+    "ct.planName":"Package name",
+    "ct.planTag":"Badge (e.g. Most popular)",
+    "ct.planPrice":"Price",
+    "ct.planUnit":"Unit (e.g. IQD / month)",
+    "ct.planDesc":"Description",
+    "ct.features":"Features",
+    "ct.addFeature":"Add feature",
+    "ct.quote":"Review",
+    "ct.addQuote":"Add review",
+    "ct.quoteT":"Review text",
+    "ct.quoteN":"Name",
+    "ct.quoteR":"Result (e.g. 3 months — down 7 kg)",
+    "ct.faq":"Question",
+    "ct.addFaq":"Add question",
+    "ct.faqQ":"Question",
+    "ct.faqA":"Answer",
+    "ct.credit":"Credit line in the footer",
 
     "media.intro":"Every image you upload is stored in the media bucket, inside a folder based on what it is for. From here you can see every image, where it lives, and which recipe or course uses it.",
     "media.upload":"Upload images",
@@ -1098,6 +1269,7 @@ const T = {
     "f.coverNone":"No image",
     "f.upload":"Upload image",
     "f.uploading":"Uploading…",
+    "f.shrinking":"Compressing…",
     "f.coverUrl":"Or paste an image URL",
     "f.nutrition":"Nutrition (per single serving)",
     "f.servings":"Servings",
@@ -1132,6 +1304,9 @@ const T = {
 
     "info.identity":"Site identity",
     "info.name":"Name",
+    "info.nameEn":"Name in English",
+    "info.taglineEn":"Tagline in English",
+    "info.bioEn":"Bio in English",
     "info.initial":"Logo letter",
     "info.initialHint":"The letter shown in the logo",
     "info.tagline":"Tagline",
@@ -1151,11 +1326,12 @@ const T = {
     "ok.published":"Now published",
     "ok.unpublished":"Now hidden",
     "ok.uploaded":"Image uploaded",
+    "ok.shrunk":"Image compressed — {n}% smaller",
     "err.save":"Could not save — please try again.",
     "err.delete":"Could not delete — please try again.",
     "err.upload":"Could not upload the image.",
     "err.imgType":"Must be an image (jpg, png or webp).",
-    "err.imgSize":"Image is larger than 5 MB.",
+    "err.imgSize":"The image is still too large after compression — try another one.",
 
     tags:{
       "فطور":"Breakfast","غداء":"Lunch","عشاء":"Dinner","سناك":"Snack",
@@ -1212,7 +1388,11 @@ function applyLang(){
   $('#gateLangTxt').textContent = LANG === 'ar' ? 'EN' : 'ع';
   $('#q').placeholder = t('app.searchPh');
   $('#newTxt').textContent = TAB === 'courses' ? t('app.newCourse') : t('app.new');
-  if (!$('#app').hidden){ TAB === 'media' ? renderMedia() : render() }
+  if (!$('#app').hidden){
+    if (TAB === 'media')        renderMedia();
+    else if (TAB === 'content'){ syncContent(); drawContent() }
+    else                        render();
+  }
   if (!$('#picker').hidden) renderPicker();
   if (!$('#modal').hidden){ syncRows(); syncBase(); drawForm() }   /* ما نضيّع اللي انكتب */
 }
@@ -1308,6 +1488,7 @@ async function loadAll(){
   ROWS.recipes = r.data || [];
   ROWS.courses = c.data || [];
   INFO = i.data || { id:1, name:'كوتش زهراء', initial:'ز', tagline:'', bio:'', avatar_url:'', instagram:'', whatsapp:'' };
+  CT = null;                    /* يعاد بناؤه من INFO عند فتح تبويب المحتوى */
   fillInfoForm();
   $('#brandName').textContent = INFO.name || 'كوتش زهراء';
   $('#brandMark').textContent = INFO.initial || 'ز';
@@ -1333,7 +1514,7 @@ function render(){
     return;
   }
 
-  $('#list').innerHTML = items.map(x => {
+  $('#list').innerHTML = items.map((x, i, arr) => {
     const meta = TAB === 'recipes'
       ? `<span class="pill">${esc(tag(x.tag))}</span>
          ${x.duration ? `<span>${esc(x.duration)}</span>` : ''}
@@ -1358,8 +1539,21 @@ function render(){
         </div>
       </div>
       <div class="row-acts">
+        <span class="sorter">
+          <button type="button" data-act="up" data-id="${x.id}" ${i === 0 ? 'disabled' : ''}
+                  aria-label="${esc(t('app.moveUp'))}" title="${esc(t('app.moveUp'))}">${ico('i-up')}</button>
+          <button type="button" data-act="down" data-id="${x.id}" ${i === arr.length - 1 ? 'disabled' : ''}
+                  aria-label="${esc(t('app.moveDown'))}" title="${esc(t('app.moveDown'))}">${ico('i-down')}</button>
+        </span>
         <button class="btn btn-quiet btn-sm" type="button" data-act="toggle" data-id="${x.id}">
           ${ico(x.is_published ? 'i-eye-off' : 'i-eye')}<span>${esc(x.is_published ? t('app.unpublish') : t('app.publish'))}</span>
+        </button>
+        <a class="btn btn-quiet btn-sm" href="index.html#/${TAB === 'courses' ? 'c' : 'r'}/${esc(x.id)}"
+           target="_blank" rel="noopener" title="${esc(t('app.preview'))}">
+          ${ico('i-external')}<span>${esc(t('app.preview'))}</span>
+        </a>
+        <button class="btn btn-quiet btn-sm" type="button" data-act="dup" data-id="${x.id}">
+          ${ico('i-copy')}<span>${esc(t('app.duplicate'))}</span>
         </button>
         <button class="btn btn-ghost btn-sm" type="button" data-act="edit" data-id="${x.id}">
           ${ico('i-edit')}<span>${esc(t('app.edit'))}</span>
@@ -1476,6 +1670,13 @@ function renderPicker(){
          <b>${esc(t('media.pickEmpty'))}</b></div>`;
 }
 function choosePicked(url){
+  if (PICK_TARGET && PICK_TARGET.startsWith('ct:')){
+    const field = PICK_TARGET.slice(3);
+    syncContent();
+    CT[field] = url;
+    closePicker();
+    return drawContent();
+  }
   if (PICK_TARGET === 'avatar'){
     $('#i-avatar').value = url;
     setPreview($('#i-prev'), url);
@@ -1507,17 +1708,21 @@ function askDeleteMedia(path){
 /* ══════════════════════════════════════════════════════════
    ⑦  التبويبات
    ══════════════════════════════════════════════════════════ */
+const PANES = ['recipes','courses','media','content','info'];
+
 function setTab(nextTab){
   TAB = nextTab;
-  ['recipes','courses','media','info'].forEach(k =>
-    $('#tab-' + k).setAttribute('aria-selected', String(k === TAB)));
-  $('#listPane').hidden  = TAB === 'info' || TAB === 'media';
-  $('#mediaPane').hidden = TAB !== 'media';
-  $('#infoPane').hidden  = TAB !== 'info';
+  PANES.forEach(k => $('#tab-' + k).setAttribute('aria-selected', String(k === TAB)));
+  const isList = TAB === 'recipes' || TAB === 'courses';
+  $('#listPane').hidden    = !isList;
+  $('#mediaPane').hidden   = TAB !== 'media';
+  $('#contentPane').hidden = TAB !== 'content';
+  $('#infoPane').hidden    = TAB !== 'info';
   $('#newTxt').textContent = TAB === 'courses' ? t('app.newCourse') : t('app.new');
   $('#q').value = '';
-  if (TAB === 'media'){ MEDIA.length ? renderMedia() : loadMedia() }
-  else render();
+  if (TAB === 'media')        { MEDIA.length ? renderMedia() : loadMedia() }
+  else if (TAB === 'content') { drawContent() }
+  else if (isList)            { render() }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1808,15 +2013,60 @@ function syncRows(){
 /* ══════════════════════════════════════════════════════════
    ⑨  رفع الصور
    ══════════════════════════════════════════════════════════ */
-async function uploadImage(file, folder, barEl, btnEl){
-  if (!/^image\//.test(file.type)) { toast(t('err.imgType'), 'bad'); return null }
-  if (file.size > 5 * 1024 * 1024) { toast(t('err.imgSize'), 'bad'); return null }
+/* يصغّر الصورة بالمتصفح قبل الرفع — صورة موبايل ٦ ميغا تصير ~٢٠٠ كيلو
+   بنفس الوضوح على الشاشة. إذا فشل التصغير لأي سبب نرفع الأصل. */
+const MAX_W = 1400, MAX_H = 1400, QUALITY = 0.82;
+
+function shrink(file){
+  return new Promise(resolve => {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return resolve(file);
+
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, MAX_W / img.width, MAX_H / img.height);
+      /* صورة صغيرة أصلاً وخفيفة → خليها مثل ما هي */
+      if (scale === 1 && file.size <= 400 * 1024) return resolve(file);
+
+      const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      const cx = cv.getContext('2d');
+      cx.imageSmoothingQuality = 'high';
+      cx.drawImage(img, 0, 0, w, h);
+
+      cv.toBlob(blob => {
+        if (!blob || blob.size >= file.size) return resolve(file);   /* ما فاد شي */
+        resolve(new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type:'image/jpeg' }));
+      }, 'image/jpeg', QUALITY);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file) };
+    img.src = url;
+  });
+}
+
+async function uploadImage(original, folder, barEl, btnEl){
+  if (!/^image\//.test(original.type)) { toast(t('err.imgType'), 'bad'); return null }
+
+  if (btnEl){ btnEl.disabled = true; btnEl.querySelector('span').textContent = t('f.shrinking') }
+  const file = await shrink(original);
+  if (btnEl) btnEl.querySelector('span').textContent = t('f.uploading');
+
+  if (file.size > 8 * 1024 * 1024){
+    if (btnEl){ btnEl.disabled = false; btnEl.querySelector('span').textContent = t('f.upload') }
+    toast(t('err.imgSize'), 'bad');
+    return null;
+  }
+  if (file !== original){
+    const saved = Math.round((1 - file.size / original.size) * 100);
+    if (saved >= 15) toast(t('ok.shrunk', { n:saved }));
+  }
 
   const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
   if (barEl){ barEl.hidden = false; barEl.firstElementChild.style.width = '55%' }
-  if (btnEl){ btnEl.disabled = true; btnEl.querySelector('span').textContent = t('f.uploading') }
 
   const { error } = await sb.storage.from(BUCKET).upload(path, file, { cacheControl:'31536000', upsert:false });
 
@@ -1924,6 +2174,52 @@ async function togglePublish(id){
   toast(t(next ? 'ok.published' : 'ok.unpublished'));
 }
 
+/* نسخة من عنصر — تنحفظ مخفية حتى تراجعينها قبل النشر */
+async function duplicate(id){
+  const src = ROWS[table()].find(x => x.id === id); if (!src) return;
+  const copy = { ...src };
+  delete copy.id; delete copy.created_at; delete copy.updated_at;
+  copy.title = `${src.title} — ${t('app.copySuffix')}`;
+  copy.is_published = false;
+  copy.sort_order = nz(src.sort_order) + 1;
+
+  const { data, error } = await sb.from(table()).insert(copy).select().single();
+  if (error){ toast(t('err.save') + ' — ' + error.message, 'bad'); return }
+  ROWS[table()].push(data);
+  sortRows();
+  render();
+  toast(t('ok.duplicated'));
+  openForm(data);
+}
+
+function sortRows(){
+  ROWS[table()].sort((a, b) =>
+    (a.sort_order - b.sort_order) || (b.created_at > a.created_at ? 1 : -1));
+}
+
+/* يبدّل sort_order بين عنصرين متجاورين */
+async function move(id, dir){
+  const arr = ROWS[table()];
+  const i = arr.findIndex(x => x.id === id);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= arr.length) return;
+
+  const a = arr[i], b = arr[j];
+  /* إذا الترتيبين متساويين نعطيهم أرقام متمايزة أول */
+  let sa = nz(a.sort_order), sbb = nz(b.sort_order);
+  if (sa === sbb){ sbb = sa + dir }
+
+  const [r1, r2] = await Promise.all([
+    sb.from(table()).update({ sort_order:sbb }).eq('id', a.id),
+    sb.from(table()).update({ sort_order:sa  }).eq('id', b.id)
+  ]);
+  if (r1.error || r2.error){ toast(t('err.save'), 'bad'); return }
+
+  a.sort_order = sbb; b.sort_order = sa;
+  sortRows();
+  render();
+}
+
 function askDelete(id){
   const row = ROWS[table()].find(x => x.id === id); if (!row) return;
   PENDING_DELETE = { id, table:table(), title:row.title };
@@ -1974,14 +2270,209 @@ async function doDelete(){
 }
 
 /* ══════════════════════════════════════════════════════════
+   ⑩ب  محرر محتوى الصفحة الرئيسية
+   ══════════════════════════════════════════════════════════ */
+let CT = null;   /* نسخة عمل من المحتوى */
+
+const emptyBi = () => ({ ar:'', en:'' });
+
+function loadContent(){
+  const s = INFO || {};
+  const bi = v => (v && typeof v === 'object') ? { ar:v.ar || '', en:v.en || '' } : { ar:v || '', en:'' };
+  CT = {
+    hero_eyebrow: bi(s.hero_eyebrow),
+    hero_title:   bi(s.hero_title),
+    hero_sub:     bi(s.hero_sub),
+    credit:       bi(s.credit),
+    hero_image:   s.hero_image || '',
+    about_image:  s.about_image || '',
+    stats:  JSON.parse(JSON.stringify(s.stats  || [])),
+    creds:  JSON.parse(JSON.stringify(s.creds  || [])),
+    plans:  JSON.parse(JSON.stringify(s.plans  || [])),
+    quotes: JSON.parse(JSON.stringify(s.quotes || [])),
+    faq:    JSON.parse(JSON.stringify(s.faq    || []))
+  };
+}
+
+/* حقل ثنائي اللغة — سطر واحد أو منطقة نص */
+function biField(label, path, val, area){
+  const tagName = area ? 'textarea' : 'input';
+  const close   = area ? '</textarea>' : '';
+  const mk = (lng, cls, v) =>
+    `<span class="side ${cls}">
+       <span class="flag">${lng}</span>
+       <${tagName} class="inp" data-ct="${esc(path)}.${cls}"
+         ${area ? '' : `value="${esc(v)}"`}
+         ${cls === 'en' ? 'dir="ltr"' : ''}>${area ? esc(v) : ''}${close}
+     </span>`;
+  return `<div class="field">
+    ${label ? `<span class="lbl-txt">${esc(label)}</span>` : ''}
+    <div class="bi">${mk('عربي','ar', val.ar)}${mk('English','en', val.en)}</div>
+  </div>`;
+}
+
+function listBlock(key, title, addLabel, rowFn){
+  const rows = (CT[key] || []).map((item, i) => `
+    <div class="blk" data-list="${key}" data-i="${i}">
+      <div class="blk-head">
+        <h5><span class="idx num">${i + 1}</span>${esc(title)}</h5>
+        <button class="del-row" type="button" data-ctdel="${key}" data-i="${i}"
+                aria-label="${esc(t('app.delete'))}">${ico('i-trash')}</button>
+      </div>
+      ${rowFn(item, i)}
+    </div>`).join('');
+  return `<div class="fset">
+    <h4>${esc(title)}</h4>
+    ${rows || `<p class="rows-empty">${esc(t('ct.emptyList'))}</p>`}
+    <button class="add-row" type="button" data-ctadd="${key}">${ico('i-plus')}${esc(addLabel)}</button>
+  </div>`;
+}
+
+function drawContent(){
+  if (!CT) loadContent();
+  const b = v => (v && typeof v === 'object') ? v : emptyBi();
+
+  let h = `<div class="fset">
+    <h4>${esc(t('ct.hero'))}</h4>
+    ${biField(t('ct.eyebrow'), 'hero_eyebrow', CT.hero_eyebrow)}
+    ${biField(t('ct.title'),   'hero_title',   CT.hero_title, true)}
+    <p class="hint">${esc(t('ct.titleHint'))}</p>
+    ${biField(t('ct.sub'),     'hero_sub',     CT.hero_sub, true)}
+    <div class="grid2">
+      <div class="field">
+        <label>${esc(t('ct.heroImg'))}</label>
+        <input class="inp" dir="ltr" data-ct="hero_image" value="${esc(CT.hero_image)}">
+        <button class="btn btn-ghost btn-sm" type="button" data-ctpick="hero_image">
+          ${ico('i-image')}<span>${esc(t('media.pick'))}</span></button>
+      </div>
+      <div class="field">
+        <label>${esc(t('ct.aboutImg'))}</label>
+        <input class="inp" dir="ltr" data-ct="about_image" value="${esc(CT.about_image)}">
+        <button class="btn btn-ghost btn-sm" type="button" data-ctpick="about_image">
+          ${ico('i-image')}<span>${esc(t('media.pick'))}</span></button>
+      </div>
+    </div>
+  </div>`;
+
+  h += listBlock('stats', t('ct.stat'), t('ct.addStat'), s => `
+    ${biField(t('ct.statN'), `stats.${CT.stats.indexOf(s)}.n`, b(s.n))}
+    ${biField(t('ct.statL'), `stats.${CT.stats.indexOf(s)}.l`, b(s.l))}`);
+
+  h += listBlock('creds', t('ct.cred'), t('ct.addCred'), (c, i) => `
+    <div class="field">
+      <label>${esc(t('ct.icon'))}</label>
+      <select class="inp" data-ct="creds.${i}.icon">
+        ${['i-shield','i-book','i-users','i-calendar','i-check-circle','i-dumbbell','i-salad']
+          .map(v => `<option value="${v}"${v === c.icon ? ' selected' : ''}>${v}</option>`).join('')}
+      </select>
+    </div>
+    ${biField(t('ct.credT'), `creds.${i}.t`, b(c.t))}
+    ${biField(t('ct.credS'), `creds.${i}.s`, b(c.s))}`);
+
+  h += listBlock('plans', t('ct.plan'), t('ct.addPlan'), (p, i) => `
+    <label class="switch">
+      <input type="checkbox" data-ct="plans.${i}.featured"${p.featured ? ' checked' : ''}>
+      <span class="track"></span><span class="lbl-txt">${esc(t('ct.featured'))}</span>
+    </label>
+    ${biField(t('ct.planName'), `plans.${i}.name`,  b(p.name))}
+    ${biField(t('ct.planTag'),  `plans.${i}.tag`,   b(p.tag))}
+    ${biField(t('ct.planPrice'),`plans.${i}.price`, b(p.price))}
+    ${biField(t('ct.planUnit'), `plans.${i}.unit`,  b(p.unit))}
+    ${biField(t('ct.planDesc'), `plans.${i}.desc`,  b(p.desc), true)}
+    <div class="field">
+      <span class="lbl-txt">${esc(t('ct.features'))}</span>
+      <div class="bi">
+        <span class="side">
+          <span class="flag">عربي</span>
+          <div class="feat-list">
+            ${((p.features && p.features.ar) || []).map((f, k) => `
+              <div class="feat-row">
+                <input class="inp" data-ct="plans.${i}.features.ar.${k}" value="${esc(f)}">
+                <button class="del-row" type="button" data-featdel="${i}|ar|${k}"
+                        aria-label="${esc(t('f.removeRow'))}">${ico('i-trash')}</button>
+              </div>`).join('')}
+            <button class="add-row" type="button" data-featadd="${i}|ar">${ico('i-plus')}${esc(t('ct.addFeature'))}</button>
+          </div>
+        </span>
+        <span class="side en">
+          <span class="flag">English</span>
+          <div class="feat-list">
+            ${((p.features && p.features.en) || []).map((f, k) => `
+              <div class="feat-row">
+                <input class="inp" dir="ltr" data-ct="plans.${i}.features.en.${k}" value="${esc(f)}">
+                <button class="del-row" type="button" data-featdel="${i}|en|${k}"
+                        aria-label="${esc(t('f.removeRow'))}">${ico('i-trash')}</button>
+              </div>`).join('')}
+            <button class="add-row" type="button" data-featadd="${i}|en">${ico('i-plus')}${esc(t('ct.addFeature'))}</button>
+          </div>
+        </span>
+      </div>
+    </div>`);
+
+  h += listBlock('quotes', t('ct.quote'), t('ct.addQuote'), (q, i) => `
+    ${biField(t('ct.quoteT'), `quotes.${i}.t`, b(q.t), true)}
+    ${biField(t('ct.quoteN'), `quotes.${i}.n`, b(q.n))}
+    ${biField(t('ct.quoteR'), `quotes.${i}.r`, b(q.r))}`);
+
+  h += listBlock('faq', t('ct.faq'), t('ct.addFaq'), (f, i) => `
+    ${biField(t('ct.faqQ'), `faq.${i}.q`, b(f.q))}
+    ${biField(t('ct.faqA'), `faq.${i}.a`, b(f.a), true)}`);
+
+  h += `${biField(t('ct.credit'), 'credit', CT.credit)}
+  <p class="err" id="ctErr" role="alert"></p>
+  <div><button class="btn btn-primary" id="ctSave" type="button">${esc(t('app.save'))}</button></div>`;
+
+  $('#contentBody').innerHTML = h;
+}
+
+/* يقرا كل الحقول ويرجّعهم لـ CT */
+function syncContent(){
+  if (!CT) return;
+  $$('#contentBody [data-ct]').forEach(el => {
+    const parts = el.dataset.ct.split('.');
+    let node = CT;
+    for (let i = 0; i < parts.length - 1; i++){
+      const k = parts[i];
+      if (node[k] == null) node[k] = /^\d+$/.test(parts[i + 1]) ? [] : {};
+      node = node[k];
+    }
+    const last = parts[parts.length - 1];
+    node[last] = el.type === 'checkbox' ? el.checked : el.value;
+  });
+}
+
+async function saveContent(){
+  syncContent();
+  const btn = $('#ctSave'), err = $('#ctErr');
+  err.textContent = '';
+  btn.disabled = true; btn.textContent = t('app.saving');
+
+  const { data, error } = await sb.from('site_info')
+    .update({
+      hero_eyebrow:CT.hero_eyebrow, hero_title:CT.hero_title, hero_sub:CT.hero_sub,
+      credit:CT.credit, hero_image:CT.hero_image, about_image:CT.about_image,
+      stats:CT.stats, creds:CT.creds, plans:CT.plans, quotes:CT.quotes, faq:CT.faq
+    })
+    .eq('id', 1).select().single();
+
+  btn.disabled = false; btn.textContent = t('app.save');
+  if (error){ err.textContent = t('err.save') + ' — ' + error.message; return }
+  INFO = data;
+  toast(t('ok.saved'));
+}
+
+/* ══════════════════════════════════════════════════════════
    ⑪  معلومات الموقع
    ══════════════════════════════════════════════════════════ */
 function fillInfoForm(){
   if (!INFO) return;
-  $('#i-name').value    = INFO.name || '';
-  $('#i-initial').value = INFO.initial || '';
-  $('#i-tagline').value = INFO.tagline || '';
-  $('#i-bio').value     = INFO.bio || '';
+  $('#i-name').value      = INFO.name || '';
+  $('#i-nameEn').value    = INFO.name_en || '';
+  $('#i-initial').value   = INFO.initial || '';
+  $('#i-tagline').value   = INFO.tagline || '';
+  $('#i-taglineEn').value = INFO.tagline_en || '';
+  $('#i-bio').value       = INFO.bio || '';
+  $('#i-bioEn').value     = INFO.bio_en || '';
   $('#i-avatar').value  = INFO.avatar_url || '';
   $('#i-insta').value   = INFO.instagram || '';
   $('#i-whats').value   = INFO.whatsapp || '';
@@ -1997,9 +2488,12 @@ async function saveInfo(e){
   const payload = {
     id: 1,
     name,
+    name_en:    $('#i-nameEn').value.trim(),
     initial:    ($('#i-initial').value.trim() || name.charAt(0)),
     tagline:    $('#i-tagline').value.trim(),
+    tagline_en: $('#i-taglineEn').value.trim(),
     bio:        $('#i-bio').value.trim(),
+    bio_en:     $('#i-bioEn').value.trim(),
     avatar_url: $('#i-avatar').value.trim(),
     instagram:  $('#i-insta').value.trim(),
     whatsapp:   $('#i-whats').value.trim()
@@ -2073,13 +2567,75 @@ function wire(){
   });
   $('#logoutBtn').addEventListener('click', () => sb.auth.signOut());
 
+  /* استعادة كلمة السر — يدز رابط على الإيميل */
+  $('#forgotLink').addEventListener('click', async e => {
+    e.preventDefault();
+    const email = $('#email').value.trim();
+    const err = $('#loginErr');
+    if (!email){ err.textContent = t('gate.resetNeedEmail'); $('#email').focus(); return }
+    err.textContent = '';
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + location.pathname
+    });
+    if (error){ toast(t('gate.resetErr') + ' — ' + error.message, 'bad'); return }
+    toast(t('gate.resetSent'));
+  });
+
   $('#langBtn').addEventListener('click', toggleLang);
   $('#gateLang').addEventListener('click', toggleLang);
   $('#themeBtn').addEventListener('click', toggleTheme);
   $('#gateTheme').addEventListener('click', toggleTheme);
 
-  ['recipes','courses','media','info'].forEach(k =>
-    $('#tab-' + k).addEventListener('click', () => setTab(k)));
+  PANES.forEach(k => $('#tab-' + k).addEventListener('click', () => setTab(k)));
+
+  /* ── محرر محتوى الصفحة ── */
+  $('#contentBody').addEventListener('click', e => {
+    const add = e.target.closest('[data-ctadd]');
+    if (add){
+      syncContent();
+      const k = add.dataset.ctadd;
+      const blank = {
+        stats:  { n:emptyBi(), l:emptyBi() },
+        creds:  { icon:'i-check-circle', t:emptyBi(), s:emptyBi() },
+        plans:  { featured:false, name:emptyBi(), tag:emptyBi(), price:emptyBi(),
+                  unit:emptyBi(), desc:emptyBi(), features:{ ar:[], en:[] } },
+        quotes: { t:emptyBi(), n:emptyBi(), r:emptyBi() },
+        faq:    { q:emptyBi(), a:emptyBi() }
+      }[k];
+      CT[k].push(JSON.parse(JSON.stringify(blank)));
+      return drawContent();
+    }
+
+    const del = e.target.closest('[data-ctdel]');
+    if (del){
+      syncContent();
+      CT[del.dataset.ctdel].splice(+del.dataset.i, 1);
+      return drawContent();
+    }
+
+    const fa = e.target.closest('[data-featadd]');
+    if (fa){
+      syncContent();
+      const [i, lng] = fa.dataset.featadd.split('|');
+      const p = CT.plans[+i];
+      p.features = p.features || { ar:[], en:[] };
+      (p.features[lng] = p.features[lng] || []).push('');
+      return drawContent();
+    }
+
+    const fd = e.target.closest('[data-featdel]');
+    if (fd){
+      syncContent();
+      const [i, lng, k] = fd.dataset.featdel.split('|');
+      CT.plans[+i].features[lng].splice(+k, 1);
+      return drawContent();
+    }
+
+    const pick = e.target.closest('[data-ctpick]');
+    if (pick){ syncContent(); return openPicker('ct:' + pick.dataset.ctpick) }
+
+    if (e.target.closest('#ctSave')) saveContent();
+  });
 
   /* ── مكتبة الصور ── */
   $('#mediaChips').addEventListener('click', e => {
@@ -2134,6 +2690,9 @@ function wire(){
     if (b.dataset.act === 'edit')   openForm(ROWS[table()].find(x => x.id === id));
     if (b.dataset.act === 'del')    askDelete(id);
     if (b.dataset.act === 'toggle') togglePublish(id);
+    if (b.dataset.act === 'dup')    duplicate(id);
+    if (b.dataset.act === 'up')     move(id, -1);
+    if (b.dataset.act === 'down')   move(id,  1);
   });
 
   /* المودال */

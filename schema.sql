@@ -9,7 +9,7 @@ create extension if not exists pgcrypto;
 --  ①  الجداول
 -- ═══════════════════════════════════════════════════════════════
 
--- معلومات الحساب (صف واحد فقط)
+-- معلومات الحساب ومحتوى الصفحة الرئيسية (صف واحد فقط)
 create table if not exists public.site_info (
   id          int primary key default 1,
   name        text not null default 'كوتش زهراء',
@@ -22,6 +22,32 @@ create table if not exists public.site_info (
   updated_at  timestamptz not null default now(),
   constraint  single_row check (id = 1)
 );
+
+-- محتوى الصفحة الرئيسية القابل للتعديل من اللوحة (ثنائي اللغة)
+-- كل حقل نصّي مخزون كـ {"ar":"…","en":"…"}
+alter table public.site_info
+  add column if not exists name_en      text  not null default '',
+  add column if not exists tagline_en   text  not null default '',
+  add column if not exists bio_en       text  not null default '',
+  add column if not exists hero_eyebrow jsonb not null default '{"ar":"","en":""}'::jsonb,
+  add column if not exists hero_title   jsonb not null default '{"ar":"","en":""}'::jsonb,
+  add column if not exists hero_sub     jsonb not null default '{"ar":"","en":""}'::jsonb,
+  add column if not exists hero_image   text  not null default '',
+  add column if not exists about_image  text  not null default '',
+  add column if not exists stats        jsonb not null default '[]'::jsonb,
+  add column if not exists creds        jsonb not null default '[]'::jsonb,
+  add column if not exists plans        jsonb not null default '[]'::jsonb,
+  add column if not exists quotes       jsonb not null default '[]'::jsonb,
+  add column if not exists faq          jsonb not null default '[]'::jsonb,
+  add column if not exists credit       jsonb not null default '{"ar":"","en":""}'::jsonb;
+
+-- شكل الحقول:
+--   stats  : [{"n":{"ar":"+٢٥٠","en":"250+"},"l":{"ar":"مشتركة","en":"members"}}]
+--   creds  : [{"icon":"i-shield","t":{"ar":"…","en":"…"},"s":{"ar":"…","en":"…"}}]
+--   plans  : [{"featured":true,"name":{…},"tag":{…},"price":{…},"unit":{…},"desc":{…},
+--              "features":{"ar":["…"],"en":["…"]}}]
+--   quotes : [{"t":{…},"n":{…},"r":{…}}]
+--   faq    : [{"q":{…},"a":{…}}]
 
 -- الوصفات
 create table if not exists public.recipes (
