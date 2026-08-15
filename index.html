@@ -15,6 +15,26 @@
 <meta property="og:locale" content="ar_IQ" id="ogLocale">
 <meta name="twitter:card" content="summary_large_image">
 
+<!-- سياسة أمان المحتوى — تحصر الصفحة بالمصادر المعروفة فقط.
+     GitHub Pages ما يخلينا نحط هيدرات، فالوسم هو الطريق الوحيد.
+     ملاحظتان صادقتان عن حدودها:
+       • script-src بيه 'unsafe-inline' لأن كود الصفحة مكتوب داخل الملف
+         (قرار معماري بـ PROJECT.md). هي تمنع تحميل سكربت من دومين غريب
+         وتمنع eval، بس ما تمنع سكربت منحقن بالصفحة نفسها.
+       • frame-ancestors ما تشتغل بوسم meta — تحتاج هيدر من السيرفر. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'none';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data: https://*.supabase.co https://images.unsplash.com;
+  connect-src https://*.supabase.co;
+  frame-src https://www.youtube.com https://www.youtube-nocookie.com;
+  manifest-src 'self';
+  worker-src 'self';
+  base-uri 'none';
+  form-action 'none'">
+
 <link rel="canonical" href="" id="canonical">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -1534,6 +1554,19 @@ let CART = [];                     /* [{id, servings}] */
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* أي رابط يجي من الداتابيس يمر من هنا قبل ما ينحط بـ href.
+   esc() تمنع الخروج من الوسم بس ما تمنع javascript: — هاي تمنعها. */
+const safeUrl = u => /^https?:\/\//i.test(String(u ?? '').trim()) ? String(u).trim() : '#';
+
+/* عنوان الواجهة الوحيد اللي مسموح بيه HTML — ومسموح بوسم واحد بس:
+   <span class="hl"> اللي يلوّن كلمة. أي شي غيره ينطلع كنص عادي. */
+function heroHtml(raw){
+  const escaped = String(raw ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  return escaped
+    .replace(/&lt;span class=(?:&quot;|"|')?hl(?:&quot;|"|')?&gt;/gi, '<span class="hl">')
+    .replace(/&lt;\/span&gt;/gi, '</span>');
+}
 const ico = (id, cls) => `<svg class="icon${cls ? ' ' + cls : ''}" aria-hidden="true"><use href="#${id}"></use></svg>`;
 const num = n => { const v = Math.round(n * 10) / 10; return v % 1 === 0 ? String(v) : v.toFixed(1) };
 const nz  = v => { const n = Number(v); return Number.isFinite(n) ? n : 0 };
@@ -1641,8 +1674,8 @@ async function fetchAll(){
 function siteName(){ return (LANG === 'en' && SITE?.name_en) ? SITE.name_en : (SITE?.name || 'كوتش زهراء') }
 function siteTag(){  return (LANG === 'en' && SITE?.tagline_en) ? SITE.tagline_en : (SITE?.tagline || '') }
 function siteBio(){  return (LANG === 'en' && SITE?.bio_en) ? SITE.bio_en : (SITE?.bio || '') }
-const whats = () => SITE?.whatsapp || '#';
-const insta = () => SITE?.instagram || '#';
+const whats = () => safeUrl(SITE?.whatsapp);
+const insta = () => safeUrl(SITE?.instagram);
 
 /* ── إظهار وإخفاء أقسام الصفحة (تتحكم بيها من تبويب «محتوى الصفحة») ──
    كل قسم يجي وياه روابط التنقل اللي تشير له — إذا انطفى القسم
@@ -1680,22 +1713,31 @@ function paintSite(){
   $('#canonical')?.setAttribute('href', base);
   if (SITE.hero_image) $('#ogImage')?.setAttribute('content', SITE.hero_image);
 
-  /* الشعار: صورتها الشخصية إذا موجودة، وإلا الحرف المختصر */
+  /* الشعار: صورتها الشخصية إذا موجودة، وإلا الحرف المختصر.
+     ينتبنى بالـ DOM مو بـ innerHTML — النسخة القديمة كانت تحط ناتج esc()
+     جوّا نص جافاسكربت داخل onerror، ومحلل الـ HTML يفكّ &#39; قبل ما يوصل
+     لجافاسكربت، فحرف مختصر بيه فاصلة عليا يكسر الشعار ويفتح باب حقن. */
   ['#mark','#mark2'].forEach(s => {
     const el = $(s);
+    const initial = SITE.initial || 'ز';
     if (SITE.avatar_url){
       el.classList.add('has-photo');
-      el.innerHTML = `<img src="${esc(SITE.avatar_url)}" alt="${esc(name)}"
-        onerror="this.parentNode.classList.remove('has-photo');
-                 this.parentNode.textContent='${esc(SITE.initial || 'ز')}'">`;
+      const img = document.createElement('img');
+      img.alt = name;
+      img.addEventListener('error', () => {
+        el.classList.remove('has-photo');
+        el.textContent = initial;
+      });
+      img.src = SITE.avatar_url;
+      el.replaceChildren(img);
     } else {
       el.classList.remove('has-photo');
-      el.textContent = SITE.initial || 'ز';
+      el.textContent = initial;
     }
   });
   ['#logoName','#logoName2','#footName','#aboutName'].forEach(s => $(s).textContent = name);
   $('#heroEyebrow').textContent = bi(SITE.hero_eyebrow);
-  $('#heroTitle').innerHTML     = bi(SITE.hero_title);   /* يسمح بـ <span class="hl"> */
+  $('#heroTitle').innerHTML     = heroHtml(bi(SITE.hero_title));   /* يسمح بـ <span class="hl"> فقط */
   $('#heroSub').textContent     = bi(SITE.hero_sub);
   $('#bio').textContent         = siteBio();
   $('#footTag').textContent     = siteTag();
@@ -1705,7 +1747,7 @@ function paintSite(){
 
   const about = $('#aboutImg');
   if (SITE.about_image && about.getAttribute('src') !== SITE.about_image){
-    about.src = SITE.about_image; about.onerror = () => about.classList.add('failed');
+    about.src = SITE.about_image;     /* الفشل يلتقطه مستمع الصور العام */
   }
 
   ['#headerCta','#heroCta1','#ctaWhats','#sWhats','#fWhats','#mobileCtaLink']
@@ -1775,7 +1817,7 @@ function buildSlides(){
   box.innerHTML = imgs.map((src, i) =>
     `<img src="${esc(src)}" alt="" class="${i === 0 ? 'on' : ''}"
        ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"
-       onerror="this.classList.add('failed')">`).join('');
+       >`).join('');
 
   $('#heroDots').innerHTML = imgs.length > 1
     ? imgs.map((_, i) => `<button type="button" role="tab" data-slide="${i}"
@@ -1956,7 +1998,7 @@ function renderGrid(){
     return `<div class="card" style="--i:${n}">
       <span class="thumb">
         <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async"
-             onerror="this.classList.add('failed')">
+             >
         <span class="badge">${esc(tg(x.tag))}</span>
         ${TAB === 'recipes' ? `<span class="kcal-chip">${x.kcal} ${esc(tt('kcalUnit'))}</span>` : ''}
         ${x.video ? `<span class="play">${ico('i-play')}</span>` : ''}
@@ -2129,12 +2171,14 @@ function drawCart(){
    ⑨  الشيت
    ══════════════════════════════════════════════════════════ */
 function embed(url){
-  const yt = url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
+  const yt = String(url ?? '').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
   if (yt) return `<div class="embed"><iframe src="https://www.youtube.com/embed/${yt[1]}"
       title="${esc(tt('videoTitle'))}" loading="lazy"
       allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe></div>`;
-  return `<a class="vid" href="${esc(url)}" target="_blank" rel="noopener">${ico('i-play')} ${esc(tt('watchVideo'))}</a>`;
+  const safe = safeUrl(url);
+  if (safe === '#') return '';        /* رابط مو http(s) — ما ننشره أصلاً */
+  return `<a class="vid" href="${esc(safe)}" target="_blank" rel="noopener">${ico('i-play')} ${esc(tt('watchVideo'))}</a>`;
 }
 
 function itemLink(x){
@@ -2196,7 +2240,7 @@ function drawSheet(){
 
   let h = `<div class="sheet-hero">
       <span class="grab"></span>
-      <img src="${esc(x.cover)}" alt="" decoding="async" onerror="this.classList.add('failed')">
+      <img src="${esc(x.cover)}" alt="" decoding="async" >
       <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}">${ico('i-close')}</button>
     </div>
     <div class="sheet-body">
@@ -2280,7 +2324,10 @@ function openFromHash(){
   if (!m) return;
   if (m[1] === 'cart'){ if (CART.length){ VIEW = 'cart'; openCart() } return }
   const wantTab = m[1] === 'r' ? 'recipes' : 'courses';
-  const id = decodeURIComponent(m[2] || '');
+  /* رابط مكسور مثل #/r/% يرمي استثناء — وهاي تنتادى من fetchAll
+     فالاستثناء چان يوقف بقية الإقلاع */
+  let id;
+  try { id = decodeURIComponent(m[2] || '') } catch(e){ return }
   const list = wantTab === 'recipes' ? RECIPES : COURSES;
   if (!list.some(x => x.id === id)) return;
   if (TAB !== wantTab){
@@ -2362,6 +2409,14 @@ function toggleTheme(){
    ⑫  ربط الأحداث
    ══════════════════════════════════════════════════════════ */
 function wire(){
+  /* أي صورة تفشل بالتحميل تاخذ .failed — مستمع واحد بمرحلة الالتقاط
+     بدل onerror مكتوب بكل وسم (أحداث الصور ما تطلع للأعلى، فلازم capture).
+     هيچي الماركب ينضف وتشتغل سياسة CSP بدون ثغرة inline handlers. */
+  addEventListener('error', e => {
+    const el = e.target;
+    if (el instanceof HTMLImageElement) el.classList.add('failed');
+  }, true);
+
   $('#tab-recipes').addEventListener('click', () => setTab('recipes'));
   $('#tab-courses').addEventListener('click', () => setTab('courses'));
 

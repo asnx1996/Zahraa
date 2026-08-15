@@ -57,6 +57,12 @@ self.addEventListener('fetch', e => {
         }
         return res;
       })
-      .catch(() => caches.match(req).then(hit => hit || caches.match('./index.html')))
+      .catch(() => caches.match(req).then(hit => {
+        if (hit) return hit;
+        /* احتياط الصفحة الرئيسية للموقع العام فقط — بدون هذا الشرط
+           فتح اللوحة أوفلاين چان يعرض الموقع العام محل اللوحة */
+        if (url.pathname.endsWith('/admin.html')) return Response.error();
+        return caches.match('./index.html');
+      }))
   );
 });

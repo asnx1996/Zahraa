@@ -8,6 +8,18 @@
 <meta name="theme-color" content="#F6F5F2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F1512" media="(prefers-color-scheme: dark)">
 
+<!-- نفس سياسة index.html، بس بدون youtube (اللوحة ما تعرض فيديو).
+     شوف الشرح الكامل بـ index.html. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'none';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com;
+  connect-src https://*.supabase.co;
+  base-uri 'none';
+  form-action 'none'">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -806,6 +818,32 @@ select.inp{cursor:pointer;
   </div>
 </div>
 
+<!-- ══ حطي كلمة سر جديدة (تظهر بس لما تجين من رابط الاستعادة) ══ -->
+<div class="gate" id="pwGate" hidden>
+  <div class="gate-card">
+    <div class="gate-head">
+      <span class="mark"><svg class="icon" style="font-size:24px"><use href="#i-lock"></use></svg></span>
+      <h1 data-t="pw.title">حطي كلمة سر جديدة</h1>
+      <p data-t="pw.sub">اكتبيها مرتين حتى نتأكد ماكو غلطة طباعة.</p>
+    </div>
+    <form id="pwForm">
+      <div class="field">
+        <label for="pw1" data-t="pw.new">كلمة السر الجديدة</label>
+        <input class="inp" id="pw1" type="password" autocomplete="new-password" required dir="ltr">
+      </div>
+      <div class="field">
+        <label for="pw2" data-t="pw.again">أعيدي كتابتها</label>
+        <input class="inp" id="pw2" type="password" autocomplete="new-password" required dir="ltr">
+      </div>
+      <p class="err" id="pwErr" role="alert"></p>
+      <button class="btn btn-primary btn-block" id="pwBtn" type="submit" data-t="pw.submit">حفظ كلمة السر</button>
+    </form>
+    <p class="gate-foot">
+      <a href="#" id="pwSkip" data-t="pw.skip">تخطّي — أكملي بكلمة السر القديمة</a>
+    </p>
+  </div>
+</div>
+
 <!-- ══ لوحة التحكم ══ -->
 <div id="app" hidden>
   <header class="topbar">
@@ -1115,6 +1153,16 @@ const T = {
     "gate.resetSent":"دزّينالج رابط الاستعادة على إيميلج ✉️",
     "gate.resetNeedEmail":"اكتبي إيميلج أول، وبعدها اضغطي على الرابط.",
     "gate.resetErr":"ما كدرنا ندز رابط الاستعادة.",
+    "pw.title":"حطي كلمة سر جديدة",
+    "pw.sub":"اكتبيها مرتين حتى نتأكد ماكو غلطة طباعة.",
+    "pw.new":"كلمة السر الجديدة",
+    "pw.again":"أعيدي كتابتها",
+    "pw.submit":"حفظ كلمة السر",
+    "pw.saving":"جاري الحفظ…",
+    "pw.short":"لازم ١٠ حروف على الأقل.",
+    "pw.mismatch":"الكلمتين مو نفسهن.",
+    "pw.done":"انبدّلت كلمة السر ✓",
+    "pw.skip":"تخطّي — أكملي بكلمة السر القديمة",
     "app.publish":"نشر",
     "app.unpublish":"إخفاء",
     "app.published":"منشور",
@@ -1369,6 +1417,16 @@ const T = {
     "gate.resetSent":"We sent a reset link to your email ✉️",
     "gate.resetNeedEmail":"Enter your email first, then click the link.",
     "gate.resetErr":"Could not send the reset link.",
+    "pw.title":"Set a new password",
+    "pw.sub":"Type it twice so we can catch a typo.",
+    "pw.new":"New password",
+    "pw.again":"Type it again",
+    "pw.submit":"Save password",
+    "pw.saving":"Saving…",
+    "pw.short":"Must be at least 10 characters.",
+    "pw.mismatch":"The two entries don't match.",
+    "pw.done":"Password changed ✓",
+    "pw.skip":"Skip — keep my current password",
     "app.publish":"Publish",
     "app.unpublish":"Hide",
     "app.published":"Published",
@@ -1591,7 +1649,8 @@ const COURSE_TAGS = ["مبتدئ","متوسط","متقدم"];
 let LANG = (()=>{ try{ return localStorage.getItem('cz-lang')==='en' ? 'en' : 'ar' }catch(e){ return 'ar' } })();
 const t = (k,vars) => {
   let s = T[LANG][k] ?? T.ar[k] ?? k;
-  if (vars) for (const p in vars) s = s.replace('{'+p+'}', vars[p]);
+  /* split/join مو replace — replace بنص عادي تبدّل أول تكرار بس */
+  if (vars) for (const p in vars) s = s.split('{'+p+'}').join(vars[p]);
   return s;
 };
 const tag = v => (T[LANG].tags[v] || v);
@@ -1741,11 +1800,18 @@ async function loadAll(){
   render();
 }
 
+/* الصفوف المعروضة حالياً بعد البحث — نفسها اللي يشتغل عليها زرّا الترتيب،
+   وإلا «فوق» يبدّل مع عنصر مو ظاهر بالشاشة والنتيجة تبين عشوائية */
+function visibleRows(){
+  const s = norm($('#q').value);
+  return ROWS[table()].filter(x =>
+    !s || norm(x.title).includes(s) || norm(x.tag).includes(s) || norm(x.area).includes(s));
+}
+
 function render(){
   if (TAB === 'info') return;
-  const s = norm($('#q').value);
   const all = ROWS[table()];
-  const items = all.filter(x => !s || norm(x.title).includes(s) || norm(x.tag).includes(s) || norm(x.area).includes(s));
+  const items = visibleRows();
 
   const unit = TAB === 'courses' ? t('app.countC') : t('app.countR');
   $('#count').textContent = items.length ? `${items.length} ${unit}` : '';
@@ -1773,7 +1839,7 @@ function render(){
     return `<article class="row${x.is_published ? '' : ' off'}">
       <span class="row-thumb">
         ${x.cover
-          ? `<img src="${esc(x.cover)}" alt="" loading="lazy" onerror="this.classList.add('failed')">`
+          ? `<img src="${esc(x.cover)}" alt="" loading="lazy">`
           : ico('i-image')}
       </span>
       <div class="row-main">
@@ -1856,7 +1922,7 @@ function mediaCard(m, pick){
 
   return `<article class="mcard" data-path="${esc(m.path)}" data-url="${esc(m.url)}">
     <span class="mthumb">
-      <img src="${esc(m.url)}" alt="" loading="lazy" onerror="this.classList.add('failed')">
+      <img src="${esc(m.url)}" alt="" loading="lazy">
       <span class="mtag">${esc(t(FOLDER_T[m.folder]))}</span>
       ${use}
     </span>
@@ -2065,7 +2131,7 @@ function coverBlock(){
     <h4>${esc(t('f.cover'))}</h4>
     <div class="cover-box">
       <div class="cover-prev" id="f-prev">
-        ${c ? `<img src="${esc(c)}" alt="" onerror="this.classList.add('failed')">`
+        ${c ? `<img src="${esc(c)}" alt="">`
             : `${ico('i-image')}<span>${esc(t('f.coverNone'))}</span>`}
       </div>
       <div class="cover-ctl">
@@ -2367,7 +2433,7 @@ async function uploadImage(original, folder, barEl, btnEl){
 
 function setPreview(box, url){
   box.innerHTML = url
-    ? `<img src="${esc(url)}" alt="" onerror="this.classList.add('failed')">`
+    ? `<img src="${esc(url)}" alt="">`
     : `${ico('i-image')}<span>${esc(t('f.coverNone'))}</span>`;
 }
 
@@ -2476,12 +2542,13 @@ function sortRows(){
 
 /* يبدّل sort_order بين عنصرين متجاورين */
 async function move(id, dir){
-  const arr = ROWS[table()];
-  const i = arr.findIndex(x => x.id === id);
+  /* على القائمة المعروضة، مو على كل الصفوف — حتى يطابق اللي تشوفينه */
+  const list = visibleRows();
+  const i = list.findIndex(x => x.id === id);
   const j = i + dir;
-  if (i < 0 || j < 0 || j >= arr.length) return;
+  if (i < 0 || j < 0 || j >= list.length) return;
 
-  const a = arr[i], b = arr[j];
+  const a = list[i], b = list[j];
   /* إذا الترتيبين متساويين نعطيهم أرقام متمايزة أول */
   let sa = nz(a.sort_order), sbb = nz(b.sort_order);
   if (sa === sbb){ sbb = sa + dir }
@@ -2637,7 +2704,7 @@ function heroImagesBlock(){
   return `<p class="hint">${esc(t('ct.heroImgsHint'))}</p>
   <div class="hero-imgs">
     ${list.map((src, i) => `<div class="hi">
-      <img src="${esc(src)}" alt="" onerror="this.classList.add('failed')">
+      <img src="${esc(src)}" alt="">
       <span class="hi-n">${i + 1}</span>
       <div class="hi-acts">
         <button type="button" data-hi="up" data-i="${i}" ${i === 0 ? 'disabled' : ''}
@@ -2691,7 +2758,7 @@ function drawContent(){
   h += acc('aboutimg', 'i-user', t('ct.aboutImg'), t('ct.aboutImgSub'), null, `
     <div class="cover-box">
       <div class="cover-prev">
-        ${CT.about_image ? `<img src="${esc(CT.about_image)}" alt="" onerror="this.classList.add('failed')">`
+        ${CT.about_image ? `<img src="${esc(CT.about_image)}" alt="">`
                          : `${ico('i-image')}<span>${esc(t('f.coverNone'))}</span>`}
       </div>
       <div class="cover-ctl">
@@ -2894,10 +2961,50 @@ async function doLogin(e){
   /* onAuthStateChange يتكفّل بالباقي */
 }
 
+/* ── تبديل كلمة السر بعد رابط الاستعادة ──
+   الرابط يرجّعها هنا وهي مسجّلة دخول أصلاً، فبدون هاي الشاشة چانت
+   تدخل اللوحة وكلمة السر القديمة باقية مثل ما هي — يعني الاستعادة
+   ما تكمّل أبداً. */
+let RECOVERING = false;
+
+function showPwGate(){
+  RECOVERING = true;
+  $('#gate').hidden   = true;
+  $('#app').hidden    = true;
+  $('#pwGate').hidden = false;
+  $('#pwErr').textContent = '';
+  $('#pw1').value = ''; $('#pw2').value = '';
+  requestAnimationFrame(() => $('#pw1').focus());
+}
+
+async function saveNewPassword(e){
+  e.preventDefault();
+  const err = $('#pwErr'); err.textContent = '';
+  const a = $('#pw1').value, b = $('#pw2').value;
+
+  if (a.length < 10){ err.textContent = t('pw.short'); $('#pw1').focus(); return }
+  if (a !== b){ err.textContent = t('pw.mismatch'); $('#pw2').select(); return }
+
+  const btn = $('#pwBtn');
+  btn.disabled = true; btn.textContent = t('pw.saving');
+  const { error } = await sb.auth.updateUser({ password:a });
+  btn.disabled = false; btn.textContent = t('pw.submit');
+
+  if (error){ err.textContent = error.message; return }
+
+  RECOVERING = false;
+  $('#pwGate').hidden = true;
+  toast(t('pw.done'));
+  const { data } = await sb.auth.getSession();
+  if (data.session) showApp(data.session); else showGate();
+}
+
 let SIGNED_IN = false;   /* يمنع جلب البيانات مرتين عند أول تحميل */
 
 async function showApp(session){
+  if (RECOVERING) return;          /* لا تتخطّى شاشة كلمة السر */
   $('#gate').hidden = true;
+  $('#pwGate').hidden = true;
   $('#app').hidden  = false;
   $('#who').textContent = session?.user?.email || '';
   $('#pass').value = '';
@@ -2907,7 +3014,9 @@ async function showApp(session){
 }
 function showGate(){
   SIGNED_IN = false;
-  $('#app').hidden  = true;
+  RECOVERING = false;
+  $('#app').hidden    = true;
+  $('#pwGate').hidden = true;
   $('#gate').hidden = false;
   ROWS = { recipes:[], courses:[] };
   $('#loginErr').textContent = '';
@@ -2917,6 +3026,13 @@ function showGate(){
    ⑬  ربط الأحداث
    ══════════════════════════════════════════════════════════ */
 function wire(){
+  /* أي صورة تفشل بالتحميل تاخذ .failed — مستمع واحد بمرحلة الالتقاط
+     بدل onerror مكتوب بكل وسم (أحداث الصور ما تطلع للأعلى، فلازم capture). */
+  addEventListener('error', e => {
+    const el = e.target;
+    if (el instanceof HTMLImageElement) el.classList.add('failed');
+  }, true);
+
   $('#loginForm').addEventListener('submit', doLogin);
   $('#peek').addEventListener('click', () => {
     const p = $('#pass'), on = p.type === 'password';
@@ -2925,6 +3041,15 @@ function wire(){
     p.focus();
   });
   $('#logoutBtn').addEventListener('click', () => sb.auth.signOut());
+
+  $('#pwForm').addEventListener('submit', saveNewPassword);
+  $('#pwSkip').addEventListener('click', async e => {
+    e.preventDefault();
+    RECOVERING = false;
+    $('#pwGate').hidden = true;
+    const { data } = await sb.auth.getSession();
+    if (data.session) showApp(data.session); else showGate();
+  });
 
   /* استعادة كلمة السر — يدز رابط على الإيميل */
   $('#forgotLink').addEventListener('click', async e => {
@@ -3215,6 +3340,8 @@ syncThemeIcons();
 wire();
 
 sb.auth.onAuthStateChange((event, session) => {
+  /* الوصول من رابط الاستعادة — لازم تحط كلمة سر جديدة قبل اللوحة */
+  if (event === 'PASSWORD_RECOVERY') return showPwGate();
   if (session) showApp(session); else showGate();
 });
 
