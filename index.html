@@ -739,6 +739,7 @@ body{padding-bottom:0}
 .stepper button:disabled{opacity:.38;cursor:not-allowed}
 .stepper b{min-width:40px;text-align:center;font-family:var(--f-num);font-size:15px}
 
+.per-one{font-size:12px;color:var(--soft);text-align:center;margin-top:10px;line-height:1.7}
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
 @media(max-width:400px){.stat-row{grid-template-columns:repeat(2,1fr)}}
 .stat{background:var(--sunken);border-radius:var(--r-sm);padding:12px 6px}
@@ -911,15 +912,20 @@ ol.steps li::before{
 .cart-line.done .cl-tick{background:var(--pine);border-color:var(--pine);color:#fff}
 .cl-n{flex:1;min-width:0;font-size:14.5px;line-height:1.6}
 .cl-q{font-family:var(--f-num);font-size:13.5px;color:var(--pine-ink);font-weight:600;white-space:nowrap}
-.cart-src{
-  display:flex;flex-wrap:wrap;gap:7px;margin-bottom:var(--s-4);
+.cart-src{display:grid;gap:7px;margin-bottom:var(--s-4)}
+.cs-row{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);
+  background:var(--sunken);
 }
-.cart-src .cs{
-  display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:var(--r-full);
-  background:var(--sunken);font-size:12.5px;font-weight:600;
-}
-.cart-src .cs button{width:18px;height:18px;display:grid;place-items:center;font-size:12px;color:var(--soft);border-radius:50%}
-.cart-src .cs button:hover{background:var(--line-2);color:var(--ink)}
+.cs-n{flex:1;min-width:0;font-size:13.5px;font-weight:600;line-height:1.5}
+.cs-k{display:block;font-size:11.5px;font-weight:500;color:var(--soft);font-family:var(--f-num)}
+/* نسخة مصغّرة من الستيبر تنلزم داخل سطر القائمة */
+.stepper.sm{padding:3px;gap:3px;flex:none}
+.stepper.sm button{width:34px;height:32px;border-radius:8px;font-size:13px}
+.stepper.sm b{min-width:26px;font-size:13.5px}
+.cs-del{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;
+  color:var(--soft);font-size:13px;transition:background-color .18s var(--ease),color .18s var(--ease)}
+.cs-del:hover{background:var(--clay-wash);color:var(--clay-ink)}
 .cart-tot{
   display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-2);margin-bottom:var(--s-4);
 }
@@ -1398,6 +1404,10 @@ ar:{
   "macroAria":"بروتين {p} غرام، كربوهيدرات {c} غرام، دهون {f} غرام",
   "nutrition":"القيمة الغذائية",
   "perServing":"للحصة الوحدة",
+  "forServings":"مجموع {x} حصة",
+  "perOne":"الحصة الوحدة: {k} سعرة · {p} بروتين · {c} كارب · {f} دهون",
+  "cart.addN":"انضافت {x} حصة للقائمة",
+  "cart.qtyOf":"كمية {x}",
   "less":"حصص أقل",
   "more":"حصص أكثر",
   "ingredients":"المكونات",
@@ -1540,6 +1550,10 @@ en:{
   "macroAria":"Protein {p} grams, carbohydrates {c} grams, fat {f} grams",
   "nutrition":"Nutrition",
   "perServing":"per single serving",
+  "forServings":"for {x} servings",
+  "perOne":"One serving: {k} kcal · {p} protein · {c} carbs · {f} fat",
+  "cart.addN":"Added {x} servings to the list",
+  "cart.qtyOf":"Quantity of {x}",
   "less":"Fewer servings",
   "more":"More servings",
   "ingredients":"Ingredients",
@@ -2301,21 +2315,23 @@ function dayTotals(){
   const t = { kcal:0, protein:0, carbs:0, fat:0 };
   DAY.items.forEach(it => {
     const r = RECIPES.find(x => x.id === it.id); if (!r) return;
-    const k = nz(it.servings) / Math.max(1, r.servings);
-    t.kcal += r.kcal * k; t.protein += r.protein * k;
-    t.carbs += r.carbs * k; t.fat += r.fat * k;
+    /* الماكروز للحصة الوحدة — تنضرب بعدد الحصص اللي أكلتها */
+    const n = Math.max(1, nz(it.servings));
+    t.kcal += r.kcal * n; t.protein += r.protein * n;
+    t.carbs += r.carbs * n; t.fat += r.fat * n;
   });
   return t;
 }
 
 function inDay(id){ return DAY.items.some(i => i.id === id) }
 
-function toggleDay(id){
+function toggleDay(id, servings){
   const i = DAY.items.findIndex(x => x.id === id);
   if (i > -1){ DAY.items.splice(i, 1); toast(tt('day.removed')) }
   else {
     const r = RECIPES.find(x => x.id === id); if (!r) return;
-    DAY.items.push({ id, servings:r.servings });
+    const n = Math.max(1, Math.min(20, Math.round(nz(servings) || r.servings)));
+    DAY.items.push({ id, servings:n });
     toast(tt('day.added'));
   }
   DAY.d = todayKey();
@@ -2410,15 +2426,25 @@ function syncCartButtons(){
   });
 }
 
-function toggleCart(id){
+/* servings = عدد الحصص المطلوبة. إذا انضافت من نافذة التفاصيل تجي
+   بالعدد اللي اختارته الزائرة، وإذا من زر البطاقة تجي بعدد الوصفة الأصلي. */
+function toggleCart(id, servings){
   const i = CART.findIndex(c => c.id === id);
   if (i > -1){ CART.splice(i, 1); toast(tt('cart.removed')) }
   else {
     const r = RECIPES.find(x => x.id === id); if (!r) return;
-    CART.push({ id, servings:r.servings });
-    toast(tt('cart.added'));
+    const n = Math.max(1, Math.min(20, Math.round(nz(servings) || r.servings)));
+    CART.push({ id, servings:n });
+    toast(n === r.servings ? tt('cart.added') : tt('cart.addN', { x:n }));
   }
   saveCart(); syncCartFab(); syncCartButtons();
+}
+
+/* تغيير كمية عنصر داخل القائمة */
+function setCartQty(id, delta){
+  const c = CART.find(x => x.id === id); if (!c) return;
+  c.servings = Math.max(1, Math.min(20, nz(c.servings) + delta));
+  saveCart(); drawSheet();
 }
 
 /* يجمع مكونات كل الوصفات المختارة ويوحّد المتكرر */
@@ -2428,11 +2454,15 @@ function cartAggregate(){
 
   CART.forEach(c => {
     const r = RECIPES.find(x => x.id === c.id); if (!r) return;
-    const k = c.servings / r.servings;          /* معامل التوسيع */
-    tot.kcal    += r.kcal * k;
-    tot.protein += r.protein * k;
-    tot.carbs   += r.carbs * k;
-    tot.fat     += r.fat * k;
+    const n = Math.max(1, nz(c.servings));      /* عدد الحصص المطلوبة */
+    const k = n / Math.max(1, r.servings);      /* معامل توسيع المكونات */
+
+    /* الماكروز بالداتابيس **للحصة الوحدة**، فتنضرب بعدد الحصص مباشرة.
+       أما المكونات فمكتوبة للوصفة كاملة، فتنضرب بمعامل التوسيع. */
+    tot.kcal    += r.kcal * n;
+    tot.protein += r.protein * n;
+    tot.carbs   += r.carbs * n;
+    tot.fat     += r.fat * n;
 
     r.ingredients.forEach(ing => {
       const key = norm(ing.n) + '|' + norm(ing.u);
@@ -2467,9 +2497,20 @@ function drawCart(){
 
   const chips = CART.map(c => {
     const r = RECIPES.find(x => x.id === c.id); if (!r) return '';
-    return `<span class="cs">${esc(r.title)}
-      <button type="button" data-act="uncart" data-id="${esc(c.id)}"
-              aria-label="${esc(tt('cart.remove'))}">${ico('i-close')}</button></span>`;
+    const n = Math.max(1, nz(c.servings));
+    return `<div class="cs-row">
+      <span class="cs-n">${esc(r.title)}
+        <span class="cs-k">${Math.round(r.kcal * n)} ${esc(tt('kcalUnit'))}</span></span>
+      <div class="stepper sm" role="group" aria-label="${esc(tt('cart.qtyOf', { x:r.title }))}">
+        <button type="button" data-act="cqminus" data-id="${esc(c.id)}"
+                aria-label="${esc(tt('less'))}" ${n <= 1 ? 'disabled' : ''}>${ico('i-minus')}</button>
+        <b aria-live="polite">${n}</b>
+        <button type="button" data-act="cqplus" data-id="${esc(c.id)}"
+                aria-label="${esc(tt('more'))}" ${n >= 20 ? 'disabled' : ''}>${ico('i-plus')}</button>
+      </div>
+      <button class="cs-del" type="button" data-act="uncart" data-id="${esc(c.id)}"
+              aria-label="${esc(tt('cart.remove'))}">${ico('i-close')}</button>
+    </div>`;
   }).join('');
 
   $('#sheetInner').innerHTML = `<div class="sheet-body" style="padding-top:26px">
@@ -2673,6 +2714,8 @@ function drawSheet(){
   if (!x) return closeUI();
 
   const inCart = TAB === 'recipes' && CART.some(c => c.id === x.id);
+  /* عدد الحصص المختار حالياً — يمشي وياه للسلة ولعدّاد اليوم */
+  const servingsNow = TAB === 'recipes' ? Math.round(x.servings * mult) : 1;
 
   let h = `<div class="sheet-hero">
       <span class="grab"></span>
@@ -2693,34 +2736,39 @@ function drawSheet(){
         </button>
         ${TAB === 'recipes'
           ? `<button class="btn ${inCart ? 'btn-quiet' : 'btn-ghost'} btn-sm" type="button"
-                     data-act="cart" data-id="${esc(x.id)}"
+                     data-act="cart" data-id="${esc(x.id)}" data-n="${servingsNow}"
                      style="${inCart ? 'color:var(--pine-ink)' : ''}">
                ${ico(inCart ? 'i-check' : 'i-cart-plus')} ${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}
              </button>
              <button class="btn ${inDay(x.id) ? 'btn-quiet' : 'btn-ghost'} btn-sm" type="button"
-                     data-act="day" data-id="${esc(x.id)}"
+                     data-act="day" data-id="${esc(x.id)}" data-n="${servingsNow}"
                      style="${inDay(x.id) ? 'color:var(--brand-ink)' : ''}">
                ${ico(inDay(x.id) ? 'i-check' : 'i-calc')} ${esc(tt(inDay(x.id) ? 'day.ateDone' : 'day.ate'))}
              </button>` : ''}
       </div>`;
 
   if (TAB === 'recipes'){
-    const p = Math.round(x.servings * mult);
+    const p = servingsNow;
     h += `<div class="panel">
         <div class="servings">
-          <span class="lbl"><b>${esc(tt('nutrition'))}</b><span>${esc(tt('perServing'))}</span></span>
+          <span class="lbl"><b>${esc(tt('nutrition'))}</b>
+            <span>${esc(p === 1 ? tt('perServing') : tt('forServings', { x:p }))}</span></span>
           <div class="stepper">
             <button type="button" data-act="minus" aria-label="${esc(tt('less'))}" ${p <= 1 ? 'disabled' : ''}>${ico('i-minus')}</button>
             <b aria-live="polite">${p} ${esc(tt('servUnit'))}</b>
             <button type="button" data-act="plus" aria-label="${esc(tt('more'))}" ${p >= 20 ? 'disabled' : ''}>${ico('i-plus')}</button>
           </div>
         </div>
+        ${/* الأرقام بالداتابيس للحصة الوحدة — نضربها بعدد الحصص المختار */''}
         <div class="stat-row">
-          <div class="stat"><b>${x.kcal}</b><span>${esc(tt('kcalUnit'))}</span></div>
-          <div class="stat"><b style="color:var(--pine-ink)">${x.protein}</b><span>${esc(tt('protein'))} ${esc(tt('gram'))}</span></div>
-          <div class="stat"><b style="color:var(--amber-ink)">${x.carbs}</b><span>${esc(tt('carbs'))} ${esc(tt('gram'))}</span></div>
-          <div class="stat"><b style="color:var(--clay-ink)">${x.fat}</b><span>${esc(tt('fat'))} ${esc(tt('gram'))}</span></div>
+          <div class="stat"><b>${Math.round(x.kcal * p)}</b><span>${esc(tt('kcalUnit'))}</span></div>
+          <div class="stat"><b style="color:var(--pine-ink)">${num(x.protein * p)}</b><span>${esc(tt('protein'))} ${esc(tt('gram'))}</span></div>
+          <div class="stat"><b style="color:var(--amber-ink)">${num(x.carbs * p)}</b><span>${esc(tt('carbs'))} ${esc(tt('gram'))}</span></div>
+          <div class="stat"><b style="color:var(--clay-ink)">${num(x.fat * p)}</b><span>${esc(tt('fat'))} ${esc(tt('gram'))}</span></div>
         </div>
+        ${p > 1 ? `<p class="per-one">${esc(tt('perOne', {
+            k: Math.round(x.kcal), p: num(x.protein), c: num(x.carbs), f: num(x.fat)
+          }))}</p>` : ''}
         ${macroBar(x)}
       </div>
 
@@ -2979,9 +3027,12 @@ function wire(){
       const x = data().find(i => i.id === current);
       return x && shareItem(x);
     }
-    if (a === 'day'){ toggleDay(el.dataset.id); return drawSheet() }
-    if (a === 'cart'){ toggleCart(el.dataset.id); return drawSheet() }
+    /* الأزرار جوّا التفاصيل تحمل عدد الحصص المختار */
+    if (a === 'day'){ toggleDay(el.dataset.id, el.dataset.n); return drawSheet() }
+    if (a === 'cart'){ toggleCart(el.dataset.id, el.dataset.n); return drawSheet() }
     if (a === 'uncart'){ toggleCart(el.dataset.id); return drawSheet() }
+    if (a === 'cqplus')  return setCartQty(el.dataset.id,  1);
+    if (a === 'cqminus') return setCartQty(el.dataset.id, -1);
     if (a === 'ccopy')  return copyText(cartText(), tt('cart.copied'));
     if (a === 'cprint') return printCart();
     if (a === 'cclear'){
