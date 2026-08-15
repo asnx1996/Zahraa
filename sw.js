@@ -5,7 +5,7 @@
      • الخطوط والصور                → الكاش أول، والشبكة تحدّثه
      • طلبات Supabase (API)         → الشبكة فقط، أبداً ما تنكشّ
    ═══════════════════════════════════════════════════════════ */
-const V     = 'cz-v1';
+const V     = 'cz-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {

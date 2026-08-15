@@ -304,6 +304,15 @@ body.lang-swap{opacity:.35}
    [hidden] للتبويبات، و.sec-hidden لقرار المدربة */
 .sec-hidden{display:none!important}
 
+/* ── انتقالات العرض ──
+   تبديل التبويب يصير تلاشي ناعم، وصورة البطاقة تتمدد لرأس نافذة
+   التفاصيل. المتصفحات اللي ما تدعمها تشتغل عادي بدون أي فرق. */
+@media (prefers-reduced-motion: no-preference){
+  ::view-transition-old(root),
+  ::view-transition-new(root){ animation-duration:.26s; animation-timing-function:var(--ease) }
+  ::view-transition-group(heroImg){ animation-duration:.34s }
+}
+
 /* ═══════════════════════════════════════════════════════════
    ⑤  الهيرو
    ═══════════════════════════════════════════════════════════ */
@@ -457,6 +466,51 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .chip:hover{color:var(--ink);border-color:var(--line-2)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .count{font-size:13px;color:var(--soft);white-space:nowrap;flex:none}
+.flt-lbl{font-size:12.5px;font-weight:600;color:var(--soft);white-space:nowrap;flex:none;
+  font-family:var(--f-head)}
+
+/* ── عدّاد اليوم ── */
+.today-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
+  padding:clamp(16px,3vw,24px);box-shadow:var(--shadow-1);display:grid;gap:var(--s-4);
+}
+.today-top{display:flex;align-items:center;gap:var(--s-3);flex-wrap:wrap}
+.today-top h3{font-size:17px;flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.today-top .icon{font-size:19px;color:var(--brand-ink)}
+.today-empty{color:var(--soft);font-size:14.5px;line-height:1.75}
+.today-bar{height:10px;border-radius:var(--r-full);background:var(--sunken);overflow:hidden;display:flex}
+.today-bar i{display:block;height:100%;transition:width .5s var(--ease)}
+.today-bar i.over{background:var(--clay)}
+.today-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-2)}
+.today-n{text-align:center;background:var(--sunken);border-radius:var(--r-sm);padding:9px 4px}
+.today-n b{display:block;font-family:var(--f-num);font-size:clamp(15px,2.6vw,19px);font-weight:600;line-height:1.25}
+.today-n span{font-size:11px;color:var(--soft);display:block;margin-top:2px}
+.today-goal{font-size:13px;color:var(--soft);text-align:center}
+.today-goal b{color:var(--ink);font-family:var(--f-num)}
+.today-list{display:flex;flex-wrap:wrap;gap:7px}
+.today-item{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 6px 5px 12px;border-radius:var(--r-full);
+  background:var(--brand-wash);color:var(--brand-ink);font-size:13px;font-weight:600;
+}
+:root[dir=rtl] .today-item{padding:5px 12px 5px 6px}
+.today-item button{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surface);color:var(--clay-ink);font-size:12px;flex:none}
+.today-acts{display:flex;gap:var(--s-2);flex-wrap:wrap}
+.today-acts .btn{flex:1;min-width:130px}
+
+/* قسم «أحدث» بتبويب التعريف */
+.peek-block + .peek-block{margin-top:clamp(36px,5vw,56px)}
+.peek-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);
+  flex-wrap:wrap;margin-bottom:var(--s-5)}
+.peek-head h2{font-size:clamp(21px,3.4vw,30px);margin-top:6px}
+.peek-head .btn{flex:none}
+.peek-head .btn .icon{transform:rotate(90deg)}
+:root[dir=ltr] .peek-head .btn .icon{transform:rotate(-90deg)}
+.peek-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+@media(min-width:900px){ .peek-grid{grid-template-columns:repeat(3,1fr)} }
+.chip.flt-reset{flex:none;color:var(--clay-ink);border-color:var(--clay-wash);gap:5px}
+.chip.flt-reset .icon{font-size:14px}
+.chip.flt-reset:hover{background:var(--clay-wash);border-color:var(--clay)}
 
 /* ═══════════════════════════════════════════════════════════
    ⑧  الكروت
@@ -1007,6 +1061,13 @@ ol.steps li::before{
     </div>
   </section>
 
+  <!-- ══ عدّاد اليوم — يبين بتبويب الأكل بس ══ -->
+  <section class="sec" id="today" style="padding-block:clamp(24px,4vw,40px) 0">
+    <div class="wrap">
+      <div class="today-card" id="todayCard"></div>
+    </div>
+  </section>
+
   <!-- ══ الكتالوج ══ -->
   <section class="sec sec-alt" id="catalog" style="padding-top:clamp(28px,4vw,48px)">
     <div class="wrap">
@@ -1029,7 +1090,15 @@ ol.steps li::before{
         </div>
         <div class="chips-row">
           <div class="chips" id="chips" role="group" data-t-aria="cat.filter"></div>
+          <button class="chip flt-reset" type="button" id="fltReset" hidden>
+            <svg class="icon"><use href="#i-close"></use></svg><span data-t="flt.reset">مسح الفلاتر</span>
+          </button>
           <span class="count" id="count" aria-live="polite"></span>
+        </div>
+        <!-- صف فلاتر ثاني: المنطقة للكورسات، والماكروز للوصفات -->
+        <div class="chips-row" id="chips2Row" hidden>
+          <span class="flt-lbl" id="chips2Lbl"></span>
+          <div class="chips" id="chips2" role="group"></div>
         </div>
       </div>
 
@@ -1157,6 +1226,39 @@ ol.steps li::before{
         <h2 data-t="faq.h">أكثر شي يسألون عنه</h2>
       </div>
       <div class="faq" id="faqList"></div>
+    </div>
+  </section>
+
+  <!-- ══ أحدث الوصفات والكورسات — جسر لباقي التبويبات ══ -->
+  <section class="sec sec-alt" id="peek">
+    <div class="wrap">
+      <div class="peek-block" id="peekRecipesBlock">
+        <div class="peek-head rv">
+          <div>
+            <span class="kicker" data-t="peek.kickerR">من المطبخ</span>
+            <h2 data-t="peek.hR">أحدث الوصفات</h2>
+          </div>
+          <button class="btn btn-ghost btn-sm" type="button" data-goto="recipes">
+            <span data-t="peek.allR">شوفي كل الوصفات</span>
+            <svg class="icon"><use href="#i-chevron"></use></svg>
+          </button>
+        </div>
+        <div class="grid peek-grid" id="peekRecipes"></div>
+      </div>
+
+      <div class="peek-block" id="peekCoursesBlock">
+        <div class="peek-head rv">
+          <div>
+            <span class="kicker" data-t="peek.kickerC">من النادي</span>
+            <h2 data-t="peek.hC">أحدث الكورسات</h2>
+          </div>
+          <button class="btn btn-ghost btn-sm" type="button" data-goto="courses">
+            <span data-t="peek.allC">شوفي كل الكورسات</span>
+            <svg class="icon"><use href="#i-chevron"></use></svg>
+          </button>
+        </div>
+        <div class="grid peek-grid" id="peekCourses"></div>
+      </div>
     </div>
   </section>
 
@@ -1293,6 +1395,35 @@ ar:{
   "cat.hC":"تمارين لكل المستويات",
   "cat.pC":"فلتري حسب المستوى، وافتحي أي كورس لتشوفين التمارين والمجاميع وفيديو الشرح.",
   "cat.search":"بحث",
+  "flt.area":"المنطقة",
+  "flt.macros":"فلترة سريعة",
+  "flt.reset":"مسح الفلاتر",
+  "flt.hiProtein":"بروتين عالي",
+  "flt.lowCal":"سعرات قليلة",
+  "flt.quick":"سريعة التحضير",
+  "flt.lowCarb":"كارب قليل",
+  "peek.kickerR":"من المطبخ",
+  "peek.hR":"أحدث الوصفات",
+  "peek.allR":"شوفي كل الوصفات",
+  "peek.kickerC":"من النادي",
+  "peek.hC":"أحدث الكورسات",
+  "peek.allC":"شوفي كل الكورسات",
+  "day.title":"أكلج اليوم",
+  "day.empty":"ما سجّلتي ولا وجبة اليوم. افتحي أي وصفة واضغطي «أكلتها اليوم» وراح نجمعلج السعرات.",
+  "day.emptyNoGoal":"احسبي سعراتج من الحاسبة بتبويب التعريف، وبعدها سجّلي وجباتج هنا ونقارنهن بهدفج.",
+  "day.ate":"أكلتها اليوم",
+  "day.ateDone":"مسجّلة اليوم ✓",
+  "day.added":"انسجّلت بأكل اليوم",
+  "day.removed":"انشالت من أكل اليوم",
+  "day.clear":"مسح اليوم",
+  "day.cleared":"انمسح أكل اليوم",
+  "day.of":"من هدفج {x} سعرة",
+  "day.left":"باقيلج {x} سعرة",
+  "day.over":"زدتي {x} سعرة عن هدفج",
+  "day.noGoal":"احسبي هدفج من الحاسبة",
+  "day.goGoal":"روحي للحاسبة",
+  "day.send":"دزّيها للكوتش",
+  "day.msg":"هلو! هذا أكلي اليوم: {items}. المجموع {k} سعرة ({p}غم بروتين / {c}غم كارب / {f}غم دهون).",
   "cat.clear":"مسح البحث",
   "cat.filter":"فلترة",
   "plans.kicker":"الاشتراك",
@@ -1438,6 +1569,35 @@ en:{
   "cat.hC":"Workouts for every level",
   "cat.pC":"Filter by level, and open any course for the exercises, sets and the tutorial video.",
   "cat.search":"Search",
+  "flt.area":"Target area",
+  "flt.macros":"Quick filters",
+  "flt.reset":"Clear filters",
+  "flt.hiProtein":"High protein",
+  "flt.lowCal":"Low calorie",
+  "flt.quick":"Quick to make",
+  "flt.lowCarb":"Low carb",
+  "peek.kickerR":"From the kitchen",
+  "peek.hR":"Latest recipes",
+  "peek.allR":"See all recipes",
+  "peek.kickerC":"From the gym",
+  "peek.hC":"Latest courses",
+  "peek.allC":"See all courses",
+  "day.title":"What you ate today",
+  "day.empty":"No meals logged today. Open any recipe and tap “I ate this today” and we'll add up the calories for you.",
+  "day.emptyNoGoal":"Work out your calories with the calculator on the first tab, then log your meals here and we'll compare them to your goal.",
+  "day.ate":"I ate this today",
+  "day.ateDone":"Logged for today ✓",
+  "day.added":"Added to today's food",
+  "day.removed":"Removed from today's food",
+  "day.clear":"Clear the day",
+  "day.cleared":"Today's food cleared",
+  "day.of":"of your {x} kcal goal",
+  "day.left":"{x} kcal left",
+  "day.over":"{x} kcal over your goal",
+  "day.noGoal":"Set a goal with the calculator",
+  "day.goGoal":"Go to the calculator",
+  "day.send":"Send to the coach",
+  "day.msg":"Hi! Here's what I ate today: {items}. Total {k} kcal ({p}g protein / {c}g carbs / {f}g fat).",
   "cat.clear":"Clear search",
   "cat.filter":"Filter",
   "plans.kicker":"Membership",
@@ -1570,6 +1730,8 @@ let LOAD_ERR = null;
 
 let PAGE = 'about';                /* التبويب المعروض: about | recipes | courses */
 let TAB = 'recipes', FILTER = 'الكل', mult = 1, current = null, lastFocus = null;
+let AREA = 'الكل';                 /* فلتر المنطقة — للكورسات */
+let MACRO = null;                  /* فلتر سريع للوصفات: مفتاح من MACRO_FILTERS */
 let VIEW = 'item';                 /* شنو معروض بالشيت: item أو cart */
 let CART = [];                     /* [{id, servings}] */
 
@@ -1688,8 +1850,12 @@ async function fetchAll(){
   SITE = s.data || {};
 
   loadCart();
+  loadDay();
   paintSite();
   renderGrid();
+  renderPeek();
+  renderToday();
+  injectStructuredData();
   openFromHash();
 }
 
@@ -1712,6 +1878,7 @@ const SECTION_NODES = {
   about:   ['#about',   '[data-navfor="about"]'],
   reviews: ['#reviews'],
   faq:     ['#faq',     '[data-navfor="faq"]'],
+  peek:    ['#peek'],
   cta:     ['#ctaBand']
 };
 
@@ -1872,6 +2039,72 @@ function startSlides(){
   }, SLIDE_MS);
 }
 
+/* ══════════════════════════════════════════════════════════
+   ⑤ج  بيانات منظّمة لجوجل (JSON-LD)
+   وصفة بيها السعرات والماكروز تطلع بنتائج البحث بصورة ووقت تحضير.
+   ══════════════════════════════════════════════════════════ */
+function injectStructuredData(){
+  const base = location.origin + location.pathname;
+  const clean = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+
+  const recipes = RECIPES.slice(0, 25).map(r => ({
+    "@type":"Recipe",
+    name: clean(r.title),
+    url: base + '#/r/' + r.id,
+    ...(r.cover ? { image:[r.cover] } : {}),
+    recipeYield: String(r.servings),
+    ...(r.duration ? { totalTime: isoMinutes(r.duration) } : {}),
+    recipeIngredient: (r.ingredients || [])
+      .map(i => clean(`${i.q ?? ''} ${i.u ?? ''} ${i.n ?? ''}`)).filter(Boolean),
+    recipeInstructions: (r.steps || []).map(s => ({ "@type":"HowToStep", text:clean(s) })),
+    nutrition: {
+      "@type":"NutritionInformation",
+      calories: `${Math.round(r.kcal)} calories`,
+      proteinContent: `${r.protein} g`,
+      carbohydrateContent: `${r.carbs} g`,
+      fatContent: `${r.fat} g`
+    },
+    author: { "@type":"Person", name: clean(siteName()) }
+  })).filter(r => r.recipeIngredient.length);
+
+  const courses = COURSES.slice(0, 25).map(c => ({
+    "@type":"Course",
+    name: clean(c.title),
+    url: base + '#/c/' + c.id,
+    ...(c.cover ? { image:[c.cover] } : {}),
+    description: clean(c.desc) || clean(c.title),
+    provider: { "@type":"Person", name: clean(siteName()) },
+    hasCourseInstance: {
+      "@type":"CourseInstance",
+      courseMode:"online",
+      ...(c.duration ? { courseWorkload: isoMinutes(c.duration) } : {})
+    }
+  }));
+
+  const graph = [
+    { "@type":"Person", "@id":base + '#coach', name:clean(siteName()),
+      description:clean(siteBio()), ...(SITE?.avatar_url ? { image:SITE.avatar_url } : {}),
+      ...(insta() !== '#' ? { sameAs:[insta()] } : {}) },
+    ...recipes, ...courses
+  ];
+
+  let tag = $('#ldjson');
+  if (!tag){
+    tag = document.createElement('script');
+    tag.type = 'application/ld+json';
+    tag.id = 'ldjson';
+    document.head.appendChild(tag);
+  }
+  tag.textContent = JSON.stringify({ "@context":"https://schema.org", "@graph":graph });
+}
+
+/* "٣٠ دقيقة" أو "30 minutes" → PT30M (جوجل يريدها بصيغة ISO 8601) */
+function isoMinutes(txt){
+  const western = String(txt).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  const m = western.match(/\d+/);
+  return m ? 'PT' + m[0] + 'M' : undefined;
+}
+
 /* النصوص الثابتة + اللغة */
 function paintUI(){
   document.documentElement.lang = LANG;
@@ -1951,8 +2184,8 @@ function macroBar(r){
    ملاحظة: التبويبات تستعمل خاصية hidden، وقرار المدربة بإخفاء قسم
    يستعمل الكلاس .sec-hidden — منفصلين حتى ما يمسح واحد قرار الثاني. */
 const PAGES = {
-  about:   ['#heroSec','#calc','#plans','#about','#reviews','#faq','#ctaBand'],
-  recipes: ['#catalog'],
+  about:   ['#heroSec','#calc','#plans','#about','#reviews','#faq','#peek','#ctaBand'],
+  recipes: ['#today','#catalog'],
   courses: ['#catalog']
 };
 const ALL_PAGE_SECTIONS = [...new Set(Object.values(PAGES).flat())];
@@ -1977,7 +2210,7 @@ function setPage(p, keepScroll){
 
   if (p === 'recipes' || p === 'courses'){
     if (TAB !== p){
-      TAB = p; FILTER = 'الكل';
+      TAB = p; FILTER = 'الكل'; AREA = 'الكل'; MACRO = null;
       $('#q').value = ''; $('#searchBox').classList.remove('has-value');
     }
     paintCatalogHead();
@@ -1988,6 +2221,70 @@ function setPage(p, keepScroll){
   $$('.rv').forEach(el => { if (el.offsetParent !== null) el.classList.add('in') });
 
   if (changed && !keepScroll) scrollTo({ top:0, behavior:'instant' });
+}
+
+/* ── الفلاتر السريعة للوصفات ──
+   عتبات مبنية على المتوسطات الواقعية: ٣٠غم بروتين للحصة عالي فعلاً،
+   و٤٠٠ سعرة خفيفة، و«سريعة» تعني رقم بالمدة أقل من ١٥ */
+const MACRO_FILTERS = {
+  hiProtein: { icon:'i-flame',  test: x => nz(x.protein) >= 30 },
+  lowCal:    { icon:'i-spark',  test: x => nz(x.kcal) > 0 && nz(x.kcal) <= 400 },
+  lowCarb:   { icon:'i-salad',  test: x => nz(x.carbs) <= 25 },
+  quick:     { icon:'i-clock',  test: x => {
+    const m = String(x.duration || '').match(/\d+/);
+    return m ? +m[0] <= 15 : false;
+  }}
+};
+
+/* الصف الثاني يعرض المناطق بالكورسات والماكروز بالوصفات */
+function renderFilterRows(all){
+  const isC = TAB === 'courses';
+  const row = $('#chips2Row');
+
+  if (isC){
+    const areas = [...new Set(all.map(x => (x.area || '').trim()).filter(Boolean))];
+    row.hidden = areas.length < 2;          /* منطقة وحدة = ماكو معنى للفلترة */
+    if (!row.hidden){
+      $('#chips2Lbl').textContent = tt('flt.area');
+      $('#chips2').innerHTML = ['الكل', ...areas].map(a =>
+        `<button class="chip" type="button" aria-pressed="${a === AREA}" data-area="${esc(a)}">${esc(tg(a))}</button>`).join('');
+    }
+  } else {
+    row.hidden = false;
+    $('#chips2Lbl').textContent = tt('flt.macros');
+    $('#chips2').innerHTML = Object.keys(MACRO_FILTERS).map(k =>
+      `<button class="chip" type="button" aria-pressed="${k === MACRO}" data-macro="${k}">
+         ${ico(MACRO_FILTERS[k].icon)} ${esc(tt('flt.' + k))}</button>`).join('');
+  }
+
+  const dirty = FILTER !== 'الكل' || (isC ? AREA !== 'الكل' : !!MACRO) || !!$('#q').value.trim();
+  $('#fltReset').hidden = !dirty;
+}
+
+function clearFilters(){
+  FILTER = 'الكل'; AREA = 'الكل'; MACRO = null;
+  $('#q').value = ''; $('#searchBox').classList.remove('has-value');
+  renderGrid();
+}
+
+/* ── الانتقال بين التبويبات ──
+   View Transitions تعطي تلاشي ناعم بدل القفزة. مو مدعومة بكل المتصفحات،
+   وما ننفّذها إذا المستخدمة مطفّية الحركة من النظام — بالحالتين
+   نستدعي setPage عادي فما ينكسر شي. */
+const softSwap = fn => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!document.startViewTransition || reduce) return fn();
+  const vt = document.startViewTransition(fn);
+  /* إذا انلغى الانتقال (التبويب مخفي مثلاً) الوعود ترفض — والتبديل
+     نفسه يصير عادي. بدون هالـ catch يطلع unhandled rejection بالكونسول. */
+  vt.ready.catch(() => {});
+  vt.finished.catch(() => {});
+};
+
+function goToPage(v){
+  if (!PAGES[v] || PAGE === v) return;
+  history.pushState({ page:v }, '', v === 'about' ? './' : '#/' + v);
+  softSwap(() => setPage(v));
 }
 
 function skeletonCards(n){
@@ -2029,9 +2326,14 @@ function renderGrid(){
   $('#chips').innerHTML = tags.map(t =>
     `<button class="chip" type="button" aria-pressed="${t === FILTER}" data-tag="${esc(t)}">${esc(tg(t))}</button>`).join('');
 
+  renderFilterRows(all);
+
   const s = norm($('#q').value);
+  const mf = MACRO && MACRO_FILTERS[MACRO];
   const items = all.filter(x =>
     (FILTER === 'الكل' || x.tag === FILTER) &&
+    (TAB !== 'courses' || AREA === 'الكل' || (x.area || '') === AREA) &&
+    (TAB !== 'recipes' || !mf || mf.test(x)) &&
     (!s || norm(x.title).includes(s)
         || norm(x.tag).includes(s)
         || norm(x.area || '').includes(s)
@@ -2056,34 +2358,171 @@ function renderGrid(){
     return;
   }
 
-  grid.innerHTML = items.map((x, n) => {
-    const inCart = TAB === 'recipes' && CART.some(c => c.id === x.id);
-    return `<div class="card" style="--i:${n}">
-      <span class="thumb">
-        <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async"
-             >
-        <span class="badge">${esc(tg(x.tag))}</span>
-        ${TAB === 'recipes' ? `<span class="kcal-chip">${x.kcal} ${esc(tt('kcalUnit'))}</span>` : ''}
-        ${x.video ? `<span class="play">${ico('i-play')}</span>` : ''}
-        ${TAB === 'recipes'
-          ? `<button class="pick-btn${inCart ? ' on' : ''}" type="button" data-cart="${esc(x.id)}"
-               aria-pressed="${inCart}" aria-label="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}"
-               title="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}">
-               ${ico(inCart ? 'i-check' : 'i-plus')}</button>` : ''}
+  grid.innerHTML = items.map((x, n) => cardHtml(x, TAB, n)).join('');
+}
+
+/* بطاقة وحدة — تنستعمل بالكتالوج وبقسم «أحدث» بتبويب التعريف */
+function cardHtml(x, kind, n){
+  const isR = kind === 'recipes';
+  const inCart = isR && CART.some(c => c.id === x.id);
+  return `<div class="card" style="--i:${n}">
+    <span class="thumb">
+      <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async">
+      <span class="badge">${esc(tg(x.tag))}</span>
+      ${isR ? `<span class="kcal-chip">${x.kcal} ${esc(tt('kcalUnit'))}</span>` : ''}
+      ${x.video ? `<span class="play">${ico('i-play')}</span>` : ''}
+      ${isR ? `<button class="pick-btn${inCart ? ' on' : ''}" type="button" data-cart="${esc(x.id)}"
+             aria-pressed="${inCart}" aria-label="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}"
+             title="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}">
+             ${ico(inCart ? 'i-check' : 'i-plus')}</button>` : ''}
+    </span>
+    <button class="card-body" type="button" data-open="${esc(x.id)}" data-kind="${kind}"
+            aria-label="${esc(x.title)}">
+      <h3>${esc(x.title)}</h3>
+      <span class="meta">
+        <span>${ico('i-clock')} ${esc(x.time)}</span>
+        ${isR ? `<span>${ico('i-users')} ${x.servings} ${esc(tt('servUnit'))}</span>`
+              : `<span>${ico('i-dumbbell')} ${esc(x.area || '')}</span>`}
       </span>
-      <button class="card-body" type="button" data-open="${esc(x.id)}"
-              aria-label="${esc(x.title)}">
-        <h3>${esc(x.title)}</h3>
-        <span class="meta">
-          <span>${ico('i-clock')} ${esc(x.time)}</span>
-          ${TAB === 'courses'
-            ? `<span>${ico('i-dumbbell')} ${esc(x.area || '')}</span>`
-            : `<span>${ico('i-users')} ${x.servings} ${esc(tt('servUnit'))}</span>`}
-        </span>
-        ${TAB === 'recipes' ? macroBar(x) : ''}
+      ${isR ? macroBar(x) : ''}
+    </button>
+  </div>`;
+}
+
+/* ── قسم «أحدث» بتبويب التعريف — جسر يوصّل الزائرة للتبويبين الثانيين ── */
+function renderPeek(){
+  const box = $('#peek');
+  if (!box) return;
+  const r = RECIPES.slice(0, 3), c = COURSES.slice(0, 3);
+  box.hidden = !(r.length || c.length);
+  $('#peekRecipesBlock').hidden = !r.length;
+  $('#peekCoursesBlock').hidden = !c.length;
+  $('#peekRecipes').innerHTML = r.map((x, n) => cardHtml(x, 'recipes', n)).join('');
+  $('#peekCourses').innerHTML = c.map((x, n) => cardHtml(x, 'courses', n)).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   ⑦ب  عدّاد اليوم — يربط الحاسبة بالوصفات
+   ══════════════════════════════════════════════════════════ */
+let DAY = { d:'', items:[] };      /* {d:'2026-08-15', items:[{id,servings}]} */
+let GOAL = null;                   /* {kcal,p,c,f} من الحاسبة */
+
+const todayKey = () => {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+};
+
+function loadDay(){
+  try {
+    const raw = JSON.parse(localStorage.getItem('cz-day') || '{}');
+    /* يوم جديد = صفحة بيضاء */
+    DAY = (raw && raw.d === todayKey() && Array.isArray(raw.items))
+      ? { d:raw.d, items:raw.items.filter(i => RECIPES.some(r => r.id === i.id)) }
+      : { d:todayKey(), items:[] };
+  } catch(e){ DAY = { d:todayKey(), items:[] } }
+  try {
+    const g = JSON.parse(localStorage.getItem('cz-goal') || 'null');
+    GOAL = (g && Number.isFinite(+g.kcal) && +g.kcal > 0) ? g : null;
+  } catch(e){ GOAL = null }
+}
+function saveDay(){ try { localStorage.setItem('cz-day', JSON.stringify(DAY)) } catch(e){} }
+
+function dayTotals(){
+  const t = { kcal:0, protein:0, carbs:0, fat:0 };
+  DAY.items.forEach(it => {
+    const r = RECIPES.find(x => x.id === it.id); if (!r) return;
+    const k = nz(it.servings) / Math.max(1, r.servings);
+    t.kcal += r.kcal * k; t.protein += r.protein * k;
+    t.carbs += r.carbs * k; t.fat += r.fat * k;
+  });
+  return t;
+}
+
+function inDay(id){ return DAY.items.some(i => i.id === id) }
+
+function toggleDay(id){
+  const i = DAY.items.findIndex(x => x.id === id);
+  if (i > -1){ DAY.items.splice(i, 1); toast(tt('day.removed')) }
+  else {
+    const r = RECIPES.find(x => x.id === id); if (!r) return;
+    DAY.items.push({ id, servings:r.servings });
+    toast(tt('day.added'));
+  }
+  DAY.d = todayKey();
+  saveDay(); renderToday();
+}
+
+function dayText(){
+  const t = dayTotals();
+  const names = DAY.items.map(i => RECIPES.find(r => r.id === i.id)?.title).filter(Boolean);
+  return tt('day.msg', {
+    items: names.join('، '), k: Math.round(t.kcal),
+    p: Math.round(t.protein), c: Math.round(t.carbs), f: Math.round(t.fat)
+  });
+}
+
+function renderToday(){
+  const box = $('#todayCard');
+  if (!box) return;
+  const t = dayTotals();
+  const goal = GOAL && nz(GOAL.kcal) > 0 ? nz(GOAL.kcal) : 0;
+
+  if (!DAY.items.length){
+    box.innerHTML = `<div class="today-top">
+        <h3>${ico('i-calc')} ${esc(tt('day.title'))}</h3>
+      </div>
+      <p class="today-empty">${esc(tt(goal ? 'day.empty' : 'day.emptyNoGoal'))}</p>
+      ${goal ? '' : `<div class="today-acts">
+        <button class="btn btn-ghost btn-sm" type="button" data-day="goal">
+          ${ico('i-calc')} ${esc(tt('day.goGoal'))}</button></div>`}`;
+    return;
+  }
+
+  const pct = goal ? Math.min(100, t.kcal / goal * 100) : 0;
+  const over = goal && t.kcal > goal;
+  const diff = goal ? Math.abs(Math.round(goal - t.kcal)) : 0;
+
+  box.innerHTML = `<div class="today-top">
+      <h3>${ico('i-calc')} ${esc(tt('day.title'))}</h3>
+      <span class="count">${DAY.items.length} ${esc(tt('unitR'))}</span>
+    </div>
+
+    ${goal ? `<div class="today-bar" role="img"
+        aria-label="${esc(tt('day.of', { x:goal }))}">
+        <i style="width:${pct.toFixed(1)}%;background:${over ? 'var(--clay)' : 'var(--pine)'}"></i>
+      </div>
+      <p class="today-goal">
+        <b>${Math.round(t.kcal)}</b> / <b>${goal}</b> — ${esc(over ? tt('day.over', { x:diff }) : tt('day.left', { x:diff }))}
+      </p>` : ''}
+
+    <div class="today-nums">
+      <div class="today-n"><b>${Math.round(t.kcal)}</b><span>${esc(tt('kcalUnit'))}</span></div>
+      <div class="today-n"><b style="color:var(--pine-ink)">${Math.round(t.protein)}</b><span>${esc(tt('protein'))}</span></div>
+      <div class="today-n"><b style="color:var(--amber-ink)">${Math.round(t.carbs)}</b><span>${esc(tt('carbs'))}</span></div>
+      <div class="today-n"><b style="color:var(--clay-ink)">${Math.round(t.fat)}</b><span>${esc(tt('fat'))}</span></div>
+    </div>
+
+    <div class="today-list">
+      ${DAY.items.map(it => {
+        const r = RECIPES.find(x => x.id === it.id); if (!r) return '';
+        return `<span class="today-item">${esc(r.title)}
+          <button type="button" data-day="del" data-id="${esc(it.id)}"
+                  aria-label="${esc(tt('day.removed'))}">${ico('i-close')}</button></span>`;
+      }).join('')}
+    </div>
+
+    <div class="today-acts">
+      <a class="btn btn-primary btn-sm" id="dayWhats" href="#" target="_blank" rel="noopener">
+        ${ico('i-whatsapp')} ${esc(tt('day.send'))}
+      </a>
+      <button class="btn btn-quiet btn-sm" type="button" data-day="clear" style="color:var(--clay-ink)">
+        ${ico('i-trash')} ${esc(tt('day.clear'))}
       </button>
     </div>`;
-  }).join('');
+
+  const w = whats().replace(/\?.*$/, '');
+  const link = $('#dayWhats');
+  if (link) link.href = w + (w.includes('?') ? '&' : '?') + 'text=' + encodeURIComponent(dayText());
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2263,6 +2702,34 @@ function openSheet(id, fromHash){
   requestAnimationFrame(() => $('#sheet .close')?.focus());
 }
 
+/* صورة البطاقة تتمدد لرأس نافذة التفاصيل.
+   الاسم لازم يكون على عنصر واحد بس بكل لحظة، فننقله من البطاقة
+   للنافذة جوّا الانتقال ونشيله بعد ما يخلص — وإلا الانتقال الجاي ينكسر. */
+function openSheetFrom(id, cardEl){
+  const img = cardEl?.querySelector('.thumb img');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!document.startViewTransition || reduce || !img || img.classList.contains('failed')){
+    return openSheet(id);
+  }
+
+  const sheetImg = () => $('#sheet .sheet-hero img');
+  img.style.viewTransitionName = 'heroImg';
+
+  const vt = document.startViewTransition(() => {
+    img.style.viewTransitionName = '';
+    openSheet(id);
+    const s = sheetImg();
+    if (s) s.style.viewTransitionName = 'heroImg';
+  });
+
+  vt.ready.catch(() => {});
+  vt.finished.catch(() => {}).finally(() => {
+    const s = sheetImg();
+    if (s) s.style.viewTransitionName = '';
+    img.style.viewTransitionName = '';
+  });
+}
+
 function openCart(){
   VIEW = 'cart'; current = null;
   lastFocus = document.activeElement;
@@ -2316,13 +2783,18 @@ function drawSheet(){
 
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
         <button class="btn btn-ghost btn-sm" type="button" data-act="share">
-          ${ico('i-share')} ${esc(tt('copyLink'))}
+          ${ico('i-share')} ${esc(canShare() ? tt('share') : tt('copyLink'))}
         </button>
         ${TAB === 'recipes'
           ? `<button class="btn ${inCart ? 'btn-quiet' : 'btn-ghost'} btn-sm" type="button"
                      data-act="cart" data-id="${esc(x.id)}"
                      style="${inCart ? 'color:var(--pine-ink)' : ''}">
                ${ico(inCart ? 'i-check' : 'i-cart-plus')} ${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}
+             </button>
+             <button class="btn ${inDay(x.id) ? 'btn-quiet' : 'btn-ghost'} btn-sm" type="button"
+                     data-act="day" data-id="${esc(x.id)}"
+                     style="${inDay(x.id) ? 'color:var(--brand-ink)' : ''}">
+               ${ico(inDay(x.id) ? 'i-check' : 'i-calc')} ${esc(tt(inDay(x.id) ? 'day.ateDone' : 'day.ate'))}
              </button>` : ''}
       </div>`;
 
@@ -2430,6 +2902,20 @@ function openFromHash(){
   openSheet(id, true);
 }
 
+/* المشاركة الأصلية بالموبايل — أسهل بكثير من نسخ الرابط ولزكه بنفسج.
+   canShare() بدون وسائط ترجع true حتى بديسكتوب ما يدعم، فنفحص الوظيفة نفسها */
+const canShare = () => typeof navigator.share === 'function';
+
+function shareItem(x){
+  const url = itemLink(x);
+  if (canShare()){
+    navigator.share({ title:x.title, text:x.title, url })
+      .catch(err => { if (err && err.name !== 'AbortError') copyText(url, tt('linkCopied')) });
+    return;
+  }
+  copyText(url, tt('linkCopied'));
+}
+
 function copyText(txt, okMsg){
   const done = () => toast(okMsg);
   if (navigator.clipboard?.writeText){
@@ -2447,7 +2933,10 @@ function copyText(txt, okMsg){
 /* ══════════════════════════════════════════════════════════
    ⑩  حاسبة السعرات
    ══════════════════════════════════════════════════════════ */
-function calcRun(){
+/* userAction = المستخدمة عدّلت الحاسبة بنفسها.
+   الحقول تجي بقيم افتراضية (٢٧ سنة / ٧٠ كغم / ١٦٥ سم)، فلو خزّنّا الهدف
+   بكل استدعاء چان عدّاد اليوم يقارن بأرقام شخص غريب — والزائرة ما تدري. */
+function calcRun(userAction){
   const sexBtn = $('#cSex [aria-pressed="true"]');
   const male   = sexBtn?.dataset.v === 'm';
   const age    = nz($('#cAge').value), w = nz($('#cWeight').value), ht = nz($('#cHeight').value);
@@ -2471,6 +2960,13 @@ function calcRun(){
   $('#cP').textContent = protein;
   $('#cC').textContent = carbs;
   $('#cF').textContent = fat;
+
+  /* الهدف ينحفظ حتى عدّاد اليوم يعرف بشنو يقارن */
+  if (userAction){
+    GOAL = { kcal, p:protein, c:carbs, f:fat };
+    try { localStorage.setItem('cz-goal', JSON.stringify(GOAL)) } catch(e){}
+    renderToday();
+  }
 
   const w2 = whats().replace(/\?.*$/, '');
   $('#cCta').href = w2 + (w2.includes('?') ? '&' : '?') + 'text=' +
@@ -2512,11 +3008,7 @@ function wire(){
      (هيچي زر الرجوع بالمتصفح يشتغل بين التبويبات) */
   $('.viewnav').addEventListener('click', e => {
     const b = e.target.closest('.vtab'); if (!b) return;
-    const v = b.dataset.view;
-    if (PAGE === v) return;
-    const hash = v === 'about' ? './' : '#/' + v;
-    history.pushState({ page:v }, '', hash);
-    setPage(v);
+    goToPage(b.dataset.view);
   });
 
   /* روابط الفوتر والهيرو اللي تشير لأقسام — تودّي لتبويبها */
@@ -2551,14 +3043,57 @@ function wire(){
     FILTER = b.dataset.tag; renderGrid();
   });
 
+  $('#chips2').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    if (b.dataset.area != null) AREA = b.dataset.area;
+    /* الضغط على فلتر شغّال يطفيه — أسهل من ما تدوّر على «الكل» */
+    else if (b.dataset.macro) MACRO = (MACRO === b.dataset.macro) ? null : b.dataset.macro;
+    renderGrid();
+  });
+
+  $('#fltReset').addEventListener('click', clearFilters);
+
   $('#grid').addEventListener('click', e => {
     const cartBtn = e.target.closest('[data-cart]');
     if (cartBtn){ e.stopPropagation(); return toggleCart(cartBtn.dataset.cart) }
     const open = e.target.closest('[data-open]');
-    if (open) openSheet(open.dataset.open);
+    if (open) openSheetFrom(open.dataset.open, open.closest('.card'));
   });
 
   $('#cartFab').addEventListener('click', openCart);
+
+  /* عدّاد اليوم */
+  $('#todayCard').addEventListener('click', e => {
+    const b = e.target.closest('[data-day]'); if (!b) return;
+    const a = b.dataset.day;
+    if (a === 'del')   return toggleDay(b.dataset.id);
+    if (a === 'clear'){ DAY.items = []; saveDay(); renderToday(); return toast(tt('day.cleared')) }
+    if (a === 'goal'){
+      goToPage('about');
+      setTimeout(() => $('#calc')?.scrollIntoView({ block:'start', behavior:'smooth' }), 60);
+    }
+  });
+
+  /* بطاقات «أحدث» + أزرار «شوفي الكل» */
+  $('#peek').addEventListener('click', e => {
+    const go = e.target.closest('[data-goto]');
+    if (go) return goToPage(go.dataset.goto);
+
+    const cartBtn = e.target.closest('[data-cart]');
+    if (cartBtn){ e.stopPropagation(); return toggleCart(cartBtn.dataset.cart) }
+
+    const open = e.target.closest('[data-open]');
+    if (!open) return;
+    /* setPage متزامنة، بينما goToPage تمر بـ startViewTransition وهي
+       غير متزامنة — لو استعملناها هنا چان openSheet تشتغل و TAB لسه
+       ما تبدّل، فما تلگي العنصر. */
+    const kind = open.dataset.kind;
+    if (PAGE !== kind){
+      history.pushState({ page:kind }, '', '#/' + kind);
+      setPage(kind, true);
+    }
+    openSheet(open.dataset.open);
+  });
 
   /* سلايدر الواجهة: نقاط التنقل + وقفة عند اللمس أو المرور */
   $('#heroDots').addEventListener('click', e => {
@@ -2579,8 +3114,9 @@ function wire(){
     if (a === 'minus')  return setMult(-1);
     if (a === 'share'){
       const x = data().find(i => i.id === current);
-      return x && copyText(itemLink(x), tt('linkCopied'));
+      return x && shareItem(x);
     }
+    if (a === 'day'){ toggleDay(el.dataset.id); return drawSheet() }
     if (a === 'cart'){ toggleCart(el.dataset.id); return drawSheet() }
     if (a === 'uncart'){ toggleCart(el.dataset.id); return drawSheet() }
     if (a === 'ccopy')  return copyText(cartText(), tt('cart.copied'));
@@ -2641,7 +3177,7 @@ function wire(){
   $('#cSex').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     $$('#cSex button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-    calcRun();
+    calcRun(true);
   });
 
   /* الهيدر عند التمرير + زر الموبايل */
