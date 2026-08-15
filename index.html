@@ -478,15 +478,10 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .today-top h3{font-size:17px;flex:1;min-width:0;display:flex;align-items:center;gap:8px}
 .today-top .icon{font-size:19px;color:var(--brand-ink)}
 .today-empty{color:var(--soft);font-size:14.5px;line-height:1.75}
-.today-bar{height:10px;border-radius:var(--r-full);background:var(--sunken);overflow:hidden;display:flex}
-.today-bar i{display:block;height:100%;transition:width .5s var(--ease)}
-.today-bar i.over{background:var(--clay)}
 .today-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-2)}
 .today-n{text-align:center;background:var(--sunken);border-radius:var(--r-sm);padding:9px 4px}
 .today-n b{display:block;font-family:var(--f-num);font-size:clamp(15px,2.6vw,19px);font-weight:600;line-height:1.25}
 .today-n span{font-size:11px;color:var(--soft);display:block;margin-top:2px}
-.today-goal{font-size:13px;color:var(--soft);text-align:center}
-.today-goal b{color:var(--ink);font-family:var(--f-num)}
 .today-list{display:flex;flex-wrap:wrap;gap:7px}
 .today-item{
   display:inline-flex;align-items:center;gap:6px;padding:5px 6px 5px 12px;border-radius:var(--r-full);
@@ -793,9 +788,54 @@ ol.steps li::before{
     transition-duration:.001ms!important;scroll-behavior:auto!important}
   .rv{opacity:1;transform:none}
 }
+/* ═══════════════════════════════════════════════════════════
+   ⑮ب  ورقة طباعة قائمة التسوّق
+   الشيت مخفي بالطباعة، فالقائمة تنبني بورقة مستقلة.
+   ألوان صريحة مو متغيّرات — الوضع الليلي ما يلحق الورق.
+   ═══════════════════════════════════════════════════════════ */
+#printArea{display:none}
+
 @media print{
-  .site-header,.toolbar,.mobile-cta,.sheet,.cta-band,.hero::before,.hero::after{display:none!important}
-  body{background:#fff;color:#000}
+  @page{ margin:14mm }
+  .site-header,.viewnav,.toolbar,.mobile-cta,.sheet,.cta-band,.cart-fab,
+  .site-footer,main,#toastBox,.hero::before,.hero::after{display:none!important}
+  body{background:#fff!important;color:#111!important}
+  body.printing #printArea{display:block!important}
+
+  #printArea{font-family:var(--f-body);color:#111;line-height:1.6}
+  #printArea .pr-head{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:12mm;
+    border-bottom:2px solid #111;padding-bottom:4mm;margin-bottom:5mm;
+  }
+  #printArea h1{font-family:var(--f-head);font-size:19pt;font-weight:700;margin:0;line-height:1.3}
+  #printArea .pr-meta{font-size:10pt;color:#555;margin-top:1mm}
+  #printArea .pr-count{font-size:10pt;color:#555;white-space:nowrap}
+  #printArea .pr-src{font-size:10pt;color:#333;margin-bottom:5mm;line-height:1.7}
+  #printArea .pr-src b{font-family:var(--f-head)}
+
+  #printArea .pr-table{width:100%;border-collapse:collapse;font-size:11.5pt}
+  #printArea .pr-table th{
+    font-family:var(--f-head);font-size:9.5pt;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;color:#666;text-align:start;
+    border-bottom:1px solid #999;padding:0 3mm 2mm;
+  }
+  #printArea .pr-table td{padding:2.6mm 3mm;border-bottom:1px solid #ddd;vertical-align:middle}
+  /* الصفوف تتبادل حتى العين ما تضيع بالسوق */
+  #printArea .pr-table tbody tr:nth-child(even) td{background:#f4f4f2}
+  #printArea .pr-table tr{break-inside:avoid}
+  #printArea .pr-box{width:9mm;text-align:center}
+  #printArea .pr-box span{
+    display:inline-block;width:4.6mm;height:4.6mm;border:1.4px solid #111;border-radius:1mm;
+  }
+  #printArea .pr-qty{white-space:nowrap;font-family:var(--f-num);font-size:10.5pt;
+    text-align:end;color:#333}
+
+  #printArea .pr-tot{
+    display:flex;gap:8mm;flex-wrap:wrap;justify-content:center;
+    margin-top:6mm;padding-top:4mm;border-top:2px solid #111;font-size:10.5pt;color:#444;
+  }
+  #printArea .pr-tot b{font-family:var(--f-num);font-size:13pt;color:#111}
+  #printArea .pr-foot{margin-top:6mm;font-size:8.5pt;color:#999;text-align:center;direction:ltr}
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -890,39 +930,6 @@ ol.steps li::before{
 /* ═══════════════════════════════════════════════════════════
    ⑱  حاسبة السعرات
    ═══════════════════════════════════════════════════════════ */
-.calc{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
-  padding:clamp(20px,4vw,34px);box-shadow:var(--shadow-2);display:grid;gap:var(--s-5);
-  max-width:920px;margin-inline:auto;
-}
-.calc-grid{display:grid;gap:var(--s-3)}
-@media(min-width:620px){.calc-grid{grid-template-columns:1fr 1fr}}
-.calc .field{display:grid;gap:7px}
-.calc label{font-size:13.5px;font-weight:600;color:var(--ink-2);font-family:var(--f-head)}
-.calc .inp{
-  width:100%;padding:12px 14px;min-height:48px;border-radius:var(--r-sm);
-  border:1px solid var(--line);background:var(--surface-2);outline:none;font-size:15.5px;
-  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
-}
-.calc .inp:focus{border-color:var(--brand);box-shadow:0 0 0 3.5px var(--brand-wash)}
-.calc input.inp{font-family:var(--f-num)}
-.seg{display:grid;grid-auto-flow:column;gap:4px;background:var(--sunken);padding:4px;border-radius:var(--r);border:1px solid var(--line)}
-.seg button{
-  padding:10px 6px;min-height:44px;border-radius:10px;font-size:14px;font-weight:600;
-  font-family:var(--f-head);color:var(--soft);transition:background-color .18s var(--ease),color .18s var(--ease);
-}
-.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
-.calc-out{
-  border-top:1px solid var(--line);padding-top:var(--s-5);display:grid;gap:var(--s-4);
-}
-.calc-big{text-align:center}
-.calc-big b{display:block;font-family:var(--f-num);font-size:clamp(38px,8vw,60px);line-height:1.1;color:var(--brand-ink)}
-.calc-big span{color:var(--soft);font-size:14px}
-.calc-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3)}
-.calc-macros .m{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:14px 10px;text-align:center}
-.calc-macros .m b{display:block;font-family:var(--f-num);font-size:clamp(20px,4vw,26px);line-height:1.2}
-.calc-macros .m span{font-size:12px;color:var(--soft)}
-.calc-note{font-size:13px;color:var(--soft);text-align:center;line-height:1.7}
 </style>
 </head>
 <body>
@@ -964,6 +971,7 @@ ol.steps li::before{
     <symbol id="i-calc" viewBox="0 0 24 24"><rect x="4.6" y="2.8" width="14.8" height="18.4" rx="2.6"/><path d="M8 7h8"/><path d="M8.6 11.6h.01M12 11.6h.01M15.4 11.6h.01M8.6 15.2h.01M12 15.2h.01M15.4 15.2h.01M8.6 18.4h6.8"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M19.6 3.6v4.8h-4.8"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.8h5V7M6 7l1 13.2h10L18 7"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.6h10V9"/><path d="M7 18H5.4A2.4 2.4 0 0 1 3 15.6v-4.2A2.4 2.4 0 0 1 5.4 9h13.2a2.4 2.4 0 0 1 2.4 2.4v4.2a2.4 2.4 0 0 1-2.4 2.4H17"/><rect x="7" y="14.4" width="10" height="6"/></symbol>
   </defs>
 </svg>
 
@@ -1103,77 +1111,6 @@ ol.steps li::before{
       </div>
 
       <div class="grid" id="grid" role="tabpanel" aria-labelledby="vtab-recipes"></div>
-    </div>
-  </section>
-
-  <!-- ══ حاسبة السعرات ══ -->
-  <section class="sec" id="calc">
-    <div class="wrap">
-      <div class="sec-head center rv">
-        <span class="kicker" data-t="calc.kicker">مجاناً</span>
-        <h2 data-t="calc.h">شكد سعرة تحتاجين باليوم؟</h2>
-        <p data-t="calc.p">احسبيها بثواني. الرقم هذا هو نقطة البداية لأي خطة أكل — وبعدها نظبطه سوية حسب نتيجتج.</p>
-      </div>
-
-      <form class="calc rv" id="calcForm" novalidate>
-        <div class="calc-grid">
-          <div class="field">
-            <span class="lbl-txt"><label data-t="calc.sex">الجنس</label></span>
-            <div class="seg" id="cSex" role="group">
-              <button type="button" data-v="f" aria-pressed="true" data-t="calc.female">أنثى</button>
-              <button type="button" data-v="m" aria-pressed="false" data-t="calc.male">ذكر</button>
-            </div>
-          </div>
-          <div class="field">
-            <label for="cAge" data-t="calc.age">العمر (سنة)</label>
-            <input class="inp" id="cAge" type="number" min="14" max="90" step="1" value="27" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label for="cWeight" data-t="calc.weight">الوزن (كغم)</label>
-            <input class="inp" id="cWeight" type="number" min="30" max="250" step="0.5" value="70" inputmode="decimal">
-          </div>
-          <div class="field">
-            <label for="cHeight" data-t="calc.height">الطول (سم)</label>
-            <input class="inp" id="cHeight" type="number" min="120" max="230" step="1" value="165" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label for="cAct" data-t="calc.activity">مستوى النشاط</label>
-            <select class="inp" id="cAct">
-              <option value="1.2"  data-t="calc.a1">جالسة أغلب اليوم</option>
-              <option value="1.375" data-t="calc.a2">نشاط خفيف — ١-٣ أيام</option>
-              <option value="1.55" selected data-t="calc.a3">نشاط متوسط — ٣-٥ أيام</option>
-              <option value="1.725" data-t="calc.a4">نشاط عالي — ٦-٧ أيام</option>
-              <option value="1.9"  data-t="calc.a5">نشاط شديد أو شغل بدني</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="cGoal" data-t="calc.goal">الهدف</label>
-            <select class="inp" id="cGoal">
-              <option value="-0.2" data-t="calc.g1">تنشيف ونزول وزن</option>
-              <option value="0" selected data-t="calc.g2">ثبات على الوزن</option>
-              <option value="0.15" data-t="calc.g3">زيادة وزن وعضل</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="calc-out">
-          <div class="calc-big">
-            <b class="num" id="cKcal">—</b>
-            <span data-t="calc.perDay">سعرة باليوم</span>
-          </div>
-          <div class="calc-macros">
-            <div class="m"><b class="num" id="cP" style="color:var(--pine-ink)">—</b><span data-t="calc.protein">بروتين غم</span></div>
-            <div class="m"><b class="num" id="cC" style="color:var(--amber-ink)">—</b><span data-t="calc.carbs">كارب غم</span></div>
-            <div class="m"><b class="num" id="cF" style="color:var(--clay-ink)">—</b><span data-t="calc.fat">دهون غم</span></div>
-          </div>
-          <p class="calc-note" data-t="calc.note">
-            الحساب تقديري بمعادلة Mifflin-St Jeor. الرقم الحقيقي يتظبط بعد أسبوعين من المتابعة.
-          </p>
-          <a class="btn btn-primary btn-lg" id="cCta" href="#" target="_blank" rel="noopener" style="justify-self:center">
-            <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="calc.cta">تريدين خطة على هذا الرقم؟</span>
-          </a>
-        </div>
-      </form>
     </div>
   </section>
 
@@ -1325,6 +1262,9 @@ ol.steps li::before{
   </div>
 </footer>
 
+<!-- ══ ورقة طباعة قائمة التسوّق (تبين بالطباعة فقط) ══ -->
+<div id="printArea" aria-hidden="true"></div>
+
 <!-- ══ الشريط السفلي (موبايل) ══ -->
 <div class="mobile-cta" id="mobileCta">
   <a class="btn btn-primary" id="mobileCtaLink" href="#" target="_blank" rel="noopener">
@@ -1410,18 +1350,12 @@ ar:{
   "peek.allC":"شوفي كل الكورسات",
   "day.title":"أكلج اليوم",
   "day.empty":"ما سجّلتي ولا وجبة اليوم. افتحي أي وصفة واضغطي «أكلتها اليوم» وراح نجمعلج السعرات.",
-  "day.emptyNoGoal":"احسبي سعراتج من الحاسبة بتبويب التعريف، وبعدها سجّلي وجباتج هنا ونقارنهن بهدفج.",
   "day.ate":"أكلتها اليوم",
   "day.ateDone":"مسجّلة اليوم ✓",
   "day.added":"انسجّلت بأكل اليوم",
   "day.removed":"انشالت من أكل اليوم",
   "day.clear":"مسح اليوم",
   "day.cleared":"انمسح أكل اليوم",
-  "day.of":"من هدفج {x} سعرة",
-  "day.left":"باقيلج {x} سعرة",
-  "day.over":"زدتي {x} سعرة عن هدفج",
-  "day.noGoal":"احسبي هدفج من الحاسبة",
-  "day.goGoal":"روحي للحاسبة",
   "day.send":"دزّيها للكوتش",
   "day.msg":"هلو! هذا أكلي اليوم: {items}. المجموع {k} سعرة ({p}غم بروتين / {c}غم كارب / {f}غم دهون).",
   "cat.clear":"مسح البحث",
@@ -1505,39 +1439,13 @@ ar:{
   "cart.items":"المكونات",
   "cart.totals":"مجموع الوصفات المختارة",
   "cart.copy":"نسخ القائمة",
-  "cart.whats":"إرسالها واتساب",
+  "cart.print":"طباعة القائمة",
+  "cart.qty":"الكمية",
   "cart.clear":"إفراغ القائمة",
   "cart.copied":"انتسخت القائمة ✓",
   "cart.cleared":"انفرغت القائمة",
   "cart.head":"🛒 قائمة التسوّق",
 
-  /* الحاسبة */
-  "calc.kicker":"مجاناً",
-  "calc.h":"شكد سعرة تحتاجين باليوم؟",
-  "calc.p":"احسبيها بثواني. الرقم هذا هو نقطة البداية لأي خطة أكل — وبعدها نظبطه سوية حسب نتيجتج.",
-  "calc.sex":"الجنس",
-  "calc.female":"أنثى",
-  "calc.male":"ذكر",
-  "calc.age":"العمر (سنة)",
-  "calc.weight":"الوزن (كغم)",
-  "calc.height":"الطول (سم)",
-  "calc.activity":"مستوى النشاط",
-  "calc.a1":"جالسة أغلب اليوم",
-  "calc.a2":"نشاط خفيف — ١-٣ أيام",
-  "calc.a3":"نشاط متوسط — ٣-٥ أيام",
-  "calc.a4":"نشاط عالي — ٦-٧ أيام",
-  "calc.a5":"نشاط شديد أو شغل بدني",
-  "calc.goal":"الهدف",
-  "calc.g1":"تنشيف ونزول وزن",
-  "calc.g2":"ثبات على الوزن",
-  "calc.g3":"زيادة وزن وعضل",
-  "calc.perDay":"سعرة باليوم",
-  "calc.protein":"بروتين غم",
-  "calc.carbs":"كارب غم",
-  "calc.fat":"دهون غم",
-  "calc.note":"الحساب تقديري بمعادلة Mifflin-St Jeor. الرقم الحقيقي يتظبط بعد أسبوعين من المتابعة.",
-  "calc.cta":"تريدين خطة على هذا الرقم؟",
-  "calc.msg":"هلو! سويت الحساب بالموقع وطلعلي {k} سعرة باليوم ({p}غم بروتين / {c}غم كارب / {f}غم دهون). أريد خطة على هذا الرقم."
 },
 en:{
   "skip":"Skip to content",
@@ -1584,18 +1492,12 @@ en:{
   "peek.allC":"See all courses",
   "day.title":"What you ate today",
   "day.empty":"No meals logged today. Open any recipe and tap “I ate this today” and we'll add up the calories for you.",
-  "day.emptyNoGoal":"Work out your calories with the calculator on the first tab, then log your meals here and we'll compare them to your goal.",
   "day.ate":"I ate this today",
   "day.ateDone":"Logged for today ✓",
   "day.added":"Added to today's food",
   "day.removed":"Removed from today's food",
   "day.clear":"Clear the day",
   "day.cleared":"Today's food cleared",
-  "day.of":"of your {x} kcal goal",
-  "day.left":"{x} kcal left",
-  "day.over":"{x} kcal over your goal",
-  "day.noGoal":"Set a goal with the calculator",
-  "day.goGoal":"Go to the calculator",
   "day.send":"Send to the coach",
   "day.msg":"Hi! Here's what I ate today: {items}. Total {k} kcal ({p}g protein / {c}g carbs / {f}g fat).",
   "cat.clear":"Clear search",
@@ -1676,38 +1578,13 @@ en:{
   "cart.items":"Ingredients",
   "cart.totals":"Total for the selected recipes",
   "cart.copy":"Copy list",
-  "cart.whats":"Send on WhatsApp",
+  "cart.print":"Print the list",
+  "cart.qty":"Qty",
   "cart.clear":"Clear list",
   "cart.copied":"List copied ✓",
   "cart.cleared":"List cleared",
   "cart.head":"🛒 Shopping list",
 
-  "calc.kicker":"Free",
-  "calc.h":"How many calories do you need a day?",
-  "calc.p":"Work it out in seconds. That number is the starting point for any meal plan — then we fine-tune it together based on your results.",
-  "calc.sex":"Sex",
-  "calc.female":"Female",
-  "calc.male":"Male",
-  "calc.age":"Age (years)",
-  "calc.weight":"Weight (kg)",
-  "calc.height":"Height (cm)",
-  "calc.activity":"Activity level",
-  "calc.a1":"Mostly sitting",
-  "calc.a2":"Light — 1-3 days a week",
-  "calc.a3":"Moderate — 3-5 days a week",
-  "calc.a4":"High — 6-7 days a week",
-  "calc.a5":"Very high or physical job",
-  "calc.goal":"Goal",
-  "calc.g1":"Cut and lose weight",
-  "calc.g2":"Maintain weight",
-  "calc.g3":"Gain weight and muscle",
-  "calc.perDay":"calories a day",
-  "calc.protein":"Protein g",
-  "calc.carbs":"Carbs g",
-  "calc.fat":"Fat g",
-  "calc.note":"An estimate using the Mifflin-St Jeor equation. The real number is dialled in after two weeks of follow-up.",
-  "calc.cta":"Want a plan built on this number?",
-  "calc.msg":"Hi! I used the calculator on your site and got {k} calories a day ({p}g protein / {c}g carbs / {f}g fat). I'd like a plan built on that."
 }
 };
 
@@ -1873,7 +1750,6 @@ const insta = () => safeUrl(SITE?.instagram);
    لازم الرابط ينطفي وياه وإلا يوصّل لمكان فاضي. */
 const SECTION_NODES = {
   trust:   ['#trustStrip'],
-  calc:    ['#calc'],
   plans:   ['#plans',   '[data-navfor="plans"]'],
   about:   ['#about',   '[data-navfor="about"]'],
   reviews: ['#reviews'],
@@ -1985,7 +1861,6 @@ function paintSite(){
       <div class="ans">${esc(bi(f.a))}</div>
     </details>`).join('');
 
-  calcRun();
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2184,7 +2059,7 @@ function macroBar(r){
    ملاحظة: التبويبات تستعمل خاصية hidden، وقرار المدربة بإخفاء قسم
    يستعمل الكلاس .sec-hidden — منفصلين حتى ما يمسح واحد قرار الثاني. */
 const PAGES = {
-  about:   ['#heroSec','#calc','#plans','#about','#reviews','#faq','#peek','#ctaBand'],
+  about:   ['#heroSec','#plans','#about','#reviews','#faq','#peek','#ctaBand'],
   recipes: ['#today','#catalog'],
   courses: ['#catalog']
 };
@@ -2405,7 +2280,6 @@ function renderPeek(){
    ⑦ب  عدّاد اليوم — يربط الحاسبة بالوصفات
    ══════════════════════════════════════════════════════════ */
 let DAY = { d:'', items:[] };      /* {d:'2026-08-15', items:[{id,servings}]} */
-let GOAL = null;                   /* {kcal,p,c,f} من الحاسبة */
 
 const todayKey = () => {
   const n = new Date();
@@ -2420,10 +2294,6 @@ function loadDay(){
       ? { d:raw.d, items:raw.items.filter(i => RECIPES.some(r => r.id === i.id)) }
       : { d:todayKey(), items:[] };
   } catch(e){ DAY = { d:todayKey(), items:[] } }
-  try {
-    const g = JSON.parse(localStorage.getItem('cz-goal') || 'null');
-    GOAL = (g && Number.isFinite(+g.kcal) && +g.kcal > 0) ? g : null;
-  } catch(e){ GOAL = null }
 }
 function saveDay(){ try { localStorage.setItem('cz-day', JSON.stringify(DAY)) } catch(e){} }
 
@@ -2465,35 +2335,19 @@ function renderToday(){
   const box = $('#todayCard');
   if (!box) return;
   const t = dayTotals();
-  const goal = GOAL && nz(GOAL.kcal) > 0 ? nz(GOAL.kcal) : 0;
 
   if (!DAY.items.length){
     box.innerHTML = `<div class="today-top">
         <h3>${ico('i-calc')} ${esc(tt('day.title'))}</h3>
       </div>
-      <p class="today-empty">${esc(tt(goal ? 'day.empty' : 'day.emptyNoGoal'))}</p>
-      ${goal ? '' : `<div class="today-acts">
-        <button class="btn btn-ghost btn-sm" type="button" data-day="goal">
-          ${ico('i-calc')} ${esc(tt('day.goGoal'))}</button></div>`}`;
+      <p class="today-empty">${esc(tt('day.empty'))}</p>`;
     return;
   }
-
-  const pct = goal ? Math.min(100, t.kcal / goal * 100) : 0;
-  const over = goal && t.kcal > goal;
-  const diff = goal ? Math.abs(Math.round(goal - t.kcal)) : 0;
 
   box.innerHTML = `<div class="today-top">
       <h3>${ico('i-calc')} ${esc(tt('day.title'))}</h3>
       <span class="count">${DAY.items.length} ${esc(tt('unitR'))}</span>
     </div>
-
-    ${goal ? `<div class="today-bar" role="img"
-        aria-label="${esc(tt('day.of', { x:goal }))}">
-        <i style="width:${pct.toFixed(1)}%;background:${over ? 'var(--clay)' : 'var(--pine)'}"></i>
-      </div>
-      <p class="today-goal">
-        <b>${Math.round(t.kcal)}</b> / <b>${goal}</b> — ${esc(over ? tt('day.over', { x:diff }) : tt('day.left', { x:diff }))}
-      </p>` : ''}
 
     <div class="today-nums">
       <div class="today-n"><b>${Math.round(t.kcal)}</b><span>${esc(tt('kcalUnit'))}</span></div>
@@ -2654,9 +2508,9 @@ function drawCart(){
     </div>
 
     <div class="sheet-cta" style="display:grid;gap:10px">
-      <a class="btn btn-primary btn-lg" id="cartWhats" href="#" target="_blank" rel="noopener">
-        ${ico('i-whatsapp')} ${esc(tt('cart.whats'))}
-      </a>
+      <button class="btn btn-primary btn-lg" type="button" data-act="cprint">
+        ${ico('i-print')} ${esc(tt('cart.print'))}
+      </button>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <button class="btn btn-ghost" type="button" data-act="ccopy">${ico('i-copy')} ${esc(tt('cart.copy'))}</button>
         <button class="btn btn-quiet" type="button" data-act="cclear" style="color:var(--clay-ink)">
@@ -2664,9 +2518,61 @@ function drawCart(){
       </div>
     </div>
   </div>`;
+}
 
-  const w = whats().replace(/\?.*$/, '');
-  $('#cartWhats').href = w + (w.includes('?') ? '&' : '?') + 'text=' + encodeURIComponent(cartText());
+/* ── ورقة الطباعة ──
+   القائمة تنرسم داخل الشيت، والشيت مخفي بالطباعة — فنبني ورقة مستقلة
+   بعنصر #printArea ونطبعها لحالها. مربعات فارغة تنعلّم بالقلم بالسوق. */
+function buildPrintSheet(){
+  const { lines, tot } = cartAggregate();
+  const names = CART.map(c => RECIPES.find(r => r.id === c.id)?.title).filter(Boolean);
+  const d = new Date().toLocaleDateString(LANG === 'ar' ? 'ar-IQ' : 'en-GB',
+    { year:'numeric', month:'long', day:'numeric' });
+
+  $('#printArea').innerHTML = `
+    <div class="pr-head">
+      <div>
+        <h1>${esc(tt('cart.head'))}</h1>
+        <p class="pr-meta">${esc(siteName())} · ${esc(d)}</p>
+      </div>
+      <p class="pr-count">${lines.length} ${esc(tt('cart.items'))}</p>
+    </div>
+
+    ${names.length ? `<p class="pr-src"><b>${esc(tt('cart.recipes'))}:</b> ${esc(names.join('، '))}</p>` : ''}
+
+    <table class="pr-table">
+      <thead>
+        <tr>
+          <th class="pr-box"></th>
+          <th>${esc(tt('cart.items'))}</th>
+          <th class="pr-qty">${esc(tt('cart.qty'))}</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${lines.map(l => `<tr>
+          <td class="pr-box"><span></span></td>
+          <td>${esc(l.n)}</td>
+          <td class="pr-qty">${num(l.q)} ${esc(l.u)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+
+    <div class="pr-tot">
+      <span><b>${Math.round(tot.kcal)}</b> ${esc(tt('kcalUnit'))}</span>
+      <span><b>${Math.round(tot.protein)}</b> ${esc(tt('protein'))}</span>
+      <span><b>${Math.round(tot.carbs)}</b> ${esc(tt('carbs'))}</span>
+      <span><b>${Math.round(tot.fat)}</b> ${esc(tt('fat'))}</span>
+    </div>
+    <p class="pr-foot">${esc(location.host + location.pathname)}</p>`;
+}
+
+function printCart(){
+  buildPrintSheet();
+  document.body.classList.add('printing');
+  /* بدون requestAnimationFrame — ما تشتغل إذا التبويب مو راسم،
+     فالطباعة چانت ما تنفتح أصلاً. print() متزامنة وتحسب التخطيط
+     بنفسها بعد تعديل الـ DOM، والـ finally يضمن تنظيف الكلاس. */
+  try { print() } finally { document.body.classList.remove('printing') }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2860,7 +2766,7 @@ function drawSheet(){
    #/cart        → قائمة التسوّق
    #plans، #faq… → روابط قديمة منشورة، نوديها لتبويبها ونمرّر لها */
 const ANCHOR_PAGE = {
-  catalog:'recipes', calc:'about', plans:'about',
+  catalog:'recipes', plans:'about',
   about:'about', reviews:'about', faq:'about', top:'about'
 };
 
@@ -2933,45 +2839,6 @@ function copyText(txt, okMsg){
 /* ══════════════════════════════════════════════════════════
    ⑩  حاسبة السعرات
    ══════════════════════════════════════════════════════════ */
-/* userAction = المستخدمة عدّلت الحاسبة بنفسها.
-   الحقول تجي بقيم افتراضية (٢٧ سنة / ٧٠ كغم / ١٦٥ سم)، فلو خزّنّا الهدف
-   بكل استدعاء چان عدّاد اليوم يقارن بأرقام شخص غريب — والزائرة ما تدري. */
-function calcRun(userAction){
-  const sexBtn = $('#cSex [aria-pressed="true"]');
-  const male   = sexBtn?.dataset.v === 'm';
-  const age    = nz($('#cAge').value), w = nz($('#cWeight').value), ht = nz($('#cHeight').value);
-  const act    = nz($('#cAct').value) || 1.55;
-  const goal   = nz($('#cGoal').value);
-
-  if (age < 14 || w < 30 || ht < 120){
-    ['#cKcal','#cP','#cC','#cF'].forEach(s => $(s).textContent = '—');
-    return;
-  }
-
-  /* Mifflin-St Jeor */
-  const bmr  = 10 * w + 6.25 * ht - 5 * age + (male ? 5 : -161);
-  const kcal = Math.round(bmr * act * (1 + goal) / 10) * 10;
-
-  const protein = Math.round(w * 1.8);                       /* ١.٨ غم لكل كغم */
-  const fat     = Math.round(kcal * 0.25 / 9);               /* ٢٥٪ من السعرات */
-  const carbs   = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
-
-  $('#cKcal').textContent = kcal;
-  $('#cP').textContent = protein;
-  $('#cC').textContent = carbs;
-  $('#cF').textContent = fat;
-
-  /* الهدف ينحفظ حتى عدّاد اليوم يعرف بشنو يقارن */
-  if (userAction){
-    GOAL = { kcal, p:protein, c:carbs, f:fat };
-    try { localStorage.setItem('cz-goal', JSON.stringify(GOAL)) } catch(e){}
-    renderToday();
-  }
-
-  const w2 = whats().replace(/\?.*$/, '');
-  $('#cCta').href = w2 + (w2.includes('?') ? '&' : '?') + 'text=' +
-    encodeURIComponent(tt('calc.msg', { k:kcal, p:protein, c:carbs, f:fat }));
-}
 
 /* ══════════════════════════════════════════════════════════
    ⑪  الثيم
@@ -3068,10 +2935,6 @@ function wire(){
     const a = b.dataset.day;
     if (a === 'del')   return toggleDay(b.dataset.id);
     if (a === 'clear'){ DAY.items = []; saveDay(); renderToday(); return toast(tt('day.cleared')) }
-    if (a === 'goal'){
-      goToPage('about');
-      setTimeout(() => $('#calc')?.scrollIntoView({ block:'start', behavior:'smooth' }), 60);
-    }
   });
 
   /* بطاقات «أحدث» + أزرار «شوفي الكل» */
@@ -3120,6 +2983,7 @@ function wire(){
     if (a === 'cart'){ toggleCart(el.dataset.id); return drawSheet() }
     if (a === 'uncart'){ toggleCart(el.dataset.id); return drawSheet() }
     if (a === 'ccopy')  return copyText(cartText(), tt('cart.copied'));
+    if (a === 'cprint') return printCart();
     if (a === 'cclear'){
       CART = []; saveCart(); syncCartFab(); syncCartButtons();
       toast(tt('cart.cleared')); return drawSheet();
@@ -3170,15 +3034,6 @@ function wire(){
   $('#themeBtn').addEventListener('click', toggleTheme);
   $('#langBtn').addEventListener('click', toggleLang);
 
-  /* الحاسبة */
-  $('#calcForm').addEventListener('submit', e => e.preventDefault());
-  $('#calcForm').addEventListener('input', calcRun);
-  $('#calcForm').addEventListener('change', calcRun);
-  $('#cSex').addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    $$('#cSex button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-    calcRun(true);
-  });
 
   /* الهيدر عند التمرير + زر الموبايل */
   const header = $('#siteHeader'), mcta = $('#mobileCta');
@@ -3207,7 +3062,6 @@ function wire(){
 paintUI();
 wire();
 openFromHash();     /* التبويب الصحيح يبين فوراً، قبل ما توصل البيانات */
-calcRun();
 fetchAll();
 
 /* تسجيل الـ service worker (يخلي الموقع يشتغل حتى لو النت ضعيف) */
