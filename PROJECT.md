@@ -40,9 +40,33 @@ created\_at · updated\_at
 **`site\_info`** — صف واحد فقط (id=1) · name · name\_en · initial · tagline ·
 tagline\_en · bio · bio\_en · avatar\_url · instagram · whatsapp ·
 **ومحتوى الصفحة الرئيسية:** hero\_eyebrow · hero\_title · hero\_sub (jsonb ثنائي اللغة) ·
-hero\_image · about\_image (نص) · stats · creds · plans · quotes · faq · credit (jsonb)
+hero\_image · about\_image (نص) · stats · creds · plans · quotes · faq · credit ·
+**sections** (jsonb)
+
+**`admins`** — user\_id (uuid، مفتاح خارجي لـ auth.users) · note · created\_at.
+مين يكدر يعدّل. شوف قسم الصلاحيات تحت.
 
 كل حقل نصّي ثنائي اللغة مخزون كـ `{"ar":"…","en":"…"}`. شوف `schema.sql` لشكل كل حقل.
+
+### إظهار وإخفاء أقسام الصفحة
+
+عمود `sections` يقرر أي قسم يبين بالصفحة الرئيسية:
+
+```json
+{"trust":true,"calc":true,"plans":false,"about":true,"reviews":true,"faq":true,"cta":true}
+```
+
+المفاتيح السبعة: `trust` (شريط المميزات) · `calc` (الحاسبة) · `plans` · `about` ·
+`reviews` · `faq` · `cta` (الشريط الأخير). **المفتاح الناقص معناه ظاهر** — يعني
+عمود فاضي = كل شي يبين، وما ينخفي إلا اللي تطفينه صراحة.
+
+القسم المطفي يختفي هو وروابط التنقل اللي تشير له (الهيدر والفوتر)، والمحتوى
+مالته يبقى محفوظ بالداتابيس.
+
+> ⚠️ **قائمة المفاتيح مكررة بثلاث أماكن ولازم تبقى متطابقة:**
+> `SECTION\_NODES` بـ `index.html` (يربط المفتاح بعناصر الصفحة) ·
+> `SECTION\_KEYS` بـ `admin.html` (يبني المفاتيح باللوحة) · وتعليق `schema.sql`.
+> إذا ضفت قسم جديد، ضيف له `id` بالماركب و`data-navfor` لروابطه.
 
 ### شكل حقول الـ jsonb
 
@@ -109,7 +133,7 @@ Bucket عام اسمه **`media`**. الرفع للمشرفة فقط، القر�
 |الملف|الحالة|
 |-|-|
 |`index.html`|✅ كل المحتوى يجي من Supabase — ماكو أي بيانات ثابتة بالكود|
-|`admin.html`|✅ دخول Supabase، ٥ تبويبات (وصفات / كورسات / صور / محتوى الصفحة / معلومات الموقع)|
+|`admin.html`|✅ دخول Supabase، ٥ تبويبات (وصفات / كورسات / صور / محتوى الصفحة / معلومات الموقع) — مظبوطة للموبايل|
 |`schema.sql`|✅ انفّذ على Supabase، والبيانات الحالية مزروعة بالجداول|
 |`hardening.sql`|✅ تحصين الصلاحيات — ينفّذ مرة على المشروع الشغّال (آمن يتكرر)|
 |`vendor/supabase-2.58.0.js`|✅ مكتبة Supabase محفوظة محلياً بدل CDN|

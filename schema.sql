@@ -40,7 +40,15 @@ alter table public.site_info
   add column if not exists plans        jsonb not null default '[]'::jsonb,
   add column if not exists quotes       jsonb not null default '[]'::jsonb,
   add column if not exists faq          jsonb not null default '[]'::jsonb,
-  add column if not exists credit       jsonb not null default '{"ar":"","en":""}'::jsonb;
+  add column if not exists credit       jsonb not null default '{"ar":"","en":""}'::jsonb,
+  add column if not exists sections     jsonb not null default '{}'::jsonb;
+
+-- sections: أي قسم بالصفحة الرئيسية ظاهر وأيّه مخفي — يتحكم بيه من
+--   تبويب «محتوى الصفحة» باللوحة. المفاتيح:
+--   trust · calc · plans · about · reviews · faq · cta
+--   المفتاح الناقص أو الجدول الفاضي معناه «ظاهر» — يعني الوضع الافتراضي
+--   إن كل الأقسام تبين، وما ينخفي شي إلا لما تطفينه بيدج.
+--   مثال: {"calc":true,"plans":false,"reviews":false}
 
 -- ملاحظة: hero_images مصفوفة روابط تتقلب بسلايدر الواجهة.
 --          hero_image يبقى = أول صورة منها لأن og:image يعتمد عليه.

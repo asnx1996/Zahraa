@@ -256,15 +256,13 @@ select.inp{cursor:pointer;
   display:grid;grid-template-columns:repeat(5,1fr);gap:5px;background:var(--sunken);
   padding:5px;border-radius:var(--r);border:1px solid var(--line);margin-top:var(--s-5);
 }
-@media(max-width:640px){.tabs{grid-template-columns:repeat(3,1fr)}}
 .tab{
   display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;
   padding:9px 8px;border-radius:10px;font-family:var(--f-head);font-weight:600;font-size:14.5px;color:var(--soft);
   transition:background-color .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease);
 }
 .tab .icon{font-size:17px}
-.tab .t-txt{display:none}
-@media(min-width:520px){.tab .t-txt{display:inline}}
+.tab .t-short{display:none}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
 
@@ -633,6 +631,93 @@ select.inp{cursor:pointer;
 .toast.bad{background:var(--clay-ink);color:#fff}
 @keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
+/* ═══════════════════════════════════════════════════════════
+   ⑧  مفاتيح إظهار أقسام الصفحة
+   ═══════════════════════════════════════════════════════════ */
+.sec-toggles{display:grid;gap:var(--s-2)}
+.sec-row{
+  display:flex;align-items:center;gap:var(--s-3);cursor:pointer;user-select:none;
+  padding:11px var(--s-3);min-height:58px;border-radius:var(--r-sm);
+  background:var(--surface-2);border:1px solid var(--line);
+  transition:border-color .18s var(--ease),opacity .18s var(--ease);
+}
+.sec-row:hover{border-color:var(--line-2)}
+.sec-row .sec-name{
+  flex:1;min-width:0;font-family:var(--f-head);font-weight:600;font-size:14.5px;line-height:1.5;
+}
+.sec-row .sec-state{
+  font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:var(--r-full);flex:none;
+  background:var(--pine-wash);color:var(--pine-ink);
+}
+.sec-row.off{opacity:.7}
+.sec-row.off .sec-state{background:var(--sunken);color:var(--soft)}
+.sec-row .switch{flex:none}
+
+/* ═══════════════════════════════════════════════════════════
+   ⑨  الموبايل — اللوحة تنستعمل باليد قبل كل شي
+   ═══════════════════════════════════════════════════════════ */
+@media(max-width:700px){
+  /* الهيدر: سطر واحد ما ينكسر لسطرين */
+  .topbar-in{flex-wrap:nowrap;gap:6px;min-height:56px}
+  .brand{min-width:0}
+  .brand > span{min-width:0}
+  .brand b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand > span > span{font-size:10.5px}
+  .brand .mark{width:34px;height:34px;border-radius:11px;font-size:16px}
+  .top-end{gap:4px;flex:none}
+  .icon-btn.sq{width:36px;height:36px;font-size:15px}
+  .icon-btn.sq.lang-btn{width:auto;padding-inline:9px;font-size:11.5px;gap:4px}
+  .icon-btn.sq.lang-btn .icon{font-size:15px}
+
+  /* التبويبات: خمسة كلهن ظاهرين بأسماء مختصرة — أيقونة فوق ونص تحت */
+  .tabs{gap:3px;padding:4px;margin-top:var(--s-4)}
+  .tab{flex-direction:column;gap:3px;padding:7px 2px;min-height:58px;font-size:10.5px;line-height:1.25}
+  .tab .icon{font-size:20px}
+  .tab .t-long{display:none}
+  .tab .t-short{display:inline}
+
+  /* سطر العنصر: الأزرار تصير أيقونات بسطر واحد
+     بدل ما تنكسر أربع أسطر بأسماء طويلة */
+  .row{padding:10px;gap:10px}
+  .row-thumb{width:60px;height:52px}
+  .row-main h3{
+    font-size:15px;white-space:normal;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .row-acts{gap:4px;flex-wrap:nowrap;justify-content:space-between}
+  .row-acts .btn{flex:1;min-width:0;padding:0;min-height:42px;border-radius:var(--r-sm)}
+  .row-acts .btn span{display:none}
+  .row-acts .btn .icon{font-size:18px}
+  .sorter{flex-direction:row;gap:3px}
+  .sorter button{width:34px;height:42px;border-radius:var(--r-sm)!important}
+
+  /* مكتبة الصور: عمودين بدل عمود واحد عريض */
+  .media-grid{grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}
+  .mtag{font-size:10px;padding:2px 8px}
+  .muse{font-size:10px;padding:3px 7px}
+  .macts button{font-size:11.5px}
+
+  /* المودال والفورم */
+  .modal-head{padding:var(--s-3) var(--s-4)}
+  .modal-head h2{font-size:17px}
+  .modal-body{padding:var(--s-4);gap:var(--s-4)}
+  .modal-foot{padding:var(--s-3) var(--s-4);padding-bottom:calc(var(--s-3) + env(safe-area-inset-bottom))}
+  .cover-btns .btn{min-width:0;flex:1 1 0;padding-inline:10px;font-size:13px}
+  .cover-btns .btn span{overflow:hidden;text-overflow:ellipsis}
+
+  /* شريط الحفظ: الزر يمتد وسطر الخطأ فوقه */
+  .savebar{gap:var(--s-2)}
+  .savebar .btn{flex:1;min-width:0}
+  .savebar .err{flex:1 0 100%;min-width:0;order:-1}
+
+  /* الأقسام المطوية ومحرر المحتوى */
+  .acc > summary{padding:12px var(--s-3);gap:10px;min-height:56px;font-size:14.5px}
+  .acc > summary .ai{width:30px;height:30px;border-radius:10px;font-size:16px}
+  .acc-body{padding:var(--s-3)}
+  .blk{padding:var(--s-3)}
+  .toolbar{margin-top:var(--s-4)}
+}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
@@ -762,10 +847,14 @@ select.inp{cursor:pointer;
         <svg class="icon"><use href="#i-image"></use></svg><span class="t-txt" data-t="tab.media">الصور</span>
       </button>
       <button class="tab" role="tab" id="tab-content" aria-selected="false" type="button">
-        <svg class="icon"><use href="#i-book"></use></svg><span class="t-txt" data-t="tab.content">محتوى الصفحة</span>
+        <svg class="icon"><use href="#i-book"></use></svg>
+        <span class="t-txt t-long" data-t="tab.content">محتوى الصفحة</span>
+        <span class="t-txt t-short" data-t="tab.contentShort">المحتوى</span>
       </button>
       <button class="tab" role="tab" id="tab-info" aria-selected="false" type="button">
-        <svg class="icon"><use href="#i-info"></use></svg><span class="t-txt" data-t="tab.info">معلومات الموقع</span>
+        <svg class="icon"><use href="#i-info"></use></svg>
+        <span class="t-txt t-long" data-t="tab.info">معلومات الموقع</span>
+        <span class="t-txt t-short" data-t="tab.infoShort">الموقع</span>
       </button>
     </div>
 
@@ -1099,6 +1188,22 @@ const T = {
     "ct.faqA":"الجواب",
     "ct.credit":"سطر الحقوق بالأسفل",
 
+    "ct.sections":"أقسام الصفحة",
+    "ct.sectionsSub":"شنو يظهر للزائرة وشنو ينخفي",
+    "ct.sectionsHint":"طفّي أي قسم ما تريدين يبين بالصفحة الرئيسية. القسم المطفي يختفي هو وروابط التنقل اللي تشير له — والمحتوى مالته يبقى محفوظ، ترجعينه وقت ما تريدين.",
+    "sec.trust":"شريط المميزات تحت الواجهة",
+    "sec.calc":"حاسبة السعرات",
+    "sec.plans":"الباقات والأسعار",
+    "sec.about":"عن الكوتش",
+    "sec.reviews":"آراء المشتركات",
+    "sec.faq":"الأسئلة الشائعة",
+    "sec.cta":"شريط «جاهزة تبدين؟» بالأسفل",
+    "sec.on":"ظاهر",
+    "sec.off":"مخفي",
+
+    "tab.contentShort":"المحتوى",
+    "tab.infoShort":"الموقع",
+
     "media.intro":"كل صورة ترفعينها تنحفظ ببكت media داخل مجلد حسب نوعها. من هنا تشوفين كل الصور، وين محفوظة، وأي وصفة أو كورس يستعملها.",
     "media.upload":"رفع صور",
     "media.refresh":"تحديث",
@@ -1336,6 +1441,22 @@ const T = {
     "ct.faqQ":"Question",
     "ct.faqA":"Answer",
     "ct.credit":"Credit line in the footer",
+
+    "ct.sections":"Page sections",
+    "ct.sectionsSub":"What visitors see and what stays hidden",
+    "ct.sectionsHint":"Turn off any section you don't want on the home page. A hidden section disappears along with the nav links pointing to it — its content stays saved, so you can bring it back any time.",
+    "sec.trust":"Feature strip under the hero",
+    "sec.calc":"Calorie calculator",
+    "sec.plans":"Packages & prices",
+    "sec.about":"About the coach",
+    "sec.reviews":"Reviews",
+    "sec.faq":"FAQ",
+    "sec.cta":"“Ready to start?” band at the bottom",
+    "sec.on":"Visible",
+    "sec.off":"Hidden",
+
+    "tab.contentShort":"Content",
+    "tab.infoShort":"Site",
 
     "media.intro":"Every image you upload is stored in the media bucket, inside a folder based on what it is for. From here you can see every image, where it lives, and which recipe or course uses it.",
     "media.upload":"Upload images",
@@ -1670,20 +1791,28 @@ function render(){
           <button type="button" data-act="down" data-id="${x.id}" ${i === arr.length - 1 ? 'disabled' : ''}
                   aria-label="${esc(t('app.moveDown'))}" title="${esc(t('app.moveDown'))}">${ico('i-down')}</button>
         </span>
-        <button class="btn btn-quiet btn-sm" type="button" data-act="toggle" data-id="${x.id}">
+        ${/* الأسماء تنخفي على الموبايل وتبقى الأيقونة — فكل زر لازمه
+              aria-label و title حتى يبقى مفهوم بالحالتين */''}
+        <button class="btn btn-quiet btn-sm" type="button" data-act="toggle" data-id="${x.id}"
+                aria-label="${esc(x.is_published ? t('app.unpublish') : t('app.publish'))}"
+                title="${esc(x.is_published ? t('app.unpublish') : t('app.publish'))}">
           ${ico(x.is_published ? 'i-eye-off' : 'i-eye')}<span>${esc(x.is_published ? t('app.unpublish') : t('app.publish'))}</span>
         </button>
         <a class="btn btn-quiet btn-sm" href="index.html#/${TAB === 'courses' ? 'c' : 'r'}/${esc(x.id)}"
-           target="_blank" rel="noopener" title="${esc(t('app.preview'))}">
+           target="_blank" rel="noopener"
+           aria-label="${esc(t('app.preview'))}" title="${esc(t('app.preview'))}">
           ${ico('i-external')}<span>${esc(t('app.preview'))}</span>
         </a>
-        <button class="btn btn-quiet btn-sm" type="button" data-act="dup" data-id="${x.id}">
+        <button class="btn btn-quiet btn-sm" type="button" data-act="dup" data-id="${x.id}"
+                aria-label="${esc(t('app.duplicate'))}" title="${esc(t('app.duplicate'))}">
           ${ico('i-copy')}<span>${esc(t('app.duplicate'))}</span>
         </button>
-        <button class="btn btn-ghost btn-sm" type="button" data-act="edit" data-id="${x.id}">
+        <button class="btn btn-ghost btn-sm" type="button" data-act="edit" data-id="${x.id}"
+                aria-label="${esc(t('app.edit'))}" title="${esc(t('app.edit'))}">
           ${ico('i-edit')}<span>${esc(t('app.edit'))}</span>
         </button>
         <button class="btn btn-quiet btn-sm" type="button" data-act="del" data-id="${x.id}"
+                aria-label="${esc(t('app.delete'))}" title="${esc(t('app.delete'))}"
                 style="color:var(--clay-ink)">
           ${ico('i-trash')}<span>${esc(t('app.delete'))}</span>
         </button>
@@ -2424,10 +2553,17 @@ let CT = null;   /* نسخة عمل من المحتوى */
 
 const emptyBi = () => ({ ar:'', en:'' });
 
+/* الأقسام اللي تنطفي وتشتغل — الترتيب هنا هو ترتيب ظهورها بالصفحة.
+   لازم المفاتيح تطابق SECTION_NODES بـ index.html */
+const SECTION_KEYS = ['trust','calc','plans','about','reviews','faq','cta'];
+
 function loadContent(){
   const s = INFO || {};
   const bi = v => (v && typeof v === 'object') ? { ar:v.ar || '', en:v.en || '' } : { ar:v || '', en:'' };
+  const savedSections = (s.sections && typeof s.sections === 'object') ? s.sections : {};
   CT = {
+    /* الافتراضي ظاهر — المفتاح الناقص ما يخفي شي */
+    sections: Object.fromEntries(SECTION_KEYS.map(k => [k, savedSections[k] !== false])),
     hero_images: Array.isArray(s.hero_images) && s.hero_images.length
                    ? s.hero_images.slice()
                    : (s.hero_image ? [s.hero_image] : []),
@@ -2518,11 +2654,32 @@ function heroImagesBlock(){
   </div>`;
 }
 
+/* مفاتيح إظهار/إخفاء الأقسام */
+function sectionsBlock(){
+  const on = SECTION_KEYS.filter(k => CT.sections[k] !== false).length;
+  return `<p class="hint">${esc(t('ct.sectionsHint'))}</p>
+  <div class="sec-toggles">
+    ${SECTION_KEYS.map(k => `
+      <label class="sec-row${CT.sections[k] === false ? ' off' : ''}">
+        <span class="sec-name">${esc(t('sec.' + k))}</span>
+        <span class="sec-state">${esc(t(CT.sections[k] === false ? 'sec.off' : 'sec.on'))}</span>
+        <span class="switch">
+          <input type="checkbox" data-ct="sections.${k}"${CT.sections[k] === false ? '' : ' checked'}>
+          <span class="track"></span>
+        </span>
+      </label>`).join('')}
+  </div>
+  <p class="rows-empty num">${on} / ${SECTION_KEYS.length}</p>`;
+}
+
 function drawContent(){
   if (!CT) loadContent();
   const b = v => (v && typeof v === 'object') ? v : emptyBi();
 
-  let h = acc('hero', 'i-spark', t('ct.hero'), t('ct.heroSub'), null, `
+  let h = acc('sections', 'i-eye', t('ct.sections'), t('ct.sectionsSub'),
+              SECTION_KEYS.filter(k => CT.sections[k] !== false).length, sectionsBlock());
+
+  h += acc('hero', 'i-spark', t('ct.hero'), t('ct.heroSub'), null, `
     ${biField(t('ct.eyebrow'), 'hero_eyebrow', CT.hero_eyebrow)}
     ${biField(t('ct.title'),   'hero_title',   CT.hero_title, true)}
     <p class="hint">${esc(t('ct.titleHint'))}</p>
@@ -2650,7 +2807,7 @@ async function saveContent(){
     .update({
       hero_eyebrow:CT.hero_eyebrow, hero_title:CT.hero_title, hero_sub:CT.hero_sub,
       credit:CT.credit, about_image:CT.about_image,
-      hero_images:CT.hero_images,
+      hero_images:CT.hero_images, sections:CT.sections,
       /* أول صورة تبقى بـ hero_image لأن og:image يعتمد عليها */
       hero_image:CT.hero_images[0] || '',
       stats:CT.stats, creds:CT.creds, plans:CT.plans, quotes:CT.quotes, faq:CT.faq
@@ -2856,6 +3013,24 @@ function wire(){
     if (pick){ syncContent(); return openPicker('ct:' + pick.dataset.ctpick) }
 
     if (e.target.closest('#ctSave')) saveContent();
+  });
+
+  /* مفاتيح الأقسام: تحديث بمكانه بدل إعادة رسم كل المحرر
+     (إعادة الرسم تسحب التركيز من المفتاح وتقفز بالصفحة) */
+  $('#contentBody').addEventListener('change', e => {
+    const inp = e.target;
+    if (!inp.matches || !inp.matches('[data-ct^="sections."]')) return;
+    CT.sections[inp.dataset.ct.slice('sections.'.length)] = inp.checked;
+
+    const row = inp.closest('.sec-row');
+    row.classList.toggle('off', !inp.checked);
+    row.querySelector('.sec-state').textContent = t(inp.checked ? 'sec.on' : 'sec.off');
+
+    const on = SECTION_KEYS.filter(k => CT.sections[k] !== false).length;
+    const badge = $('#contentBody [data-acc="sections"] .acount');
+    if (badge) badge.textContent = on;
+    const tally = row.closest('.acc-body').querySelector('.rows-empty');
+    if (tally) tally.textContent = `${on} / ${SECTION_KEYS.length}`;
   });
 
   /* ── مكتبة الصور ── */

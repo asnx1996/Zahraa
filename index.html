@@ -177,6 +177,9 @@ p{margin:0}
   outline:2.5px solid var(--ring);outline-offset:3px;border-radius:8px;
 }
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* الأقسام اللي تنطفي من اللوحة تنخفي بيه — لازم !important لأن قواعد
+   مثل `.nav a{display:flex}` تغلب [hidden] مال المتصفح */
+[hidden]{display:none!important}
 .skip{position:fixed;top:8px;right:8px;z-index:200;background:var(--surface);color:var(--ink);
   padding:10px 18px;border-radius:var(--r);box-shadow:var(--shadow-2);transform:translateY(-160%);transition:transform .2s var(--ease)}
 .skip:focus{transform:none}
@@ -878,9 +881,9 @@ ol.steps li::before{
     </a>
     <nav class="nav" data-t-aria="nav.aria">
       <a href="#catalog" data-t="nav.catalog">الوصفات والكورسات</a>
-      <a href="#plans" data-t="nav.plans">الباقات</a>
-      <a href="#about" data-t="nav.about">عن الكوتش</a>
-      <a href="#faq" data-t="nav.faq">أسئلة شائعة</a>
+      <a href="#plans" data-navfor="plans" data-t="nav.plans">الباقات</a>
+      <a href="#about" data-navfor="about" data-t="nav.about">عن الكوتش</a>
+      <a href="#faq" data-navfor="faq" data-t="nav.faq">أسئلة شائعة</a>
     </nav>
     <div class="header-end">
       <button class="icon-btn lang-btn" id="langBtn" type="button" data-t-aria="nav.lang">
@@ -945,7 +948,7 @@ ol.steps li::before{
         </div>
       </div>
 
-      <div class="trust">
+      <div class="trust" id="trustStrip">
         <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.1">بدون حرمان</span></span>
         <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.2">أكل من السوق المحلي</span></span>
         <span class="trust-item"><svg class="icon"><use href="#i-check-circle"></use></svg> <span data-t="trust.3">متابعة أسبوعية</span></span>
@@ -1116,7 +1119,7 @@ ol.steps li::before{
   </section>
 
   <!-- ══ CTA ══ -->
-  <section class="sec" style="padding-bottom:0">
+  <section class="sec" id="ctaBand" style="padding-bottom:0">
     <div class="wrap">
       <div class="cta-band rv">
         <h2 data-t="cta.h">جاهزة تبدين؟</h2>
@@ -1157,14 +1160,14 @@ ol.steps li::before{
         <h4 data-t="foot.links">روابط</h4>
         <a href="#catalog" data-t="foot.recipes">الوصفات</a>
         <a href="#catalog" data-t="foot.courses">الكورسات</a>
-        <a href="#plans" data-t="nav.plans">الباقات</a>
-        <a href="#about" data-t="nav.about">عن الكوتش</a>
+        <a href="#plans" data-navfor="plans" data-t="nav.plans">الباقات</a>
+        <a href="#about" data-navfor="about" data-t="nav.about">عن الكوتش</a>
       </div>
       <div class="foot-col">
         <h4 data-t="foot.contact">تواصل</h4>
         <a id="fWhats" href="#" target="_blank" rel="noopener" data-t="soc.whats">واتساب</a>
         <a id="fInsta" href="#" target="_blank" rel="noopener" data-t="soc.insta">انستغرام</a>
-        <a href="#faq" data-t="nav.faq">أسئلة شائعة</a>
+        <a href="#faq" data-navfor="faq" data-t="nav.faq">أسئلة شائعة</a>
         <a class="admin-link" href="admin.html">
           <svg class="icon"><use href="#i-lock"></use></svg>
           <span data-t="foot.admin">لوحة التحكم</span>
@@ -1641,9 +1644,32 @@ function siteBio(){  return (LANG === 'en' && SITE?.bio_en) ? SITE.bio_en : (SIT
 const whats = () => SITE?.whatsapp || '#';
 const insta = () => SITE?.instagram || '#';
 
+/* ── إظهار وإخفاء أقسام الصفحة (تتحكم بيها من تبويب «محتوى الصفحة») ──
+   كل قسم يجي وياه روابط التنقل اللي تشير له — إذا انطفى القسم
+   لازم الرابط ينطفي وياه وإلا يوصّل لمكان فاضي. */
+const SECTION_NODES = {
+  trust:   ['#trustStrip'],
+  calc:    ['#calc'],
+  plans:   ['#plans',   '[data-navfor="plans"]'],
+  about:   ['#about',   '[data-navfor="about"]'],
+  reviews: ['#reviews'],
+  faq:     ['#faq',     '[data-navfor="faq"]'],
+  cta:     ['#ctaBand']
+};
+
+function applySections(){
+  const s = (SITE && SITE.sections && typeof SITE.sections === 'object') ? SITE.sections : {};
+  for (const key in SECTION_NODES){
+    const on = s[key] !== false;              /* الافتراضي ظاهر — عمود فاضي ما يخفي شي */
+    SECTION_NODES[key].forEach(sel => $$(sel).forEach(el => { el.hidden = !on }));
+  }
+}
+
 function paintSite(){
   if (!SITE) return;
   const name = siteName();
+
+  applySections();
 
   document.title = name + (LANG === 'ar' ? ' — كورسات رياضية ووصفات صحية' : ' — Fitness courses & healthy recipes');
   $('#ogTitle')?.setAttribute('content', document.title);
