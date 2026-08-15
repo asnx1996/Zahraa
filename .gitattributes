@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# ملفات vendor تنحفظ بايت ببايت — لا تلمس نهايات الأسطر
+vendor/* -text

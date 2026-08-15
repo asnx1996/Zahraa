@@ -118,8 +118,38 @@ create trigger t_site_info_touch before update on public.site_info for each row 
 -- ═══════════════════════════════════════════════════════════════
 --  ③  الصلاحيات (RLS)
 --     الزوار: قراءة المنشور فقط
---     المسجّل دخوله (زهراء): كل شي
+--     المشرفة (المسجّلة بجدول admins): كل شي
+--
+--  ⚠️  الصلاحية مربوطة بجدول `admins`، مو بمجرد إن الحساب مسجّل دخول.
+--      يعني حتى لو انفتح التسجيل الذاتي يوم من الأيام، الحساب الجديد
+--      ما يكدر يعدّل ولا يحذف ولا يشوف المخفي.
+--
+--  بعد تنفيذ هذا الملف على مشروع جديد:
+--    ١. سوّي حساب المدربة من Authentication → Users
+--    ٢. نفّذ:  insert into public.admins (user_id)
+--              select id from auth.users on conflict do nothing;
+--    (أو نفّذ `hardening.sql` — يسوي الخطوة ٢ لوحده مع حاجز أمان)
 -- ═══════════════════════════════════════════════════════════════
+
+create table if not exists public.admins (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  note       text default '',
+  created_at timestamptz not null default now()
+);
+
+-- ماكو سياسات على الجدول = ماكو أحد يقرا منه مباشرة.
+-- الدالة تحت `security definer` فتشوفه رغم ذلك.
+alter table public.admins enable row level security;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid())
+$$;
 
 alter table public.recipes   enable row level security;
 alter table public.courses   enable row level security;
@@ -133,30 +163,39 @@ drop policy if exists site_info_public_read on public.site_info;
 drop policy if exists site_info_admin_all   on public.site_info;
 
 create policy recipes_public_read on public.recipes
-  for select to anon, authenticated using (is_published = true or auth.role() = 'authenticated');
+  for select to anon, authenticated
+  using (is_published = true or public.is_admin());
 
 create policy recipes_admin_all on public.recipes
-  for all to authenticated using (true) with check (true);
+  for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
 
 create policy courses_public_read on public.courses
-  for select to anon, authenticated using (is_published = true or auth.role() = 'authenticated');
+  for select to anon, authenticated
+  using (is_published = true or public.is_admin());
 
 create policy courses_admin_all on public.courses
-  for all to authenticated using (true) with check (true);
+  for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
 
 create policy site_info_public_read on public.site_info
   for select to anon, authenticated using (true);
 
 create policy site_info_admin_all on public.site_info
-  for all to authenticated using (true) with check (true);
+  for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
 
 -- ═══════════════════════════════════════════════════════════════
 --  ④  تخزين الصور
 -- ═══════════════════════════════════════════════════════════════
 
-insert into storage.buckets (id, name, public)
-values ('media', 'media', true)
-on conflict (id) do nothing;
+-- القيود هنا هي الحقيقية — فحص النوع والحجم بـ admin.html ينلتف عليه
+-- بطلب مباشر للـ API.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('media', 'media', true, 5242880, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update
+  set file_size_limit    = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists media_public_read  on storage.objects;
 drop policy if exists media_admin_insert on storage.objects;
@@ -164,16 +203,30 @@ drop policy if exists media_admin_update on storage.objects;
 drop policy if exists media_admin_delete on storage.objects;
 
 create policy media_public_read on storage.objects
-  for select to anon, authenticated using (bucket_id = 'media');
+  for select to anon, authenticated
+  using (bucket_id = 'media');
 
+-- الرفع للمشرفة فقط، وبالمجلدات الأربعة المعروفة حصراً
 create policy media_admin_insert on storage.objects
-  for insert to authenticated with check (bucket_id = 'media');
+  for insert to authenticated
+  with check (
+    bucket_id = 'media'
+    and public.is_admin()
+    and (storage.foldername(name))[1] in ('recipes','courses','site','avatar')
+  );
 
 create policy media_admin_update on storage.objects
-  for update to authenticated using (bucket_id = 'media');
+  for update to authenticated
+  using  (bucket_id = 'media' and public.is_admin())
+  with check (
+    bucket_id = 'media'
+    and public.is_admin()
+    and (storage.foldername(name))[1] in ('recipes','courses','site','avatar')
+  );
 
 create policy media_admin_delete on storage.objects
-  for delete to authenticated using (bucket_id = 'media');
+  for delete to authenticated
+  using (bucket_id = 'media' and public.is_admin());
 
 -- ═══════════════════════════════════════════════════════════════
 --  ⑤  البيانات الحالية (نفس محتوى الديمو)
