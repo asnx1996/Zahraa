@@ -176,7 +176,8 @@ try{
    ═══════════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box}
 *{-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 12px);-webkit-text-size-adjust:100%}
+/* شريطين لازكين فوق: الهيدر وتبويبات الموقع */
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 72px);-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--paper);color:var(--ink);
   font-family:var(--f-body);
@@ -271,17 +272,37 @@ body.lang-swap{opacity:.35}
 @media (prefers-reduced-motion: reduce){
   body,body.lang-swap{transition:none;opacity:1}
 }
-.nav{display:none;gap:2px;margin-inline-start:var(--s-5)}
-.nav a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:var(--r-sm);
-  font-size:14.5px;font-weight:500;color:var(--soft);
-  transition:color .2s var(--ease),background-color .2s var(--ease)}
-.nav a:hover{color:var(--ink);background:var(--sunken)}
 .header-end{display:flex;align-items:center;gap:var(--s-2);margin-inline-start:auto}
 .header-cta{display:none}
-@media(min-width:900px){
-  .nav{display:flex}
-  .header-cta{display:inline-flex}
+@media(min-width:900px){ .header-cta{display:inline-flex} }
+
+/* ── تبويبات الموقع الثلاثة — تبدّل المحتوى بمكانه بدون تحميل صفحة ──
+   شريط لازك تحت الهيدر بكل المقاسات، لأنه التنقل الأساسي مو ثانوي */
+.viewnav{
+  position:sticky;top:var(--header-h);z-index:55;
+  background:var(--glass);backdrop-filter:blur(14px) saturate(1.6);
+  -webkit-backdrop-filter:blur(14px) saturate(1.6);
+  border-bottom:1px solid var(--line);
 }
+.viewnav-in{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:7px 0}
+@media(min-width:760px){ .viewnav-in{max-width:540px;margin-inline:auto} }
+.vtab{
+  display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;
+  padding:8px 6px;border-radius:var(--r-sm);
+  font-family:var(--f-head);font-weight:600;font-size:14px;color:var(--soft);
+  transition:background-color .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.vtab .icon{font-size:18px}
+.vtab:hover{color:var(--ink)}
+.vtab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
+@media(max-width:420px){
+  .vtab{flex-direction:column;gap:3px;font-size:11px;min-height:52px;line-height:1.25}
+  .vtab .icon{font-size:19px}
+}
+
+/* القسم المطفي من اللوحة — منفصل عن [hidden] حتى ما يتعاركون:
+   [hidden] للتبويبات، و.sec-hidden لقرار المدربة */
+.sec-hidden{display:none!important}
 
 /* ═══════════════════════════════════════════════════════════
    ⑤  الهيرو
@@ -899,12 +920,6 @@ ol.steps li::before{
       <span class="mark" id="mark">ز</span>
       <b id="logoName">كوتش زهراء</b>
     </a>
-    <nav class="nav" data-t-aria="nav.aria">
-      <a href="#catalog" data-t="nav.catalog">الوصفات والكورسات</a>
-      <a href="#plans" data-navfor="plans" data-t="nav.plans">الباقات</a>
-      <a href="#about" data-navfor="about" data-t="nav.about">عن الكوتش</a>
-      <a href="#faq" data-navfor="faq" data-t="nav.faq">أسئلة شائعة</a>
-    </nav>
     <div class="header-end">
       <button class="icon-btn lang-btn" id="langBtn" type="button" data-t-aria="nav.lang">
         <svg class="icon"><use href="#i-globe"></use></svg><span id="langTxt">EN</span>
@@ -919,10 +934,25 @@ ol.steps li::before{
   </div>
 </header>
 
+<!-- ══ تبويبات الموقع الثلاثة ══ -->
+<nav class="viewnav" data-t-aria="nav.aria">
+  <div class="wrap viewnav-in" role="tablist">
+    <button class="vtab" type="button" role="tab" data-view="about" aria-selected="true">
+      <svg class="icon"><use href="#i-spark"></use></svg><span data-t="nav.tabAbout">تعريف بالمدربة</span>
+    </button>
+    <button class="vtab" type="button" role="tab" id="vtab-recipes" data-view="recipes" aria-selected="false">
+      <svg class="icon"><use href="#i-salad"></use></svg><span data-t="nav.tabFood">الأكل</span>
+    </button>
+    <button class="vtab" type="button" role="tab" id="vtab-courses" data-view="courses" aria-selected="false">
+      <svg class="icon"><use href="#i-dumbbell"></use></svg><span data-t="nav.tabCourses">الكورسات</span>
+    </button>
+  </div>
+</nav>
+
 <main id="top">
 
   <!-- ══ الهيرو ══ -->
-  <section class="hero">
+  <section class="hero" id="heroSec">
     <div class="wrap">
       <div class="hero-grid">
         <div>
@@ -981,21 +1011,13 @@ ol.steps li::before{
   <section class="sec sec-alt" id="catalog" style="padding-top:clamp(28px,4vw,48px)">
     <div class="wrap">
       <div class="sec-head rv">
-        <span class="kicker" data-t="cat.kicker">الكتالوج</span>
-        <h2 data-t="cat.h">وصفات وكورسات — كلشي بمكان واحد</h2>
-        <p data-t="cat.p">اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.</p>
+        <span class="kicker" id="catKicker">الكتالوج</span>
+        <h2 id="catHead">وصفات وكورسات — كلشي بمكان واحد</h2>
+        <p id="catSub">اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.</p>
       </div>
 
       <div class="toolbar">
         <div class="toolbar-row">
-          <div class="tabs" role="tablist" data-t-aria="cat.tabsAria">
-            <button class="tab" role="tab" id="tab-recipes" aria-selected="true" aria-controls="grid" type="button">
-              <svg class="icon"><use href="#i-salad"></use></svg> <span data-t="cat.tabR">وصفات الأكل</span>
-            </button>
-            <button class="tab" role="tab" id="tab-courses" aria-selected="false" aria-controls="grid" type="button">
-              <svg class="icon"><use href="#i-dumbbell"></use></svg> <span data-t="cat.tabC">الكورسات</span>
-            </button>
-          </div>
           <div class="search" id="searchBox">
             <svg class="icon s-ico"><use href="#i-search"></use></svg>
             <label class="sr-only" for="q" data-t="cat.search">بحث</label>
@@ -1011,7 +1033,7 @@ ol.steps li::before{
         </div>
       </div>
 
-      <div class="grid" id="grid" role="tabpanel" aria-labelledby="tab-recipes"></div>
+      <div class="grid" id="grid" role="tabpanel" aria-labelledby="vtab-recipes"></div>
     </div>
   </section>
 
@@ -1244,8 +1266,6 @@ const UI = {
 ar:{
   "skip":"تخطَّ إلى المحتوى",
   "nav.aria":"التنقل الرئيسي",
-  "nav.catalog":"الوصفات والكورسات",
-  "nav.calc":"حاسبة السعرات",
   "nav.plans":"الباقات",
   "nav.about":"عن الكوتش",
   "nav.faq":"أسئلة شائعة",
@@ -1263,12 +1283,15 @@ ar:{
   "trust.2":"أكل من السوق المحلي",
   "trust.3":"متابعة أسبوعية",
   "trust.4":"مناسب للمبتدئات",
-  "cat.kicker":"الكتالوج",
-  "cat.h":"وصفات وكورسات — كلشي بمكان واحد",
-  "cat.p":"اختاري التبويب، فلتري حسب الوجبة أو المستوى، وافتحي أي بطاقة لتشوفين التفاصيل الكاملة والفيديو.",
-  "cat.tabsAria":"نوع المحتوى",
-  "cat.tabR":"وصفات الأكل",
-  "cat.tabC":"الكورسات",
+  "nav.tabAbout":"تعريف بالمدربة",
+  "nav.tabFood":"الأكل",
+  "nav.tabCourses":"الكورسات",
+  "cat.kickerR":"وصفات",
+  "cat.hR":"أكل محسوب — بدون حرمان",
+  "cat.pR":"فلتري حسب الوجبة أو دوّري بالمكوّن، وافتحي أي وصفة لتشوفين السعرات والماكروز وطريقة العمل.",
+  "cat.kickerC":"كورسات",
+  "cat.hC":"تمارين لكل المستويات",
+  "cat.pC":"فلتري حسب المستوى، وافتحي أي كورس لتشوفين التمارين والمجاميع وفيديو الشرح.",
   "cat.search":"بحث",
   "cat.clear":"مسح البحث",
   "cat.filter":"فلترة",
@@ -1388,8 +1411,6 @@ ar:{
 en:{
   "skip":"Skip to content",
   "nav.aria":"Main navigation",
-  "nav.catalog":"Recipes & courses",
-  "nav.calc":"Calorie calculator",
   "nav.plans":"Packages",
   "nav.about":"About the coach",
   "nav.faq":"FAQ",
@@ -1407,12 +1428,15 @@ en:{
   "trust.2":"Local-market ingredients",
   "trust.3":"Weekly follow-up",
   "trust.4":"Beginner friendly",
-  "cat.kicker":"Catalogue",
-  "cat.h":"Recipes and courses — all in one place",
-  "cat.p":"Pick a tab, filter by meal or level, and open any card to see the full details and the video.",
-  "cat.tabsAria":"Content type",
-  "cat.tabR":"Recipes",
-  "cat.tabC":"Courses",
+  "nav.tabAbout":"The coach",
+  "nav.tabFood":"Food",
+  "nav.tabCourses":"Courses",
+  "cat.kickerR":"Recipes",
+  "cat.hR":"Measured food — no deprivation",
+  "cat.pR":"Filter by meal or search by ingredient, and open any recipe for calories, macros and the method.",
+  "cat.kickerC":"Courses",
+  "cat.hC":"Workouts for every level",
+  "cat.pC":"Filter by level, and open any course for the exercises, sets and the tutorial video.",
   "cat.search":"Search",
   "cat.clear":"Clear search",
   "cat.filter":"Filter",
@@ -1544,6 +1568,7 @@ let COURSES  = [];
 let LOADING  = true;
 let LOAD_ERR = null;
 
+let PAGE = 'about';                /* التبويب المعروض: about | recipes | courses */
 let TAB = 'recipes', FILTER = 'الكل', mult = 1, current = null, lastFocus = null;
 let VIEW = 'item';                 /* شنو معروض بالشيت: item أو cart */
 let CART = [];                     /* [{id, servings}] */
@@ -1694,7 +1719,8 @@ function applySections(){
   const s = (SITE && SITE.sections && typeof SITE.sections === 'object') ? SITE.sections : {};
   for (const key in SECTION_NODES){
     const on = s[key] !== false;              /* الافتراضي ظاهر — عمود فاضي ما يخفي شي */
-    SECTION_NODES[key].forEach(sel => $$(sel).forEach(el => { el.hidden = !on }));
+    /* كلاس مو خاصية hidden — hidden محجوزة لتبديل التبويبات */
+    SECTION_NODES[key].forEach(sel => $$(sel).forEach(el => el.classList.toggle('sec-hidden', !on)));
   }
 }
 
@@ -1853,7 +1879,7 @@ function paintUI(){
   $$('[data-t]').forEach(el => { el.textContent = tt(el.dataset.t) });
   $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', tt(el.dataset.tAria)) });
   $('#langTxt').textContent = LANG === 'ar' ? 'EN' : 'ع';
-  $('#q').placeholder = tt(TAB === 'recipes' ? 'searchR' : 'searchC');
+  paintCatalogHead();          /* عناوين الكتالوج ما عندها data-t لأنها تتبدل حسب التبويب */
   $('#yr').textContent = new Date().getFullYear();
   syncThemeIcon();
 }
@@ -1882,12 +1908,17 @@ function toggleLang(){
   const y = scrollY;
   document.body.classList.add('lang-swap');
   setTimeout(() => {
-    apply();
-    scrollTo({ top:y, behavior:'instant' });     /* الاتجاه ينقلب — ثبّت المكان */
-    requestAnimationFrame(() => {
+    /* try/finally: إذا طاحت apply() لأي سبب، بدون هذا يبقى
+       langBusy = true وزر اللغة يموت نهائياً لحد إعادة التحميل.
+       (وشلنا requestAnimationFrame لأن apply() تحدّث الـ DOM
+        بشكل متزامن أصلاً، فما نحتاج ننطر إطار رسم) */
+    try {
+      apply();
+      scrollTo({ top:y, behavior:'instant' });   /* الاتجاه ينقلب — ثبّت المكان */
+    } finally {
       document.body.classList.remove('lang-swap');
       langBusy = false;
-    });
+    }
   }, 220);
 }
 
@@ -1915,16 +1946,48 @@ function macroBar(r){
 /* ══════════════════════════════════════════════════════════
    ⑦  الكتالوج
    ══════════════════════════════════════════════════════════ */
-function setTab(t){
-  if (TAB === t) return;
-  TAB = t; FILTER = 'الكل';
-  $('#q').value = ''; $('#searchBox').classList.remove('has-value');
-  $('#tab-recipes').setAttribute('aria-selected', String(TAB === 'recipes'));
-  $('#tab-courses').setAttribute('aria-selected', String(TAB === 'courses'));
-  $('#q').placeholder = tt(TAB === 'recipes' ? 'searchR' : 'searchC');
-  $('#grid').setAttribute('aria-labelledby', 'tab-' + TAB);
-  renderGrid();
-  $('#catalog').scrollIntoView({ block:'start', behavior:'smooth' });
+/* ── تبويبات الموقع الثلاثة ──
+   كلهن بنفس الصفحة — التبديل يخفي أقسام ويظهر غيرها، بدون تحميل.
+   ملاحظة: التبويبات تستعمل خاصية hidden، وقرار المدربة بإخفاء قسم
+   يستعمل الكلاس .sec-hidden — منفصلين حتى ما يمسح واحد قرار الثاني. */
+const PAGES = {
+  about:   ['#heroSec','#calc','#plans','#about','#reviews','#faq','#ctaBand'],
+  recipes: ['#catalog'],
+  courses: ['#catalog']
+};
+const ALL_PAGE_SECTIONS = [...new Set(Object.values(PAGES).flat())];
+
+function paintCatalogHead(){
+  const isR = TAB === 'recipes';
+  $('#catKicker').textContent = tt(isR ? 'cat.kickerR' : 'cat.kickerC');
+  $('#catHead').textContent   = tt(isR ? 'cat.hR' : 'cat.hC');
+  $('#catSub').textContent    = tt(isR ? 'cat.pR' : 'cat.pC');
+  $('#q').placeholder         = tt(isR ? 'searchR' : 'searchC');
+  $('#grid').setAttribute('aria-labelledby', 'vtab-' + TAB);
+}
+
+function setPage(p, keepScroll){
+  if (!PAGES[p]) p = 'about';
+  const changed = PAGE !== p;
+  PAGE = p;
+
+  $$('.vtab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === p)));
+  const show = new Set(PAGES[p]);
+  ALL_PAGE_SECTIONS.forEach(sel => $$(sel).forEach(el => { el.hidden = !show.has(sel) }));
+
+  if (p === 'recipes' || p === 'courses'){
+    if (TAB !== p){
+      TAB = p; FILTER = 'الكل';
+      $('#q').value = ''; $('#searchBox').classList.remove('has-value');
+    }
+    paintCatalogHead();
+    renderGrid();
+  }
+
+  /* الأقسام اللي تظهر بالتبويب الجديد ما شافها المراقب — أظهرها فوراً */
+  $$('.rv').forEach(el => { if (el.offsetParent !== null) el.classList.add('in') });
+
+  if (changed && !keepScroll) scrollTo({ top:0, behavior:'instant' });
 }
 
 function skeletonCards(n){
@@ -2318,24 +2381,52 @@ function drawSheet(){
   $('#sheetInner').scrollTop = 0;
 }
 
-/* فتح عنصر من الرابط المباشر */
+/* ── الموجّه ──
+   #/            → تعريف بالمدربة
+   #/recipes     → الأكل            #/courses → الكورسات
+   #/r/<id>      → الأكل + تفاصيل    #/c/<id>  → الكورسات + تفاصيل
+   #/cart        → قائمة التسوّق
+   #plans، #faq… → روابط قديمة منشورة، نوديها لتبويبها ونمرّر لها */
+const ANCHOR_PAGE = {
+  catalog:'recipes', calc:'about', plans:'about',
+  about:'about', reviews:'about', faq:'about', top:'about'
+};
+
 function openFromHash(){
-  const m = location.hash.match(/^#\/(r|c|cart)(?:\/(.+))?$/);
+  const h = location.hash;
+
+  /* تبويب مباشر */
+  const p = h.match(/^#\/(recipes|courses)$/);
+  if (p) return setPage(p[1]);
+  if (h === '' || h === '#' || h === '#/') return setPage('about');
+
+  /* رابط قديم لقسم داخل صفحة التعريف */
+  const anchor = h.match(/^#([a-zA-Z][\w-]*)$/);
+  if (anchor){
+    const page = ANCHOR_PAGE[anchor[1]];
+    if (!page) return;
+    setPage(page, true);
+    if (page === 'about'){
+      const el = $('#' + anchor[1]);
+      if (el && !el.hidden) el.scrollIntoView({ block:'start', behavior:'smooth' });
+    }
+    return;
+  }
+
+  const m = h.match(/^#\/(r|c|cart)(?:\/(.+))?$/);
   if (!m) return;
   if (m[1] === 'cart'){ if (CART.length){ VIEW = 'cart'; openCart() } return }
+
   const wantTab = m[1] === 'r' ? 'recipes' : 'courses';
+  /* التبويب ينضبط أول — هاي تنتادى مرتين: مرة بالإقلاع قبل ما توصل
+     البيانات (فتضبط التبويب بس)، ومرة بعد الجلب (فتفتح التفاصيل) */
+  setPage(wantTab, true);
   /* رابط مكسور مثل #/r/% يرمي استثناء — وهاي تنتادى من fetchAll
      فالاستثناء چان يوقف بقية الإقلاع */
   let id;
   try { id = decodeURIComponent(m[2] || '') } catch(e){ return }
   const list = wantTab === 'recipes' ? RECIPES : COURSES;
   if (!list.some(x => x.id === id)) return;
-  if (TAB !== wantTab){
-    TAB = wantTab; FILTER = 'الكل';
-    $('#tab-recipes').setAttribute('aria-selected', String(TAB === 'recipes'));
-    $('#tab-courses').setAttribute('aria-selected', String(TAB === 'courses'));
-    renderGrid();
-  }
   openSheet(id, true);
 }
 
@@ -2417,8 +2508,33 @@ function wire(){
     if (el instanceof HTMLImageElement) el.classList.add('failed');
   }, true);
 
-  $('#tab-recipes').addEventListener('click', () => setTab('recipes'));
-  $('#tab-courses').addEventListener('click', () => setTab('courses'));
+  /* تبويبات الموقع — تبدّل الهاش، والموجّه يتكفّل بالباقي
+     (هيچي زر الرجوع بالمتصفح يشتغل بين التبويبات) */
+  $('.viewnav').addEventListener('click', e => {
+    const b = e.target.closest('.vtab'); if (!b) return;
+    const v = b.dataset.view;
+    if (PAGE === v) return;
+    const hash = v === 'about' ? './' : '#/' + v;
+    history.pushState({ page:v }, '', hash);
+    setPage(v);
+  });
+
+  /* روابط الفوتر والهيرو اللي تشير لأقسام — تودّي لتبويبها */
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.closest('.sheet')) return;
+    const href = a.getAttribute('href');
+    const name = href.slice(1);
+    if (!ANCHOR_PAGE[name]) return;
+    e.preventDefault();
+    const page = ANCHOR_PAGE[name];
+    history.pushState({ page }, '', page === 'about' ? './' : '#/' + page);
+    setPage(page, page === 'about');
+    if (page === 'about' && name !== 'top'){
+      const el = $('#' + name);
+      if (el && !el.hidden) el.scrollIntoView({ block:'start', behavior:'smooth' });
+    } else scrollTo({ top:0, behavior:'smooth' });
+  });
 
   const q = $('#q');
   let t;
@@ -2500,6 +2616,14 @@ function wire(){
     else openFromHash();
   });
 
+  /* الانتقال لهاش جديد (رابط من برّا، أو تعديل بشريط العنوان) يطلّع
+     hashchange مو popstate — بدون هذا الموجّه ما يشتغل بهالحالات.
+     pushState ما تطلّع hashchange، فماكو دورة لا نهائية. */
+  addEventListener('hashchange', () => {
+    if ($('#sheet').classList.contains('open')) return;
+    openFromHash();
+  });
+
   addEventListener('keydown', e => {
     if (e.key === 'Escape' && $('#sheet').classList.contains('open')) closeSheet();
     if (e.key === '/' && document.activeElement !== q && !$('#sheet').classList.contains('open')){
@@ -2546,6 +2670,7 @@ function wire(){
    ══════════════════════════════════════════════════════════ */
 paintUI();
 wire();
+openFromHash();     /* التبويب الصحيح يبين فوراً، قبل ما توصل البيانات */
 calcRun();
 fetchAll();
 
