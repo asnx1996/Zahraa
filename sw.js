@@ -5,7 +5,7 @@
      • الخطوط والصور                → الكاش أول، والشبكة تحدّثه
      • طلبات Supabase (API)         → الشبكة فقط، أبداً ما تنكشّ
    ═══════════════════════════════════════════════════════════ */
-const V     = 'cz-v4';
+const V     = 'cz-v5';
 const SHELL = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {
@@ -29,8 +29,9 @@ self.addEventListener('fetch', e => {
   /* لا تلمس أي شي يخص Supabase — البيانات لازم تكون طازجة دائماً */
   if (url.hostname.endsWith('supabase.co')) return;
 
+  /* الخطوط صارت محلية (vendor/fonts) فتنمسك بامتداد woff2 تحت —
+     ما عاد نحتاج استثناء لـ fonts.g لأن ماكو طلب خارجي للخطوط أصلاً */
   const isAsset = /\.(?:png|jpg|jpeg|webp|svg|gif|woff2?)$/i.test(url.pathname)
-               || url.hostname.includes('fonts.g')
                || url.hostname.includes('images.unsplash.com');
 
   if (isAsset){

@@ -25,8 +25,8 @@
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'none';
   script-src 'self' 'unsafe-inline';
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  font-src https://fonts.gstatic.com;
+  style-src 'self' 'unsafe-inline';
+  font-src 'self';
   img-src 'self' data: https://*.supabase.co https://images.unsplash.com;
   connect-src https://*.supabase.co;
   frame-src https://www.youtube.com https://www.youtube-nocookie.com;
@@ -40,9 +40,10 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230E7C66'/%3E%3Ctext x='32' y='45' font-size='38' font-family='Cairo,sans-serif' font-weight='700' fill='%23fff' text-anchor='middle'%3E%D8%B2%3C/text%3E%3C/svg%3E">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- الخطوط محلية بـ vendor/fonts — ماكو preconnect ولا ستايل شيت خارجي حاجب للعرض.
+     الملفات الأساسية تنجلب مبكّر، والباقي حسب unicode-range. -->
+<link rel="preload" href="vendor/fonts/noto-arabic-100to900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="vendor/fonts/cairo-arabic-200to1000.woff2" as="font" type="font/woff2" crossorigin>
 
 <script>
 /* يمنع وميض الثيم واللغة قبل تحميل الصفحة */
@@ -55,6 +56,55 @@ try{
 </script>
 
 <style>
+/* ── الخطوط محفوظة بالريبو مو من CDN ──
+   نفس سياسة مكتبة Supabase. الفايدة: ننشيل طلب خارجي حاجب للعرض
+   من مسار التحميل الحرج، والحجم نزل من ١٣٢٤KB لـ ٣٠٠KB.
+   Cairo و Noto نسخ متغيّرة — ملف واحد يغطي كل الأوزان.
+   unicode-range يخلي المتصفح ينزّل المقطع اللي يحتاجه بس:
+   الواجهة الإنكليزية ما تنزّل ملف العربي (١٦٢KB) أصلاً. */
+@font-face{
+  font-family:'Cairo';font-style:normal;
+  font-weight:200 1000;font-display:swap;
+  src:url(vendor/fonts/cairo-arabic-200to1000.woff2) format('woff2');
+  unicode-range:U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC4, U+10EFC-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face{
+  font-family:'Cairo';font-style:normal;
+  font-weight:200 1000;font-display:swap;
+  src:url(vendor/fonts/cairo-latin-200to1000.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:'Noto Sans Arabic';font-style:normal;
+  font-weight:100 900;font-display:swap;
+  src:url(vendor/fonts/noto-arabic-100to900.woff2) format('woff2');
+  unicode-range:U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC4, U+10EFC-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face{
+  font-family:'Noto Sans Arabic';font-style:normal;
+  font-weight:100 900;font-display:swap;
+  src:url(vendor/fonts/noto-latin-100to900.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:'IBM Plex Mono';font-style:normal;
+  font-weight:400;font-display:swap;
+  src:url(vendor/fonts/plexmono-latin-400.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:'IBM Plex Mono';font-style:normal;
+  font-weight:500;font-display:swap;
+  src:url(vendor/fonts/plexmono-latin-500.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:'IBM Plex Mono';font-style:normal;
+  font-weight:600;font-display:swap;
+  src:url(vendor/fonts/plexmono-latin-600.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ═══════════════════════════════════════════════════════════
    ①  التوكنز — الوضع الفاتح
    ═══════════════════════════════════════════════════════════ */
@@ -804,7 +854,12 @@ body{padding-bottom:0}
   .sheet-inner{max-width:720px;border-radius:var(--r-xl);max-height:88dvh}
   @keyframes up{from{transform:translateY(20px) scale(.97);opacity:.6}to{transform:none;opacity:1}}
 }
-.sheet-hero{position:relative;aspect-ratio:16/9;background:linear-gradient(140deg,var(--sunken),var(--brand-wash))}
+/* touch-action:none على الرأس بس — حتى السحب من هنا يروح لكودنا
+   بدل ما المتصفح ياخذه تمرير. باقي الشيت يبقى يتمرر عادي */
+.sheet-hero{position:relative;aspect-ratio:16/9;touch-action:none;
+  background:linear-gradient(140deg,var(--sunken),var(--brand-wash))}
+/* زر الإغلاق مستثنى — هو جوّا الرأس ولازم يبقى ينضغط */
+.sheet-hero .close{touch-action:manipulation}
 .sheet-hero img{width:100%;height:100%;object-fit:cover}
 .sheet-hero img.failed{opacity:0}
 .grab{position:absolute;top:9px;inset-inline:0;margin-inline:auto;width:42px;height:4px;border-radius:99px;
@@ -912,6 +967,16 @@ ol.steps li::before{
      تبقى شغّالة بس تصير فورية. وهذا المطلوب — تقليل الحركة يعني
      حركة ألطف، مو إلغاء التغذية الراجعة */
 }
+
+/* ── توسيع مساحة اللمس (WCAG 2.5.8) ──
+   المطلوب ٤٤×٤٤. بدل ما نكبّر الأزرار ونخرب التوازن البصري،
+   نمدّ منطقة اللمس بعنصر وهمي شفاف. الشكل ما يتغيّر ولا بكسل.
+   استعملنا inset سالب مو left/top — حتى يشتغل بالاتجاهين RTL/LTR */
+.pick-btn::after{content:"";position:absolute;inset:-5px;border-radius:inherit}  /* ٣٥ ← ٤٥ */
+.close::after   {content:"";position:absolute;inset:-3px;border-radius:inherit}  /* ٣٨ ← ٤٤ */
+.stepper button{position:relative}
+.stepper button::after{content:"";position:absolute;inset:-2px 0}               /* ٤٠ ← ٤٤ ارتفاع */
+ul.list li{min-height:44px}                                                     /* ٣٩ ← ٤٤ */
 
 /* ── شفافية أقل — الأسطح الضبابية تصير صلبة ──
    الضباب يتعب القراءة عند بعض الناس، والنص فوك خلفية متحركة يصير أصعب */
@@ -2864,10 +2929,118 @@ function openCart(){
   requestAnimationFrame(() => $('#sheet .close')?.focus());
 }
 
+/* ══════════════════════════════════════════════════════════
+   سحب الشيت للإغلاق
+   المقبض (.grab) كان مرسوم بس ما يشتغل — هنا صار حقيقي.
+   المبدأ: التتبّع ١:١ وية الإصبع، وعند الإفلات القرار ينبني على
+   المكان المتوقّع من السرعة — مو على مكان الإصبع لحظة الرفع.
+   هيچي النفضة الخفيفة تكفي للإغلاق، مثل ما يتوقّع الواحد بالعالم الحقيقي.
+   ══════════════════════════════════════════════════════════ */
+
+/* القيمة المعروضة على الشاشة هسه — تشتغل حتى وسط حركة CSS شغّالة.
+   لازم نبدي من هنا مو من القيمة المنطقية، وإلا يصير قفز مرئي عند المقاطعة */
+function sheetY(el){
+  const t = getComputedStyle(el).transform;
+  if (!t || t === 'none') return 0;
+  try { return new DOMMatrixReadOnly(t).m42 } catch(e){ return 0 }
+}
+
+/* نابض قابل للمقاطعة. damping ١ = بدون تجاوز · response = ثواني للوصول */
+function spring(el, to, velocity, done, opt){
+  const damping  = opt?.damping  ?? 1;
+  const response = opt?.response ?? .34;
+  cancelAnimationFrame(el._raf);
+  const w = 2 * Math.PI / response;
+  let x = sheetY(el), v = velocity || 0, last = performance.now();
+
+  el._raf = requestAnimationFrame(function step(now){
+    const dt = Math.min((now - last) / 1000, 1 / 30); last = now;
+    const a = -w * w * (x - to) - 2 * damping * w * v;
+    v += a * dt; x += v * dt;
+    if (Math.abs(x - to) < .5 && Math.abs(v) < 20){
+      el.style.transform = to ? `translateY(${to}px)` : '';
+      el._raf = 0;
+      if (done) done();
+      return;
+    }
+    el.style.transform = `translateY(${x}px)`;
+    el._raf = requestAnimationFrame(step);
+  });
+}
+
+/* توقّع مكان الاستقرار من السرعة — نفس دالة Apple (اضمحلال أسّي).
+   مو v²/2a مال كتب الفيزياء */
+const DECEL = .998;
+const project = v => (v / 1000) * DECEL / (1 - DECEL);
+
+/* كل ما تسحبين فوق الحد أكثر، كل ما الشيت يتبع أقل.
+   مقاومة تدريجية بدل وقفة صلبة — الوقفة الصلبة تحس مثل التعليق */
+const rubber = (over, dim, c = .55) => (over * dim * c) / (dim + c * Math.abs(over));
+
+function makeSheetDraggable(inner){
+  let id = null, grabY = 0, y = 0, hist = [];
+
+  const canDrag = () =>
+    !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    !matchMedia('(min-width:760px)').matches;   /* بالديسكتوب الشيت بالوسط مو من تحت */
+
+  inner.addEventListener('pointerdown', e => {
+    if (!canDrag() || id !== null) return;
+    /* من الرأس فقط، وبس إذا المحتوى مو منزّل — حتى ما نتعارك وية التمرير.
+       وزر الإغلاق مستثنى لأنه جوّا .sheet-hero */
+    if (inner.scrollTop > 0) return;
+    if (!e.target.closest('.sheet-hero,.grab') || e.target.closest('.close')) return;
+
+    id = e.pointerId;
+    cancelAnimationFrame(inner._raf); inner._raf = 0;
+    /* نمسك الحركة الشغّالة من مكانها بدل ما ننتظرها تخلص */
+    y = sheetY(inner);
+    inner.style.animation = 'none';
+    grabY = e.clientY - y;              /* نحترم محل الإمساك */
+    hist = [[e.clientY, e.timeStamp]];
+    /* آخر شي، وبـ try — لو فشل الالتقاط نبقى نتتبّع عادي
+       بدل ما ينكسر باقي المستمع ويبقى السحب نص شغّال */
+    try { inner.setPointerCapture(id) } catch(err){}
+  });
+
+  inner.addEventListener('pointermove', e => {
+    if (e.pointerId !== id) return;
+    const raw = e.clientY - grabY;
+    y = raw < 0 ? rubber(raw, inner.offsetHeight) : raw;
+    inner.style.transform = `translateY(${y}px)`;
+    hist.push([e.clientY, e.timeStamp]);
+    if (hist.length > 5) hist.shift();
+  });
+
+  const release = e => {
+    if (e.pointerId !== id) return;
+    id = null;
+    const [y0, t0] = hist[0], [y1, t1] = hist[hist.length - 1];
+    const v = t1 > t0 ? (y1 - y0) / (t1 - t0) * 1000 : 0;      /* px/s */
+    const landing = y + project(v);
+    const opt = { damping: .8, response: .3 };                 /* درج: بيه ارتداد خفيف */
+
+    if (landing > inner.offsetHeight * .35){
+      spring(inner, inner.offsetHeight, v, () => {
+        inner.style.transform = '';     /* ننضّف قبل الإغلاق حتى الفتحة الجاية تبدي نظيفة */
+        closeSheet();
+      }, opt);
+    } else {
+      spring(inner, 0, v, null, opt);
+    }
+  };
+  inner.addEventListener('pointerup', release);
+  inner.addEventListener('pointercancel', release);
+}
+
 function closeUI(){
   const sh = $('#sheet');
   sh.classList.remove('open'); sh.hidden = true;
   document.body.style.overflow = '';
+  /* أي سحب سابق ينمسح، وإلا الفتحة الجاية تطلع مزحزحة */
+  const inner = $('#sheetInner');
+  cancelAnimationFrame(inner._raf); inner._raf = 0;
+  inner.style.transform = ''; inner.style.animation = '';
   lastFocus?.focus?.();
 }
 function closeSheet(){
@@ -3191,6 +3364,10 @@ function wire(){
   hp.addEventListener('pointerenter', () => clearInterval(slideTimer));
   hp.addEventListener('pointerleave', startSlides);
   addEventListener('visibilitychange', () => document.hidden ? clearInterval(slideTimer) : startSlides());
+
+  /* السحب للإغلاق — #sheetInner عنصر ثابت، محتواه بس يتبدّل،
+     فالربط يصير مرة وحدة هنا */
+  makeSheetDraggable($('#sheetInner'));
 
   $('#sheet').addEventListener('click', e => {
     if (e.target === e.currentTarget) return closeSheet();
