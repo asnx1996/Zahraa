@@ -196,6 +196,14 @@ try{
   --m-press:100ms;
   --m-ui:220ms;
   --m-move:380ms;
+
+  /* ── عمق المواد ──
+     السطح الأكبر يقرا أسمك: ضباب أقوى وظل أعمق من الشرائح الصغيرة.
+     الأرقام كانت مبعثرة بالملف — هنا صارت تدرّج مقصود */
+  --blur-chrome:14px;  /* الهيدر · شريط التبويبات · الشريط السفلي */
+  --blur-chip:8px;     /* الشارات والأزرار الصغيرة فوق الصور */
+  --blur-scrim:4px;    /* خلفية الشيت — تعتيم مو مادة */
+  --sat-glass:1.6;
 }
 
 /* ── الوضع الداكن (تلقائي حسب النظام) ── */
@@ -353,7 +361,8 @@ p{margin:0}
    ═══════════════════════════════════════════════════════════ */
 .site-header{
   position:sticky;top:0;z-index:60;height:var(--header-h);
-  background:var(--glass);backdrop-filter:blur(14px) saturate(1.6);-webkit-backdrop-filter:blur(14px) saturate(1.6);
+  background:var(--glass);backdrop-filter:blur(var(--blur-chrome)) saturate(var(--sat-glass));
+  -webkit-backdrop-filter:blur(var(--blur-chrome)) saturate(var(--sat-glass));
   border-bottom:1px solid transparent;transition:border-color .25s var(--ease),box-shadow .25s var(--ease);
 }
 .site-header.stuck{border-bottom-color:var(--line);box-shadow:0 6px 20px -18px rgba(0,0,0,.6)}
@@ -384,9 +393,18 @@ body.lang-swap{opacity:.35}
    شريط لازك تحت الهيدر بكل المقاسات، لأنه التنقل الأساسي مو ثانوي */
 .viewnav{
   position:sticky;top:var(--header-h);z-index:55;
-  background:var(--glass);backdrop-filter:blur(14px) saturate(1.6);
-  -webkit-backdrop-filter:blur(14px) saturate(1.6);
-  border-bottom:1px solid var(--line);
+  background:var(--glass);backdrop-filter:blur(var(--blur-chrome)) saturate(var(--sat-glass));
+  -webkit-backdrop-filter:blur(var(--blur-chrome)) saturate(var(--sat-glass));
+  /* ── حافة التمرير بدل الخط الصلب ──
+     الفاصل ما يبين إلا لمن المحتوى يمر تحت الشريط فعلاً.
+     الهيدر أصلاً يشتغل هيچي؛ هذا كان خط دائم حتى وإحنا بالأعلى.
+     ننساق مع .stuck مال الهيدر — الشريط جاره المباشر، فما نحتاج جافاسكربت */
+  border-bottom:1px solid transparent;
+  transition:border-color var(--m-ui) var(--ease),box-shadow var(--m-ui) var(--ease);
+}
+.site-header.stuck + .viewnav{
+  border-bottom-color:var(--line);
+  box-shadow:0 8px 18px -16px rgba(0,0,0,.55);
 }
 .viewnav-in{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:7px 0}
 @media(min-width:760px){ .viewnav-in{max-width:540px;margin-inline:auto} }
@@ -667,7 +685,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .thumb img.failed{opacity:0}
 .badge{
   position:absolute;top:10px;inset-inline-start:10px;
-  background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  background:var(--glass);backdrop-filter:blur(var(--blur-chip));-webkit-backdrop-filter:blur(var(--blur-chip));
   color:var(--ink);padding:4px 11px;border-radius:var(--r-full);
   font-size:var(--t-12);font-weight:600;border:1px solid var(--line);
 }
@@ -798,7 +816,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
   max-width:56ch;margin-inline:auto;line-height:1.8}
 .cta-band .btn-row{display:flex;flex-wrap:wrap;gap:var(--s-3);justify-content:center;margin-top:var(--s-5)}
 .cta-band .btn-ghost{background:rgba(255,255,255,.13);color:#fff;border-color:rgba(255,255,255,.28);box-shadow:none;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  backdrop-filter:blur(var(--blur-chip));-webkit-backdrop-filter:blur(var(--blur-chip))}
 @media (hover:hover) and (pointer:fine){
   .cta-band .btn-ghost:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.45)}
 }
@@ -826,7 +844,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 /* الشريط السفلي للموبايل */
 .mobile-cta{
   position:fixed;inset-inline:0;bottom:0;z-index:55;padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-  background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:var(--glass);backdrop-filter:blur(var(--blur-chrome));-webkit-backdrop-filter:blur(var(--blur-chrome));
   border-top:1px solid var(--line);
   transform:translateY(120%);transition:transform .3s var(--ease);
 }
@@ -840,9 +858,14 @@ body{padding-bottom:0}
    ⑫  الشيت (التفاصيل)
    ═══════════════════════════════════════════════════════════ */
 .sheet{position:fixed;inset:0;z-index:100;display:none;background:rgba(8,14,11,.6);
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.sheet.open{display:flex;align-items:flex-end;justify-content:center;animation:fade .2s ease}
-@keyframes fade{from{opacity:0}to{opacity:1}}
+  backdrop-filter:blur(var(--blur-scrim));-webkit-backdrop-filter:blur(var(--blur-scrim))}
+.sheet.open{display:flex;align-items:flex-end;justify-content:center;animation:fade .22s var(--ease)}
+/* الضباب يتكوّن مع الظهور بدل ما يجي جاهز — السطح يقرا
+   كأنه مادة تتشكّل، مو طبقة تنطفي وتشتعل */
+@keyframes fade{
+  from{opacity:0;backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}
+  to{opacity:1;backdrop-filter:blur(var(--blur-scrim));-webkit-backdrop-filter:blur(var(--blur-scrim))}
+}
 .sheet-inner{
   position:relative;width:100%;max-height:93dvh;overflow-y:auto;overscroll-behavior:contain;
   background:var(--paper);border-radius:var(--r-xl) var(--r-xl) 0 0;
@@ -1098,7 +1121,7 @@ ul.list li{min-height:44px}                                                     
   position:absolute;top:10px;inset-inline-end:10px;z-index:3;
   width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
   background:var(--glass);border:1px solid var(--line);color:var(--ink);font-size:var(--t-17);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(var(--blur-chip));-webkit-backdrop-filter:blur(var(--blur-chip));
   transition:background-color var(--m-ui) var(--ease),color var(--m-ui) var(--ease),
              transform var(--m-press) var(--ease);
   touch-action:manipulation;
@@ -2566,8 +2589,19 @@ function dayTotals(){
 
 function inDay(id){ return DAY.items.some(i => i.id === id) }
 
+/* ══ نبضة لمس قصيرة ══
+   ثلاث قواعد: السببية (تنطلق مع الحدث نفسه) · التناغم (نفس اللحظة
+   مال المؤثر المرئي) · الفايدة (للحظات اللي تستحق فقط).
+   محصورة بالإضافة والحذف وانغلاق الشيت — لو حطيناها بكل ضغطة
+   يتعوّد الواحد عليها ويهملها كلها. */
+function tap(ms = 12){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  try { navigator.vibrate?.(ms) } catch(e){}
+}
+
 function toggleDay(id, servings){
   const i = DAY.items.findIndex(x => x.id === id);
+  tap();
   if (i > -1){ DAY.items.splice(i, 1); toast(tt('day.removed')) }
   else {
     const r = RECIPES.find(x => x.id === id); if (!r) return;
@@ -2671,6 +2705,7 @@ function syncCartButtons(){
    بالعدد اللي اختارته الزائرة، وإذا من زر البطاقة تجي بعدد الوصفة الأصلي. */
 function toggleCart(id, servings){
   const i = CART.findIndex(c => c.id === id);
+  tap();
   if (i > -1){ CART.splice(i, 1); toast(tt('cart.removed')) }
   else {
     const r = RECIPES.find(x => x.id === id); if (!r) return;
@@ -3021,6 +3056,7 @@ function makeSheetDraggable(inner){
     const opt = { damping: .8, response: .3 };                 /* درج: بيه ارتداد خفيف */
 
     if (landing > inner.offsetHeight * .35){
+      tap();                            /* اللحظة اللي انحسم بيها القرار، مو لمن يخلص الانزلاق */
       spring(inner, inner.offsetHeight, v, () => {
         inner.style.transform = '';     /* ننضّف قبل الإغلاق حتى الفتحة الجاية تبدي نظيفة */
         closeSheet();
