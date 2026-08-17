@@ -8,7 +8,7 @@
 ## التقنيات (لا تغيّرها)
 
 * **Vanilla HTML/CSS/JS** بملف واحد لكل صفحة — بدون React، بدون build tools، بدون npm
-* **الاستضافة:** GitHub Pages → https://asnx1996.github.io/Zahraa/
+* **الاستضافة:** GitHub Pages → https://zahraa-hashim.github.io/Zahraa/
 * **الباك اند:** Supabase (قاعدة بيانات + مصادقة + تخزين صور)
 * كل الروابط الداخلية **نسبية** (`admin.html` مو `/Zahraa/admin.html`) لأن الموقع تحت
 مجلد فرعي وممكن ينتقل لدومين خاص لاحقاً
