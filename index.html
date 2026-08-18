@@ -1136,7 +1136,7 @@ ol.steps li::before{
   padding-block-end:var(--s-3);touch-action:none;           /* منطقة سحب على الموبايل */
 }
 .pane-head h2{flex:1;min-width:0;margin-bottom:0;font-size:clamp(19px,3vw,24px)}
-.pane-head .close{position:static;flex:none;box-shadow:none;background:var(--sunken)}
+.pane-head .close{position:relative;flex:none;box-shadow:none;background:var(--sunken)}
 /* المقبض فوك لوحة بلا صورة — نفس مقبض التفاصيل بلون محايد */
 .grab.plain{background:var(--line-2)}
 .pane-scroll{
@@ -1179,6 +1179,14 @@ ol.steps li::before{
    استعملنا inset سالب مو left/top — حتى يشتغل بالاتجاهين RTL/LTR */
 .pick-btn::after,
 .fav-btn::after {content:"";position:absolute;inset:-5px;border-radius:inherit}  /* ٣٦ ← ٤٦ */
+/* ⚠️⚠️ لا تخلّي .close تصير position:static أبداً.
+   العنصر الوهمي هذا absolute، وحاوية الـ absolute هي أقرب سلف **مموضع**.
+   الزر بالحالة الطبيعية absolute فالوهمي ينحبس بيه. بس إذا صار static،
+   الوهمي يقفز لأقرب سلف مموضع — وهو .sheet-inner — و inset:-3px يخليه
+   يغطي **الشيت كله**، فيبلع كل نقرة توصله ويرجّعها لزر الإغلاق.
+   النتيجة: ولا زر جوّا الشيت يشتغل، وكل ضغطة تسكّر النافذة.
+   بالرؤوس اللي بلا صورة استعمل position:relative — نفس التخطيط
+   (relative بلا إزاحات = مثل static) بس يبقى حاوية للوهمي. */
 .close::after   {content:"";position:absolute;inset:-3px;border-radius:inherit}  /* ٣٨ ← ٤٤ */
 .stepper button{position:relative}
 .stepper button::after{content:"";position:absolute;inset:-2px 0}               /* ٤٠ ← ٤٤ ارتفاع */
@@ -3278,7 +3286,7 @@ function drawCart(){
   if (!CART.length){
     $('#sheetInner').innerHTML = `<div class="sheet-body" style="padding-top:26px">
       <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}"
-              style="position:static;margin-inline-start:auto">${ico('i-close')}</button>
+              style="position:relative;margin-inline-start:auto">${ico('i-close')}</button>
       <div class="state">${ico('i-cart')}<b>${esc(tt('cart.empty'))}</b><span>${esc(tt('cart.emptyHint'))}</span></div>
     </div>`;
     return;
@@ -3309,7 +3317,7 @@ function drawCart(){
         <p style="color:var(--soft);font-size:var(--t-14);margin-top:6px">${esc(tt('cart.sub'))}</p>
       </div>
       <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}"
-              style="position:static">${ico('i-close')}</button>
+              style="position:relative">${ico('i-close')}</button>
     </div>
 
     <div class="panel">
