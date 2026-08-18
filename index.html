@@ -960,8 +960,20 @@ body{padding-bottom:0}
   from{opacity:0;backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}
   to{opacity:1;backdrop-filter:blur(var(--blur-scrim));-webkit-backdrop-filter:blur(var(--blur-scrim))}
 }
+/* ── ⚠️ scrollbar-gutter ضرورية مو تجميل ──
+   الشيت يوصل max-height ويصير فيه تمرير. بدون حجز مكان للشريط، ظهوره
+   يقصّ ١٥px من العرض ⇒ الشرائح اللي تلتف (.flt-opts) تعيد ترتيب سطورها
+   ⇒ الارتفاع يتغيّر ⇒ الشريط يختفي ⇒ العرض يرجع ⇒ الارتفاع يتغيّر…
+   حلقة لا نهائية ٦٠ مرة بالثانية: اللوحة تهتز والأزرار تهرب من تحت
+   المؤشر. حجز المكان دائماً يخلي العرض ثابت فالحلقة ما تبدي أصلاً. */
 .sheet-inner{
   position:relative;width:100%;max-height:93dvh;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  /* والمحور الأفقي: المحتوى يفيض ٣px بالكسور (حجز الشريط + width:100%
+     بالـ RTL)، فيطلع شريط أفقي يزيد ١٥px على الارتفاع ⇒ الفيض يروح ⇒
+     الشريط يختفي ⇒ يرجع… نفس الحلقة بس بالمحور الثاني. الشيت أصلاً
+     ما ينمرّر أفقياً بأي حالة، فالقص هو الجواب الصحيح مو ترقيع. */
+  overflow-x:hidden;
   background:var(--paper);border-radius:var(--r-xl) var(--r-xl) 0 0;
   animation:up .34s var(--ease);box-shadow:var(--shadow-3);
 }
@@ -2770,7 +2782,7 @@ function drawFilters(){
 
     <div class="sheet-cta" style="display:grid;gap:10px">
       <button class="btn btn-primary btn-lg" type="button" data-act="close">
-        ${ico('i-check')} ${esc(tt('flt.done', { x: countMatches() }))}
+        ${ico('i-check')} <span id="fltDone">${esc(tt('flt.done', { x: countMatches() }))}</span>
       </button>
       <button class="btn btn-quiet" type="button" data-act="fltclear" style="color:var(--clay-ink)">
         ${ico('i-refresh')} ${esc(tt('flt.reset'))}
@@ -2779,6 +2791,27 @@ function drawFilters(){
   </div>`;
 
   $('#sheetInner').innerHTML = h;
+}
+
+/* ── تحديث اللوحة بمكانها ──
+   ⚠️ لا تستبدلين innerHTML عند كل ضغطة. سببين:
+   ١) الزر اللي تحت المؤشر ينهدم وينبني من جديد، فالضغطة الثانية تروح
+      على عنصر مو موجود والإحساس يصير «ما يستجيب».
+   ٢) استبدال المحتوى يرجّع التمرير للأعلى، فاللي تختار من نص اللوحة
+      تنقذف للراس بعد كل اختيار.
+   التغيير الوحيد اللي يحتاج رسم هو aria-pressed وعدد النتائج. */
+function syncFilterPanel(){
+  const p = $('#sheetInner');
+  const mark = (sel, val) => p.querySelectorAll(sel).forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset[val.k] === val.v)));
+
+  mark('[data-sort]',  { k:'sort',  v:SORT  });
+  mark('[data-area]',  { k:'area',  v:AREA  });
+  mark('[data-macro]', { k:'macro', v:MACRO });
+  p.querySelector('[data-favonly]')?.setAttribute('aria-pressed', String(FAVONLY));
+
+  const done = p.querySelector('#fltDone');
+  if (done) done.textContent = tt('flt.done', { x: countMatches() });
 }
 
 /* ── الانتقال بين التبويبات ──
@@ -3989,16 +4022,17 @@ function wire(){
     if (a === 'cqminus') return setCartQty(el.dataset.id, -1);
     /* ── لوحة الفلترة والترتيب ──
        كل ضغطة تعيد رسم الشبكة تحت اللوحة، فالعدد اللي بزر «شوفي النتائج»
-       يتحدّث فوراً وتشوفين أثر الاختيار قبل ما تسكّرين */
-    if (a === 'fltclear'){ clearFilters(); return drawSheet() }
-    if (el.dataset.sort){ SORT = el.dataset.sort; renderGrid(); return drawSheet() }
-    if (el.dataset.area != null){ AREA = el.dataset.area; renderGrid(); return drawSheet() }
+       يتحدّث فوراً وتشوفين أثر الاختيار قبل ما تسكّرين.
+       اللوحة نفسها تتحدّث بمكانها — شوف syncFilterPanel() */
+    if (a === 'fltclear'){ clearFilters(); return syncFilterPanel() }
+    if (el.dataset.sort){ SORT = el.dataset.sort; renderGrid(); return syncFilterPanel() }
+    if (el.dataset.area != null){ AREA = el.dataset.area; renderGrid(); return syncFilterPanel() }
     if (el.dataset.macro){
       /* الضغط على فلتر شغّال يطفيه — أسهل من ما تدوّرين على «الكل» */
       MACRO = (MACRO === el.dataset.macro) ? null : el.dataset.macro;
-      renderGrid(); return drawSheet();
+      renderGrid(); return syncFilterPanel();
     }
-    if (el.dataset.favonly){ FAVONLY = !FAVONLY; renderGrid(); return drawSheet() }
+    if (el.dataset.favonly){ FAVONLY = !FAVONLY; renderGrid(); return syncFilterPanel() }
 
     /* بطاقة «مشابهة» — تبديل المحتوى بمكانه بدل ما نكدّس شيت فوك شيت */
     if (a === 'sim'){
