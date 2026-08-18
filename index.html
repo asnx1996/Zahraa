@@ -631,6 +631,65 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .flt-lbl{font-size:var(--t-13);font-weight:600;color:var(--soft);white-space:nowrap;flex:none;
   font-family:var(--f-head)}
 
+/* ── زر «فلترة وترتيب» ──
+   ما ياخذ حالة aria-pressed مثل باقي الشرائح — هو باب مو مفتاح.
+   الشارة الرقمية هي اللي تكول شكد فلتر شغّال، حتى ما تحتاجين تفتحين
+   اللوحة عشان تعرفين */
+.chip.flt-btn{display:inline-flex;align-items:center;gap:7px;flex:none;color:var(--ink);
+  border-color:var(--line-2);font-weight:600}
+.chip.flt-btn .icon{font-size:var(--t-15);color:var(--soft)}
+.chip.flt-btn.on{background:var(--brand-wash);border-color:var(--brand);color:var(--brand-ink)}
+.chip.flt-btn.on .icon{color:var(--brand-ink)}
+.flt-badge{
+  min-width:20px;height:20px;padding:0 5px;border-radius:var(--r-full);display:grid;place-items:center;
+  background:var(--brand);color:#fff;font-family:var(--f-num);font-size:var(--t-11);font-weight:600;
+}
+
+/* ── لوحة الفلترة والترتيب ──
+   تنرسم جوّا #sheet نفسه (VIEW='filter')، فتاخذ السحب للإغلاق وحصر
+   التركيز وزر الرجوع ببلاش */
+.flt-sec + .flt-sec{margin-top:var(--s-4)}
+.flt-sec h4{font-size:var(--t-13);color:var(--soft);font-family:var(--f-head);
+  letter-spacing:.02em;margin-bottom:10px}
+.flt-opts{display:flex;flex-wrap:wrap;gap:8px}
+.flt-opt{
+  display:inline-flex;align-items:center;gap:7px;padding:10px 15px;min-height:44px;
+  border-radius:var(--r-full);background:var(--surface);border:1px solid var(--line);
+  font-size:var(--t-14);font-weight:500;color:var(--soft);
+  transition:background-color var(--m-ui) var(--ease),color var(--m-ui) var(--ease),
+             border-color var(--m-ui) var(--ease),transform var(--m-press) var(--ease);
+  touch-action:manipulation;
+}
+.flt-opt .icon{font-size:var(--t-15)}
+@media (hover:hover) and (pointer:fine){ .flt-opt:hover{color:var(--ink);border-color:var(--line-2)} }
+.flt-opt:active{transform:scale(.96)}
+.flt-opt[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.flt-opt[aria-pressed="true"].fav{background:var(--clay-wash);color:var(--clay-ink);border-color:var(--clay)}
+
+/* ── قلب المفضّلة على البطاقة ──
+   محلي بالجهاز — ما يمر بالداتابيس أبداً، فكل زائرة عندها مفضلتها.
+   زوايا الصورة الأربعة كلها محجوزة (الشارة · زر السلة · السعرات · التشغيل)،
+   فالقلب ينزل تحت زر السلة بنفس العمود. بالكورسات ماكو زر سلة فيرجع للأعلى
+   لحاله — قاعدة الجوار تحت تتكفّل بيها بدون كلاس إضافي */
+.fav-btn{
+  position:absolute;top:10px;inset-inline-end:10px;z-index:3;
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:var(--glass);border:1px solid var(--line);color:var(--ink);font-size:var(--t-17);
+  backdrop-filter:blur(var(--blur-chip));-webkit-backdrop-filter:blur(var(--blur-chip));
+  transition:background-color var(--m-ui) var(--ease),color var(--m-ui) var(--ease),
+             transform var(--m-press) var(--ease);
+  touch-action:manipulation;
+}
+.pick-btn + .fav-btn{top:56px}
+.fav-btn:active{transform:scale(.96)}
+.fav-btn.on{color:var(--clay-ink)}
+.fav-btn.on .icon{fill:currentColor}
+@media (hover:hover) and (pointer:fine){ .fav-btn:hover{color:var(--clay-ink)} }
+/* النبضة تنطلق لمن ينحفظ بس — الشيل ما يستاهل احتفال */
+.fav-btn.pulse .icon{animation:favpop .34s var(--ease)}
+@keyframes favpop{0%{transform:scale(1)}42%{transform:scale(1.32)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){ .fav-btn.pulse .icon{animation:none} }
+
 /* ── عدّاد اليوم ── */
 .today-card{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
@@ -986,6 +1045,45 @@ ul.list li.done{opacity:.42}
 ul.list li.done .nm{text-decoration:line-through}
 ul.list li.done .tickbox{background:var(--pine);border-color:var(--pine);color:#fff}
 
+/* ── بدائل المكوّن ──
+   سطر ثالث بنفس الـ li، ينزل تحت الاسم بمحاذاته (١٩ مربّع + ١٠ فجوة).
+   flex-wrap هي اللي تخليه ينزل سطر لحاله بدل ما يزاحم الكمية */
+ul.list li{flex-wrap:wrap}
+.swap{
+  flex-basis:100%;display:flex;align-items:flex-start;gap:6px;
+  padding-inline-start:29px;margin-top:2px;
+  font-size:var(--t-12);color:var(--soft);line-height:1.7;
+}
+.swap .icon{font-size:var(--t-13);color:var(--pine-ink);flex:none;margin-top:2px}
+
+/* ── قائمة التسوّق مقسّمة على أقسام السوق ── */
+.cart-group + .cart-group{margin-top:var(--s-4)}
+.cart-group > h5{
+  font-family:var(--f-head);font-size:var(--t-12);font-weight:700;color:var(--soft);
+  letter-spacing:.02em;margin-bottom:8px;display:flex;align-items:center;gap:7px;
+}
+.cart-group > h5::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ── وصفات مشابهة ──
+   صف أفقي صغير مو شبكة — الشيت أصلاً طويل، وشبكة بطاقات كاملة
+   تخلي «المشابهة» تنافس الوصفة نفسها بدل ما تكمّلها */
+.sim{display:grid;gap:8px}
+.sim-item{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:start;
+  padding:8px;border-radius:var(--r);background:var(--sunken);
+  transition:background-color var(--m-ui) var(--ease),transform var(--m-press) var(--ease);
+  touch-action:manipulation;
+}
+.sim-item:active{transform:scale(.98)}
+@media (hover:hover) and (pointer:fine){ .sim-item:hover{background:var(--line)} }
+.sim-item img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none;
+  background:var(--brand-wash)}
+.sim-item img.failed{opacity:0}
+.sim-b{flex:1;min-width:0;display:grid;gap:3px}
+.sim-b b{font-size:var(--t-14);font-weight:600;line-height:var(--lh-ui);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sim-b span{font-family:var(--f-num);font-size:var(--t-12);color:var(--soft)}
+
 ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:14px}
 ol.steps li{counter-increment:s;position:relative;padding-inline-start:38px;font-size:var(--t-15);line-height:1.8}
 ol.steps li::before{
@@ -1028,7 +1126,8 @@ ol.steps li::before{
    المطلوب ٤٤×٤٤. بدل ما نكبّر الأزرار ونخرب التوازن البصري،
    نمدّ منطقة اللمس بعنصر وهمي شفاف. الشكل ما يتغيّر ولا بكسل.
    استعملنا inset سالب مو left/top — حتى يشتغل بالاتجاهين RTL/LTR */
-.pick-btn::after{content:"";position:absolute;inset:-5px;border-radius:inherit}  /* ٣٥ ← ٤٥ */
+.pick-btn::after,
+.fav-btn::after {content:"";position:absolute;inset:-5px;border-radius:inherit}  /* ٣٦ ← ٤٦ */
 .close::after   {content:"";position:absolute;inset:-3px;border-radius:inherit}  /* ٣٨ ← ٤٤ */
 .stepper button{position:relative}
 .stepper button::after{content:"";position:absolute;inset:-2px 0}               /* ٤٠ ← ٤٤ ارتفاع */
@@ -1037,7 +1136,7 @@ ul.list li{min-height:44px}                                                     
 /* ── شفافية أقل — الأسطح الضبابية تصير صلبة ──
    الضباب يتعب القراءة عند بعض الناس، والنص فوك خلفية متحركة يصير أصعب */
 @media (prefers-reduced-transparency: reduce){
-  .site-header,.viewnav,.badge,.pick-btn,.mobile-cta{
+  .site-header,.viewnav,.badge,.pick-btn,.fav-btn,.mobile-cta{
     background:var(--surface);
     backdrop-filter:none;-webkit-backdrop-filter:none;
   }
@@ -1102,6 +1201,15 @@ ul.list li{min-height:44px}                                                     
   #printArea .pr-table td{padding:2.6mm 3mm;border-bottom:1px solid #ddd;vertical-align:middle}
   /* الصفوف تتبادل حتى العين ما تضيع بالسوق */
   #printArea .pr-table tbody tr:nth-child(even) td{background:#f4f4f2}
+  /* عنوان قسم السوق — يغلب تبادل الألوان لأنه يجي بعده بالترتيب.
+     ألوانه صريحة مثل باقي الورقة، مو متغيّرات، حتى الوضع الليلي
+     ما يطبع خلفية سودة */
+  #printArea .pr-table tr.pr-cat td{
+    background:#fff;border-bottom:1px solid #999;color:#111;
+    font-family:var(--f-head);font-size:9.5pt;font-weight:700;
+    letter-spacing:.04em;padding:4mm 3mm 1.6mm;
+  }
+  #printArea .pr-table tr.pr-cat:first-child td{padding-top:1mm}
   #printArea .pr-table tr{break-inside:avoid}
   #printArea .pr-box{width:9mm;text-align:center}
   #printArea .pr-box span{
@@ -1275,6 +1383,13 @@ ul.list li{min-height:44px}                                                     
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M19.6 3.6v4.8h-4.8"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.8h5V7M6 7l1 13.2h10L18 7"/></symbol>
     <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.6h10V9"/><path d="M7 18H5.4A2.4 2.4 0 0 1 3 15.6v-4.2A2.4 2.4 0 0 1 5.4 9h13.2a2.4 2.4 0 0 1 2.4 2.4v4.2a2.4 2.4 0 0 1-2.4 2.4H17"/><rect x="7" y="14.4" width="10" height="6"/></symbol>
+    <!-- كانت تنستدعى بحالة الخطأ وهي مو موجودة أصلاً — المربع چان يطلع فاضي -->
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.6v5M12 16.2h.01"/></symbol>
+    <!-- القلب مفرّغ بالحالة العادية، ويمتلي من CSS لمن ينحفظ (fill:currentColor) -->
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.3s-7.6-4.6-7.6-9.7a4.3 4.3 0 0 1 7.6-2.8 4.3 4.3 0 0 1 7.6 2.8c0 5.1-7.6 9.7-7.6 9.7Z"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.8 5.6h16.4L13.9 13v5.6l-3.8 2.1V13Z"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M4 7h10M4 12h7M4 17h4"/><path d="M17 5.6v12.8M17 18.4l3-3M17 18.4l-3-3"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8.4h13M17 8.4l-3.2-3.2M17 8.4l-3.2 3.2"/><path d="M20 15.6H7M7 15.6l3.2-3.2M7 15.6l3.2 3.2"/></symbol>
   </defs>
 </svg>
 
@@ -1402,17 +1517,17 @@ ul.list li{min-height:44px}                                                     
             </button>
           </div>
         </div>
+        <!-- صف واحد: تصنيفات + زر يفتح لوحة الفلترة والترتيب.
+             الفلاتر السريعة والمنطقة والمفضلة كلها انتقلت جوّا اللوحة —
+             شريط الأدوات چان صفّين بالموبايل وياكل نص الشاشة قبل أول بطاقة. -->
         <div class="chips-row">
           <div class="chips" id="chips" role="group" data-t-aria="cat.filter"></div>
-          <button class="chip flt-reset" type="button" id="fltReset" hidden>
-            <svg class="icon"><use href="#i-close"></use></svg><span data-t="flt.reset">مسح الفلاتر</span>
+          <button class="chip flt-btn" type="button" id="fltBtn" aria-haspopup="dialog">
+            <svg class="icon"><use href="#i-filter"></use></svg>
+            <span data-t="flt.btn">فلترة وترتيب</span>
+            <span class="flt-badge" id="fltBadge" hidden></span>
           </button>
           <span class="count" id="count" aria-live="polite"></span>
-        </div>
-        <!-- صف فلاتر ثاني: المنطقة للكورسات، والماكروز للوصفات -->
-        <div class="chips-row" id="chips2Row" hidden>
-          <span class="flt-lbl" id="chips2Lbl"></span>
-          <div class="chips" id="chips2" role="group"></div>
         </div>
       </div>
 
@@ -1648,6 +1763,31 @@ ar:{
   "flt.lowCal":"سعرات قليلة",
   "flt.quick":"سريعة التحضير",
   "flt.lowCarb":"كارب قليل",
+  "flt.btn":"فلترة وترتيب",
+  "flt.sub":"اختاري الترتيب والفلاتر، والنتائج تتغيّر وراج فوراً.",
+  "flt.sort":"الترتيب",
+  "flt.saved":"المحفوظة",
+  "flt.favOnly":"المحفوظة فقط",
+  "flt.done":"شوفي النتائج ({x})",
+  "sort.default":"ترتيب الكوتش",
+  "sort.newest":"الأحدث",
+  "sort.quick":"الأسرع تحضيراً",
+  "sort.kcalAsc":"الأقل سعرات",
+  "sort.proteinDesc":"الأعلى بروتين",
+  "fav.add":"احفظيها",
+  "fav.saved":"محفوظة ♥",
+  "fav.remove":"شيليها من المحفوظة",
+  "fav.added":"انحفظت ♥",
+  "fav.removed":"انشالت من المحفوظة",
+  "fav.hint":"اضغطي القلب على أي بطاقة حتى تنحفظ هنا. المحفوظة تخصّج إنتي بس على هذا الجهاز.",
+  "sim.h":"يمكن تعجبج بعد",
+  "swap.lbl":"بدائل:",
+  "mk.veg":"خضار وفواكه",
+  "mk.meat":"لحوم وأسماك",
+  "mk.dairy":"ألبان وبيض",
+  "mk.grain":"حبوب ومعلبات",
+  "mk.spice":"بهارات وزيوت",
+  "mk.other":"متفرقات",
   "peek.kickerR":"من المطبخ",
   "peek.hR":"أحدث الوصفات",
   "peek.allR":"شوفي كل الوصفات",
@@ -1794,6 +1934,31 @@ en:{
   "flt.lowCal":"Low calorie",
   "flt.quick":"Quick to make",
   "flt.lowCarb":"Low carb",
+  "flt.btn":"Filter & sort",
+  "flt.sub":"Pick a sort order and filters — results update as you go.",
+  "flt.sort":"Sort by",
+  "flt.saved":"Saved",
+  "flt.favOnly":"Saved only",
+  "flt.done":"Show results ({x})",
+  "sort.default":"Coach's order",
+  "sort.newest":"Newest",
+  "sort.quick":"Quickest",
+  "sort.kcalAsc":"Fewest calories",
+  "sort.proteinDesc":"Highest protein",
+  "fav.add":"Save",
+  "fav.saved":"Saved ♥",
+  "fav.remove":"Remove from saved",
+  "fav.added":"Saved ♥",
+  "fav.removed":"Removed from saved",
+  "fav.hint":"Tap the heart on any card to save it here. Saved items stay on this device only.",
+  "sim.h":"You might also like",
+  "swap.lbl":"Swap for:",
+  "mk.veg":"Produce",
+  "mk.meat":"Meat & fish",
+  "mk.dairy":"Dairy & eggs",
+  "mk.grain":"Grains & pantry",
+  "mk.spice":"Spices & oils",
+  "mk.other":"Other",
   "peek.kickerR":"From the kitchen",
   "peek.hR":"Latest recipes",
   "peek.allR":"See all recipes",
@@ -1923,8 +2088,11 @@ let PAGE = 'about';                /* التبويب المعروض: about | rec
 let TAB = 'recipes', FILTER = 'الكل', mult = 1, current = null, lastFocus = null;
 let AREA = 'الكل';                 /* فلتر المنطقة — للكورسات */
 let MACRO = null;                  /* فلتر سريع للوصفات: مفتاح من MACRO_FILTERS */
-let VIEW = 'item';                 /* شنو معروض بالشيت: item أو cart */
+let VIEW = 'item';                 /* شنو معروض بالشيت: item · cart · filter */
 let CART = [];                     /* [{id, servings}] */
+let SORT = 'default';              /* مفتاح من SORTS */
+let FAV = [];                      /* [id] — محفوظة بالجهاز، ما تمر بالداتابيس */
+let FAVONLY = false;               /* «المحفوظة فقط» */
 
 /* ══════════════════════════════════════════════════════════
    ③  أدوات
@@ -2401,6 +2569,9 @@ function setPage(p, keepScroll){
   if (p === 'recipes' || p === 'courses'){
     if (TAB !== p){
       TAB = p; FILTER = 'الكل'; AREA = 'الكل'; MACRO = null;
+      /* الترتيب ينرجع للافتراضي بعد: مفاتيح الوصفات (سعرات/بروتين)
+         ماكو معنى إلها بالكورسات، ولو بقت شغّالة تصير فرز صامت بحقل فاضي */
+      SORT = 'default'; FAVONLY = false;
       $('#q').value = ''; $('#searchBox').classList.remove('has-value');
     }
     paintCatalogHead();
@@ -2412,6 +2583,69 @@ function setPage(p, keepScroll){
 
   if (changed && !keepScroll) scrollTo({ top:0, behavior:'instant' });
 }
+
+/* ══ المفضّلة ══
+   ⚠️ محلية بالجهاز بالكامل — localStorage، ماكو حسابات ولا داتابيس.
+   يعني مفضّلة كل زائرة تخصّها هي، وما تشوفها ولا زائرة ثانية، وما
+   تنتقل وياها لو فتحت الموقع من تلفون ثاني أو متصفح ثاني. هذا مقصود:
+   حسابات مستخدمين تعني تسجيل دخول وRLS جديدة وبيانات شخصية نخزنها. */
+function loadFav(){
+  try {
+    const raw = JSON.parse(localStorage.getItem('cz-fav') || '[]');
+    FAV = Array.isArray(raw) ? raw.filter(id => typeof id === 'string') : [];
+  } catch(e){ FAV = [] }
+}
+function saveFav(){ try { localStorage.setItem('cz-fav', JSON.stringify(FAV)) } catch(e){} }
+const isFav = id => FAV.includes(id);
+
+function toggleFav(id, btn){
+  const i = FAV.indexOf(id);
+  tap();
+  if (i > -1){ FAV.splice(i, 1); toast(tt('fav.removed')) }
+  else { FAV.unshift(id); toast(tt('fav.added')) }
+  saveFav();
+  syncFavButtons();
+  /* النبضة بس على الزر اللي انضغط، وبس عند الحفظ */
+  if (btn && i < 0){
+    btn.classList.remove('pulse');
+    void btn.offsetWidth;                 /* إعادة تشغيل الحركة */
+    btn.classList.add('pulse');
+  }
+  /* إذا «المحفوظة فقط» شغّال، شيل المحفوظة يعني العنصر لازم يختفي */
+  if (FAVONLY) renderGrid();
+  else syncFilterUI();
+}
+
+/* نفس منطق syncCartButtons: تحديث بالمكان بدل إعادة رسم الشبكة كلها */
+function syncFavButtons(){
+  $$('[data-fav]').forEach(b => {
+    const on  = isFav(b.dataset.fav);
+    const lbl = tt(on ? 'fav.remove' : 'fav.add');
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+    b.setAttribute('aria-label', lbl);
+    b.title = lbl;
+  });
+}
+
+/* ══ الترتيب ══
+   'default' = ترتيب المدربة (sort_order) — يبقى الافتراضي دائماً.
+   الباقي فرز بالذاكرة، ماكو أي طلب إضافي للداتابيس. */
+const minutes = x => {
+  const m = String(x.duration || x.time || '').match(/\d+/);
+  return m ? +m[0] : Infinity;      /* بلا رقم = آخر القائمة بترتيب «الأسرع» */
+};
+const SORTS = {
+  default: null,
+  newest:  (a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')),
+  quick:   (a, b) => minutes(a) - minutes(b),
+  kcalAsc:     (a, b) => nz(a.kcal) - nz(b.kcal),
+  proteinDesc: (a, b) => nz(b.protein) - nz(a.protein)
+};
+/* الترتيب حسب السعرات والبروتين ماله معنى بالكورسات */
+const sortKeys = () => TAB === 'recipes'
+  ? ['default','newest','proteinDesc','kcalAsc','quick']
+  : ['default','newest','quick'];
 
 /* ── الفلاتر السريعة للوصفات ──
    عتبات مبنية على المتوسطات الواقعية: ٣٠غم بروتين للحصة عالي فعلاً،
@@ -2426,35 +2660,125 @@ const MACRO_FILTERS = {
   }}
 };
 
-/* الصف الثاني يعرض المناطق بالكورسات والماكروز بالوصفات */
-function renderFilterRows(all){
-  const isC = TAB === 'courses';
-  const row = $('#chips2Row');
+/* شكد فلتر شغّال هسه — الرقم اللي يطلع بشارة الزر.
+   البحث والتصنيف مو محسوبين: الأول باين بالحقل والثاني باين بالشرائح،
+   والشارة موجودة عشان اللي مخفي جوّا اللوحة */
+function activeFilterCount(){
+  let n = 0;
+  if (TAB === 'courses'){ if (AREA !== 'الكل') n++ } else if (MACRO) n++;
+  if (FAVONLY) n++;
+  if (SORT !== 'default') n++;
+  return n;
+}
 
-  if (isC){
-    const areas = [...new Set(all.map(x => (x.area || '').trim()).filter(Boolean))];
-    row.hidden = areas.length < 2;          /* منطقة وحدة = ماكو معنى للفلترة */
-    if (!row.hidden){
-      $('#chips2Lbl').textContent = tt('flt.area');
-      $('#chips2').innerHTML = ['الكل', ...areas].map(a =>
-        `<button class="chip" type="button" aria-pressed="${a === AREA}" data-area="${esc(a)}">${esc(tg(a))}</button>`).join('');
-    }
-  } else {
-    row.hidden = false;
-    $('#chips2Lbl').textContent = tt('flt.macros');
-    $('#chips2').innerHTML = Object.keys(MACRO_FILTERS).map(k =>
-      `<button class="chip" type="button" aria-pressed="${k === MACRO}" data-macro="${k}">
-         ${ico(MACRO_FILTERS[k].icon)} ${esc(tt('flt.' + k))}</button>`).join('');
-  }
+/* يحدّث زر الفلترة بالمكان — ينتادى بعد كل تغيير بدون إعادة رسم الشبكة */
+function syncFilterUI(){
+  const n = activeFilterCount();
+  const btn = $('#fltBtn'), badge = $('#fltBadge');
+  btn.classList.toggle('on', n > 0);
+  badge.hidden = n === 0;
+  badge.textContent = n;
+  btn.setAttribute('aria-label', tt('flt.btn') + (n ? ` — ${n}` : ''));
+}
 
-  const dirty = FILTER !== 'الكل' || (isC ? AREA !== 'الكل' : !!MACRO) || !!$('#q').value.trim();
-  $('#fltReset').hidden = !dirty;
+/* المناطق الموجودة فعلاً بالكورسات — منطقة وحدة يعني ماكو معنى للفلترة */
+function areaList(){
+  return [...new Set(COURSES.map(x => (x.area || '').trim()).filter(Boolean))];
 }
 
 function clearFilters(){
-  FILTER = 'الكل'; AREA = 'الكل'; MACRO = null;
+  FILTER = 'الكل'; AREA = 'الكل'; MACRO = null; FAVONLY = false; SORT = 'default';
   $('#q').value = ''; $('#searchBox').classList.remove('has-value');
   renderGrid();
+}
+
+/* ══ لوحة الفلترة والترتيب ══
+   تنرسم جوّا #sheet نفسه بدل نافذة جديدة — هيچي تاخذ السحب للإغلاق
+   وحصر التركيز وزر الرجوع بدون ما نكرّر أي شي منهن */
+function openFilters(){
+  VIEW = 'filter'; current = null;
+  lastFocus = document.activeElement;
+  const sh = $('#sheet');
+  sh.hidden = false; sh.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  /* بدون تبديل الرابط — اللوحة حالة عابرة مو مكان ينشارك.
+     نفس الهاش يخلي زر الرجوع يسكّرها بدل ما يطلّعنا من الصفحة */
+  history.pushState({ sheet:true }, '', location.href);
+  drawSheet();
+  requestAnimationFrame(() => $('#sheet .close')?.focus());
+}
+
+function drawFilters(){
+  const isC = TAB === 'courses';
+  const areas = isC ? areaList() : [];
+  const favN  = data().filter(x => isFav(x.id)).length;
+
+  /* data-act="flt" ضروري: مستمع الشيت يمسك [data-act] بس،
+     والتمييز بين نوع الخيار يجي من data-sort/area/macro/favonly */
+  const opt = (on, attrs, body, cls) =>
+    `<button class="flt-opt${cls ? ' ' + cls : ''}" type="button" data-act="flt"
+             aria-pressed="${on}" ${attrs}>${body}</button>`;
+
+  let h = `<div class="sheet-body" style="padding-top:26px">
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:6px">
+      <div style="flex:1">
+        <h2 id="sheetTitle">${ico('i-filter')} ${esc(tt('flt.btn'))}</h2>
+        <p style="color:var(--soft);font-size:var(--t-14);margin-top:6px">${esc(tt('flt.sub'))}</p>
+      </div>
+      <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}"
+              style="position:static">${ico('i-close')}</button>
+    </div>
+
+    <div class="panel">
+      <div class="flt-sec">
+        <h4>${esc(tt('flt.sort'))}</h4>
+        <div class="flt-opts">
+          ${sortKeys().map(k => opt(k === SORT, `data-sort="${k}"`,
+            `${ico('i-sort')} ${esc(tt('sort.' + k))}`)).join('')}
+        </div>
+      </div>`;
+
+  if (isC && areas.length > 1){
+    h += `<div class="flt-sec">
+        <h4>${esc(tt('flt.area'))}</h4>
+        <div class="flt-opts">
+          ${['الكل', ...areas].map(a => opt(a === AREA, `data-area="${esc(a)}"`, esc(tg(a)))).join('')}
+        </div>
+      </div>`;
+  }
+
+  if (!isC){
+    h += `<div class="flt-sec">
+        <h4>${esc(tt('flt.macros'))}</h4>
+        <div class="flt-opts">
+          ${Object.keys(MACRO_FILTERS).map(k => opt(k === MACRO, `data-macro="${k}"`,
+            `${ico(MACRO_FILTERS[k].icon)} ${esc(tt('flt.' + k))}`)).join('')}
+        </div>
+      </div>`;
+  }
+
+  h += `<div class="flt-sec">
+        <h4>${esc(tt('flt.saved'))}</h4>
+        <div class="flt-opts">
+          ${opt(FAVONLY, `data-favonly="1"${favN ? '' : ' disabled'}`,
+            `${ico('i-heart')} ${esc(tt('flt.favOnly'))} ${favN ? `<span style="font-family:var(--f-num)">${favN}</span>` : ''}`,
+            'fav')}
+        </div>
+        ${favN ? '' : `<p style="color:var(--soft);font-size:var(--t-12);margin-top:8px">${esc(tt('fav.hint'))}</p>`}
+      </div>
+    </div>
+
+    <div class="sheet-cta" style="display:grid;gap:10px">
+      <button class="btn btn-primary btn-lg" type="button" data-act="close">
+        ${ico('i-check')} ${esc(tt('flt.done', { x: countMatches() }))}
+      </button>
+      <button class="btn btn-quiet" type="button" data-act="fltclear" style="color:var(--clay-ink)">
+        ${ico('i-refresh')} ${esc(tt('flt.reset'))}
+      </button>
+    </div>
+  </div>`;
+
+  $('#sheetInner').innerHTML = h;
 }
 
 /* ── الانتقال بين التبويبات ──
@@ -2488,6 +2812,46 @@ function skeletonCards(n){
   </div>`).join('');
 }
 
+/* ══ البحث ══
+   كان يقارن جملة البحث كاملة بكل حقل لحاله، فـ«دجاج مشوي» ما تلگي وصفة
+   عنوانها «صدر دجاج» وبمكوّناتها «مشوي» — الكلمتين بحقلين مختلفين.
+   هسه ننسخ كل نصوص العنصر بكومة وحدة، ونطلب كل كلمة تكون موجودة بيها
+   (AND) — يعني كل كلمة زيادة تضيّق النتيجة مثل ما يتوقّع الواحد. */
+function haystack(x){
+  if (x._hay) return x._hay;                 /* ينحسب مرة وحدة لكل عنصر */
+  const parts = [
+    x.title, x.tag, x.area, x.duration, x.desc,
+    ...(x.ingredients || []).map(i => i.n),
+    ...(x.steps || []),
+    ...(x.moves || []).map(m => m.n + ' ' + m.s),
+    /* البدائل تنبحث بعد — اللي تدوّر «تونة» تستاهل تشوف الوصفة
+       اللي تنفع بيها تونة بدل الدجاج */
+    ...(x.ingredients || []).flatMap(i => Array.isArray(i.alt) ? i.alt : [])
+  ];
+  return (x._hay = norm(parts.filter(Boolean).join(' ')));
+}
+const tokens = s => norm(s).split(' ').filter(Boolean);
+
+/* الفلترة والترتيب بمكان واحد — تنستعمل بالشبكة وبعدّاد اللوحة */
+function filtered(){
+  const mf = MACRO && MACRO_FILTERS[MACRO];
+  const tk = tokens($('#q').value);
+
+  const items = data().filter(x =>
+    (FILTER === 'الكل' || x.tag === FILTER) &&
+    (TAB !== 'courses' || AREA === 'الكل' || (x.area || '') === AREA) &&
+    (TAB !== 'recipes' || !mf || mf.test(x)) &&
+    (!FAVONLY || isFav(x.id)) &&
+    (!tk.length || tk.every(w => haystack(x).includes(w)))
+  );
+
+  const cmp = SORTS[SORT];
+  /* نسخة قبل الفرز — data() ترجع المصفوفة الأصلية، وفرزها بمكانها
+     يخرب ترتيب المدربة اللي «الافتراضي» يعتمد عليه */
+  return cmp ? [...items].sort(cmp) : items;
+}
+const countMatches = () => filtered().length;
+
 function renderGrid(stagger){
   const grid = $('#grid');
   /* === true بس — حتى لو انربطت كمستمع حدث يوم من الأيام، الحدث ما يشغّلها */
@@ -2518,21 +2882,9 @@ function renderGrid(stagger){
   $('#chips').innerHTML = tags.map(t =>
     `<button class="chip" type="button" aria-pressed="${t === FILTER}" data-tag="${esc(t)}">${esc(tg(t))}</button>`).join('');
 
-  renderFilterRows(all);
+  syncFilterUI();
 
-  const s = norm($('#q').value);
-  const mf = MACRO && MACRO_FILTERS[MACRO];
-  const items = all.filter(x =>
-    (FILTER === 'الكل' || x.tag === FILTER) &&
-    (TAB !== 'courses' || AREA === 'الكل' || (x.area || '') === AREA) &&
-    (TAB !== 'recipes' || !mf || mf.test(x)) &&
-    (!s || norm(x.title).includes(s)
-        || norm(x.tag).includes(s)
-        || norm(x.area || '').includes(s)
-        || (x.ingredients || []).some(i => norm(i.n).includes(s))
-        || (x.moves || []).some(m => norm(m.n).includes(s)))
-  );
-
+  const items = filtered();
   const unit = tt(TAB === 'recipes' ? 'unitR' : 'unitC');
   $('#count').textContent = items.length ? `${items.length} ${unit}` : '';
 
@@ -2557,6 +2909,7 @@ function renderGrid(stagger){
 function cardHtml(x, kind, n){
   const isR = kind === 'recipes';
   const inCart = isR && CART.some(c => c.id === x.id);
+  const fav = isFav(x.id);
   return `<div class="card" style="--i:${Math.min(n, 11)}">
     <span class="thumb">
       <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async">
@@ -2567,6 +2920,11 @@ function cardHtml(x, kind, n){
              aria-pressed="${inCart}" aria-label="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}"
              title="${esc(tt(inCart ? 'cart.remove' : 'cart.add'))}">
              ${ico(inCart ? 'i-check' : 'i-plus')}</button>` : ''}
+      ${/* ترتيب الوسمين مهم: قاعدة .pick-btn + .fav-btn هي اللي تنزّل القلب
+           تحت زر السلة بالوصفات، ويرجع للأعلى لحاله بالكورسات */''}
+      <button class="fav-btn${fav ? ' on' : ''}" type="button" data-fav="${esc(x.id)}"
+              aria-pressed="${fav}" aria-label="${esc(tt(fav ? 'fav.remove' : 'fav.add'))}"
+              title="${esc(tt(fav ? 'fav.remove' : 'fav.add'))}">${ico('i-heart')}</button>
     </span>
     <button class="card-body" type="button" data-open="${esc(x.id)}" data-kind="${kind}"
             aria-label="${esc(x.title)}">
@@ -2790,11 +3148,55 @@ function cartAggregate(){
   return { lines:[...map.values()], tot };
 }
 
+/* ══ أقسام السوق ══
+   التصنيف ينستنتج من اسم المكوّن — ماكو حقل بالداتابيس ولا شغل زايد
+   على المدربة، ويشتغل بأثر رجعي على كل الوصفات المكتوبة من زمان.
+   اللي ما ينعرف يروح لـ«متفرقات»، وهاي أرخص كلفة من كون كل مكوّن
+   يحتاج اختيار يدوي بكل وصفة.
+
+   ⚠️ الترتيب مهم: «فلفل اسود» لازم تنمسك كبهار قبل ما «فلفل» تمسكها
+   كخضروات. المطابقة على مستوى الكلمة مو النص كله — بدونها «فاصوليا
+   بيضاء» چانت تصير ألبان لأن بيها «بيض». */
+const MARKET = [
+  ['spice', ['ملح','فلفل اسود','فلفل أسود','كمون','كركم','قرفة','هيل','زعتر','سماق','بابريكا','بهار','بهارات',
+             'زيت','خل','صويا','كاتشب','مايونيز','سمسم','طحينة','عسل','سكر','فانيلا','خميرة','بيكنك',
+             'صلصة','دبس','شطة','ورق غار','ليمون اسود']],
+  ['dairy', ['حليب','لبن','لبنة','جبن','جبنة','زبادي','روب','بيض','قشطة','زبدة','كريمة','شيدر','موزريلا','قيمر']],
+  ['meat',  ['دجاج','صدر','فخذ','لحم','لحمة','غنم','بقر','عجل','سمك','تونة','روبيان','ربيان','كباب','قيمة',
+             'ديك','حبش','مرتديلا','سجق','كبد']],
+  ['grain', ['رز','ارز','برغل','معكرونة','مكرونة','باستا','شوفان','طحين','خبز','صمون','نخالة','عدس','حمص',
+             'فاصوليا','لوبيا','باقلاء','فول','ذرة','كينوا','شعيرية','نشا','مكسرات','لوز','جوز','كاجو','فستق']],
+  ['veg',   ['طماطة','طماطم','بصل','ثوم','خيار','جزر','بطاطا','باذنجان','فلفل','خس','بقدونس','كزبرة','نعناع',
+             'ليمون','تفاح','موز','برتقال','فراولة','عنب','رمان','تمر','افوكادو','سبانخ','سبانغ','كوسا',
+             'قرنابيط','بروكلي','ملفوف','لهانة','شمندر','فطر','مشروم','زيتون','رشاد','جرجير','شلغم','بامية']]
+].map(([k, words]) => [k, words.map(norm)]);
+
+function marketCat(name){
+  const words = norm(name).split(' ').filter(Boolean);
+  for (const [cat, keys] of MARKET)
+    for (const k of keys)
+      /* الكلمات القصيرة (رز، خس، بيض) لازم تطابق الكلمة كاملة،
+         والطويلة يكفي تكون جزء منها (طماطه ← الطماطه) */
+      for (const w of words)
+        if (w === k || (k.length >= 4 && w.includes(k))) return cat;
+  return 'other';
+}
+
+/* يرجّع [[cat, lines], …] بترتيب المشي بالسوق، و«متفرقات» بالآخر */
+function groupByMarket(lines){
+  const order = [...MARKET.map(m => m[0]), 'other'];
+  const map = new Map(order.map(k => [k, []]));
+  lines.forEach(l => map.get(marketCat(l.n)).push(l));
+  return order.map(k => [k, map.get(k)]).filter(([, v]) => v.length);
+}
+
 function cartText(){
   const { lines } = cartAggregate();
   const names = CART.map(c => RECIPES.find(r => r.id === c.id)?.title).filter(Boolean);
-  return tt('cart.head') + '\n\n'
-    + lines.map(l => `• ${l.n} — ${num(l.q)} ${l.u}`.trim()).join('\n')
+  const body = groupByMarket(lines).map(([cat, ls]) =>
+    `— ${tt('mk.' + cat)} —\n` + ls.map(l => `• ${l.n} — ${num(l.q)} ${l.u}`.trim()).join('\n')
+  ).join('\n\n');
+  return tt('cart.head') + '\n\n' + body
     + '\n\n' + tt('cart.recipes') + ': ' + names.join('، ');
 }
 
@@ -2853,14 +3255,19 @@ function drawCart(){
 
     <div class="panel">
       <h4>${esc(tt('cart.items'))} <span class="hint">${esc(tt('tickHint'))}</span></h4>
-      <div class="cart-list">
-        ${lines.map((l, i) => `<div class="cart-line" data-act="ctick" data-i="${i}" tabindex="0"
-                                    role="checkbox" aria-checked="false">
-          <span class="cl-tick">${ico('i-check')}</span>
-          <span class="cl-n">${esc(l.n)}</span>
-          <span class="cl-q">${num(l.q)} ${esc(l.u)}</span>
-        </div>`).join('')}
-      </div>
+      ${/* مقسّمة على أقسام السوق — حتى المشي بالسوق يصير بمسار واحد
+           بدل ما ترجعين للخضروات بعد ما وصلتي للألبان */''}
+      ${groupByMarket(lines).map(([cat, ls]) => `<div class="cart-group">
+        <h5>${esc(tt('mk.' + cat))}</h5>
+        <div class="cart-list">
+          ${ls.map(l => `<div class="cart-line" data-act="ctick" tabindex="0"
+                              role="checkbox" aria-checked="false">
+            <span class="cl-tick">${ico('i-check')}</span>
+            <span class="cl-n">${esc(l.n)}</span>
+            <span class="cl-q">${num(l.q)} ${esc(l.u)}</span>
+          </div>`).join('')}
+        </div>
+      </div>`).join('')}
     </div>
 
     <div class="sheet-cta" style="display:grid;gap:10px">
@@ -2905,11 +3312,15 @@ function buildPrintSheet(){
         </tr>
       </thead>
       <tbody>
-        ${lines.map(l => `<tr>
-          <td class="pr-box"><span></span></td>
-          <td>${esc(l.n)}</td>
-          <td class="pr-qty">${num(l.q)} ${esc(l.u)}</td>
-        </tr>`).join('')}
+        ${/* صف عنوان لكل قسم سوق — نفس تقسيم الشاشة حتى الورقة
+             والشاشة يقرون بنفس الترتيب */''}
+        ${groupByMarket(lines).map(([cat, ls]) => `
+          <tr class="pr-cat"><td colspan="3">${esc(tt('mk.' + cat))}</td></tr>
+          ${ls.map(l => `<tr>
+            <td class="pr-box"><span></span></td>
+            <td>${esc(l.n)}</td>
+            <td class="pr-qty">${num(l.q)} ${esc(l.u)}</td>
+          </tr>`).join('')}`).join('')}
       </tbody>
     </table>
 
@@ -2949,10 +3360,29 @@ function itemLink(x){
   return location.origin + location.pathname + '#/' + (TAB === 'recipes' ? 'r' : 'c') + '/' + x.id;
 }
 
+/* ══ عدّاد المشاهدات ══
+   يزيد مرة وحدة لكل عنصر بكل جلسة تصفّح — بدون هالحد، كل ضغطة رجوع
+   وفتح تحسب مشاهدة جديدة والأرقام تصير بلا معنى.
+   ⚠️ ما ننتظر النتيجة ولا نعرض خطأ: إذا الدالة مو منشورة بالداتابيس
+   بعد (views.sql ما انفّذ)، الموقع يشتغل عادي وما ينكسر شي. */
+const SEEN = new Set();
+function bumpView(id){
+  const key = TAB + ':' + id;
+  if (SEEN.has(key)) return;
+  try {
+    const raw = sessionStorage.getItem('cz-seen') || '';
+    if (raw.split(',').includes(key)){ SEEN.add(key); return }
+    sessionStorage.setItem('cz-seen', raw ? raw + ',' + key : key);
+  } catch(e){}          /* التخزين مقفل؟ نكمّل بالذاكرة بس */
+  SEEN.add(key);
+  try { sb.rpc('bump_view', { p_kind:TAB, p_id:id }).then(() => {}, () => {}) } catch(e){}
+}
+
 function openSheet(id, fromHash){
   const x = data().find(i => i.id === id);
   if (!x) return;
   VIEW = 'item'; current = id; mult = 1;
+  bumpView(id);
   lastFocus = document.activeElement;
   const sh = $('#sheet');
   sh.hidden = false; sh.classList.add('open');
@@ -3132,7 +3562,8 @@ function setMult(d){
 }
 
 function drawSheet(){
-  if (VIEW === 'cart') return drawCart();
+  if (VIEW === 'cart')   return drawCart();
+  if (VIEW === 'filter') return drawFilters();
 
   const x = data().find(i => i.id === current);
   if (!x) return closeUI();
@@ -3155,6 +3586,13 @@ function drawSheet(){
       </div>
 
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+        ${/* نفس فعل القلب على البطاقة — بس هنا بنص واضح، لأن الزائرة
+             اللي فتحت التفاصيل هي أكثر وحدة محتملة تريد تحفظها */''}
+        <button class="btn ${isFav(x.id) ? 'btn-quiet' : 'btn-ghost'} btn-sm" type="button"
+                data-act="favsheet" data-id="${esc(x.id)}"
+                style="${isFav(x.id) ? 'color:var(--clay-ink)' : ''}">
+          ${ico('i-heart')} ${esc(tt(isFav(x.id) ? 'fav.saved' : 'fav.add'))}
+        </button>
         <button class="btn btn-ghost btn-sm" type="button" data-act="share">
           ${ico('i-share')} ${esc(canShare() ? tt('share') : tt('copyLink'))}
         </button>
@@ -3199,10 +3637,17 @@ function drawSheet(){
       <div class="panel">
         <h4>${esc(tt('ingredients'))} · ${p} ${esc(tt('servUnit'))} <span class="hint">${esc(tt('tickHint'))}</span></h4>
         <ul class="list">
-          ${x.ingredients.map(i => `<li data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
+          ${x.ingredients.map(i => {
+            /* البدائل حقل اختياري بنفس صف المكوّن — الوصفات القديمة
+               ما بيها فيختفي السطر بدون أي شي زايد */
+            const alt = (Array.isArray(i.alt) ? i.alt : []).filter(Boolean);
+            return `<li data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
             <span class="nm"><span class="tickbox">${ico('i-check')}</span>${esc(i.n)}</span>
             <span class="q">${num(nz(i.q) * mult)} ${esc(i.u)}</span>
-          </li>`).join('')}
+            ${alt.length ? `<span class="swap">${ico('i-swap')}
+              <span>${esc(tt('swap.lbl'))} ${esc(alt.join(' · '))}</span></span>` : ''}
+          </li>`;
+          }).join('')}
         </ul>
       </div>
 
@@ -3221,6 +3666,8 @@ function drawSheet(){
 
   if (x.video) h += embed(x.video);
 
+  h += similarHtml(x);
+
   h += `<div class="sheet-cta">
       <a class="btn btn-primary btn-lg" href="${esc(whats())}" target="_blank" rel="noopener">
         ${ico('i-whatsapp')} ${esc(tt('sheetCta'))}
@@ -3229,6 +3676,46 @@ function drawSheet(){
 
   $('#sheetInner').innerHTML = h;
   $('#sheetInner').scrollTop = 0;
+}
+
+/* ══ وصفات وكورسات مشابهة ══
+   الترتيب بنقاط بسيطة بدل خوارزمية: نفس التصنيف يسوى أكثر شي، وبعدين
+   قرب السعرات (بالوصفات) أو نفس المنطقة (بالكورسات)، وبعدين تقاطع
+   المكوّنات. ماكو مجال لتشابه أذكى بدون داتا استعمال حقيقية. */
+function similarHtml(x){
+  const isR = TAB === 'recipes';
+  const pool = data().filter(i => i.id !== x.id);
+  if (pool.length < 2) return '';           /* عنصر يتيم = ماكو «مشابه» */
+
+  const mine = new Set((x.ingredients || []).map(i => norm(i.n)));
+
+  const score = y => {
+    let s = 0;
+    if (y.tag === x.tag) s += 40;
+    if (isR){
+      /* فرق ٠ سعرة = ٣٠ نقطة، وفرق ٣٠٠ فما فوك = صفر */
+      s += Math.max(0, 30 - Math.abs(nz(y.kcal) - nz(x.kcal)) / 10);
+      const shared = (y.ingredients || []).filter(i => mine.has(norm(i.n))).length;
+      s += Math.min(20, shared * 5);
+    } else if ((y.area || '') === (x.area || '') && x.area) s += 30;
+    return s;
+  };
+
+  const top = [...pool].sort((a, b) => score(b) - score(a)).slice(0, 3);
+  if (!top.length) return '';
+
+  return `<div class="panel">
+    <h4>${esc(tt('sim.h'))}</h4>
+    <div class="sim">
+      ${top.map(y => `<button class="sim-item" type="button" data-act="sim" data-id="${esc(y.id)}">
+        <img src="${esc(y.cover)}" alt="" loading="lazy" decoding="async">
+        <span class="sim-b">
+          <b>${esc(y.title)}</b>
+          <span>${esc(tg(y.tag))}${isR ? ` · ${y.kcal} ${esc(tt('kcalUnit'))}` : (y.area ? ` · ${esc(y.area)}` : '')}</span>
+        </span>
+      </button>`).join('')}
+    </div>
+  </div>`;
 }
 
 /* ── الموجّه ──
@@ -3423,17 +3910,11 @@ function wire(){
     FILTER = b.dataset.tag; renderGrid();
   });
 
-  $('#chips2').addEventListener('click', e => {
-    const b = e.target.closest('.chip'); if (!b) return;
-    if (b.dataset.area != null) AREA = b.dataset.area;
-    /* الضغط على فلتر شغّال يطفيه — أسهل من ما تدوّر على «الكل» */
-    else if (b.dataset.macro) MACRO = (MACRO === b.dataset.macro) ? null : b.dataset.macro;
-    renderGrid();
-  });
-
-  $('#fltReset').addEventListener('click', clearFilters);
+  $('#fltBtn').addEventListener('click', openFilters);
 
   $('#grid').addEventListener('click', e => {
+    const favBtn = e.target.closest('[data-fav]');
+    if (favBtn){ e.stopPropagation(); return toggleFav(favBtn.dataset.fav, favBtn) }
     const cartBtn = e.target.closest('[data-cart]');
     if (cartBtn){ e.stopPropagation(); return toggleCart(cartBtn.dataset.cart) }
     const open = e.target.closest('[data-open]');
@@ -3454,6 +3935,9 @@ function wire(){
   $('#peek').addEventListener('click', e => {
     const go = e.target.closest('[data-goto]');
     if (go) return goToPage(go.dataset.goto);
+
+    const favBtn = e.target.closest('[data-fav]');
+    if (favBtn){ e.stopPropagation(); return toggleFav(favBtn.dataset.fav, favBtn) }
 
     const cartBtn = e.target.closest('[data-cart]');
     if (cartBtn){ e.stopPropagation(); return toggleCart(cartBtn.dataset.cart) }
@@ -3497,11 +3981,36 @@ function wire(){
       return x && shareItem(x);
     }
     /* الأزرار جوّا التفاصيل تحمل عدد الحصص المختار */
+    if (a === 'favsheet'){ toggleFav(el.dataset.id); return drawSheet() }
     if (a === 'day'){ toggleDay(el.dataset.id, el.dataset.n); return drawSheet() }
     if (a === 'cart'){ toggleCart(el.dataset.id, el.dataset.n); return drawSheet() }
     if (a === 'uncart'){ toggleCart(el.dataset.id); return drawSheet() }
     if (a === 'cqplus')  return setCartQty(el.dataset.id,  1);
     if (a === 'cqminus') return setCartQty(el.dataset.id, -1);
+    /* ── لوحة الفلترة والترتيب ──
+       كل ضغطة تعيد رسم الشبكة تحت اللوحة، فالعدد اللي بزر «شوفي النتائج»
+       يتحدّث فوراً وتشوفين أثر الاختيار قبل ما تسكّرين */
+    if (a === 'fltclear'){ clearFilters(); return drawSheet() }
+    if (el.dataset.sort){ SORT = el.dataset.sort; renderGrid(); return drawSheet() }
+    if (el.dataset.area != null){ AREA = el.dataset.area; renderGrid(); return drawSheet() }
+    if (el.dataset.macro){
+      /* الضغط على فلتر شغّال يطفيه — أسهل من ما تدوّرين على «الكل» */
+      MACRO = (MACRO === el.dataset.macro) ? null : el.dataset.macro;
+      renderGrid(); return drawSheet();
+    }
+    if (el.dataset.favonly){ FAVONLY = !FAVONLY; renderGrid(); return drawSheet() }
+
+    /* بطاقة «مشابهة» — تبديل المحتوى بمكانه بدل ما نكدّس شيت فوك شيت */
+    if (a === 'sim'){
+      current = el.dataset.id; mult = 1;
+      bumpView(current);      /* ما تمر بـ openSheet، فتحتاج نداء صريح */
+      history.replaceState({ sheet:true }, '',
+        '#/' + (TAB === 'recipes' ? 'r' : 'c') + '/' + current);
+      drawSheet();
+      $('#sheetInner').scrollTop = 0;
+      return;
+    }
+
     if (a === 'ccopy')  return copyText(cartText(), tt('cart.copied'));
     if (a === 'cprint') return printCart();
     if (a === 'cclear'){
@@ -3584,6 +4093,7 @@ function wire(){
    ⑬  الإقلاع
    ══════════════════════════════════════════════════════════ */
 syncThemeColor();   /* لازم قبل paintUI — الاختيار المحفوظ ينطبّق بالرأس قبل أول رسم */
+loadFav();          /* ما تعتمد على البيانات — تنقرا قبل أول رسم للشبكة */
 paintUI();
 wire();
 openFromHash();     /* التبويب الصحيح يبين فوراً، قبل ما توصل البيانات */

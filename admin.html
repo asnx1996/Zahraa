@@ -417,17 +417,32 @@ select.inp{cursor:pointer;
   background:var(--sunken);font-size:var(--t-12);font-weight:600;color:var(--ink-2);
 }
 .pill.on{background:var(--pine-wash);color:var(--pine-ink)}
+/* عدّاد المشاهدات بصف القائمة — رمادي وهادي، معلومة مو إنذار */
+.views{display:inline-flex;align-items:center;gap:5px;color:var(--soft);font-size:var(--t-12)}
+.views b{font-family:var(--f-num);font-weight:600;color:var(--ink-2)}
+.views .icon{font-size:var(--t-14)}
 .pill.offp{background:var(--clay-wash);color:var(--clay-ink)}
 .row-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center;grid-column:1/-1;padding-top:var(--s-2);border-top:1px dashed var(--line)}
-.sorter{display:inline-flex;flex-direction:column;gap:2px;flex:none}
-.sorter button{
-  width:34px;height:19px;display:grid;place-items:center;font-size:var(--t-14);
-  background:var(--sunken);color:var(--ink-2);transition:background-color .15s var(--ease)
+/* ── مقبض السحب ──
+   touch-action:none ضرورية: بدونها المتصفح ياخذ اللمس كتمرير للصفحة
+   وما يوصلنا pointermove أصلاً */
+.drag{
+  width:34px;height:42px;border-radius:var(--r-sm);display:grid;place-items:center;flex:none;
+  background:var(--sunken);color:var(--soft);font-size:var(--t-18);
+  cursor:grab;touch-action:none;transition:background-color .15s var(--ease),color .15s var(--ease);
 }
-.sorter button:first-child{border-radius:var(--r-sm) var(--r-sm) 4px 4px}
-.sorter button:last-child{border-radius:4px 4px var(--r-sm) var(--r-sm)}
-@media (hover:hover) and (pointer:fine){ .sorter button:hover:not(:disabled){background:var(--brand-wash);color:var(--brand-ink)} }
-.sorter button:disabled{opacity:.35;cursor:default}
+@media (hover:hover) and (pointer:fine){ .drag:hover:not(:disabled){background:var(--brand-wash);color:var(--brand-ink)} }
+.drag:disabled{opacity:.35;cursor:default}
+.drag:active:not(:disabled){cursor:grabbing}
+
+/* الصف المسحوب يرتفع فوك الباقي، والباقي ينزاح بحركة قصيرة.
+   .row-ghost = الصف اللي بالإيد · .row-shift = الصفوف اللي تفسح المجال */
+.row.row-ghost{
+  position:relative;z-index:20;box-shadow:var(--shadow-3, 0 18px 40px -14px rgba(0,0,0,.45));
+  border-color:var(--brand);opacity:.97;
+}
+.list-dragging .row:not(.row-ghost){transition:transform .18s var(--ease)}
+@media (prefers-reduced-motion: reduce){ .list-dragging .row{transition:none} }
 @media(min-width:820px){
   .row{grid-template-columns:auto 1fr auto}
   .row-acts{grid-column:auto;padding-top:0;border-top:0}
@@ -695,10 +710,15 @@ select.inp{cursor:pointer;
 .erow .inp{min-height:42px;padding:8px 12px;font-size:var(--t-15);background:var(--surface)}
 .erow.ing{grid-template-columns:1fr 1fr 44px}
 .erow.ing .n-in{grid-column:1/-1;order:-1}
+/* حقل البدائل ياخذ سطر لحاله دائماً — أغلب المكوّنات ما إلها بدائل،
+   فما ينستحق يزاحم الكمية والوحدة بنفس السطر */
+.erow.ing .alt-in{grid-column:1/-1;order:1}
 @media(min-width:560px){
   .erow.ing{grid-template-columns:92px 130px 1fr 44px}
   .erow.ing .n-in{grid-column:auto;order:0}
 }
+.erow .alt-in{background:transparent;border-style:dashed;font-size:var(--t-14);min-height:38px}
+.erow .alt-in::placeholder{opacity:.75}
 .erow.step{grid-template-columns:auto 1fr 44px}
 .erow.move{grid-template-columns:1fr 44px}
 @media(min-width:560px){.erow.move{grid-template-columns:1fr 190px 44px}}
@@ -809,8 +829,7 @@ select.inp{cursor:pointer;
   .row-acts .btn{flex:1;min-width:0;padding:0;min-height:42px;border-radius:var(--r-sm)}
   .row-acts .btn span{display:none}
   .row-acts .btn .icon{font-size:var(--t-18)}
-  .sorter{flex-direction:row;gap:3px}
-  .sorter button{width:34px;height:42px;border-radius:var(--r-sm)!important}
+  .drag{width:34px;height:42px}
 
   /* مكتبة الصور: عمودين بدل عمود واحد عريض */
   .media-grid{grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}
@@ -842,11 +861,13 @@ select.inp{cursor:pointer;
 
 /* ── الضغط — بكل الأجهزة ──
    الرد يجي مع نزول الإصبع مو مع رفعه. نفس قاعدة الموقع العام */
-.tab,.chip,.mcard,.row,.sorter button,.macts button,
+.tab,.chip,.mcard,.row,.macts button,
 .acc > summary,.hi-add,.add-row,.del-row,.sec-row{touch-action:manipulation}
 .tab:active,.chip:active{transform:scale(.96)}
-.mcard:active,.row:active,.sec-row:active{transform:scale(.99)}
-.sorter button:active:not(:disabled),
+/* .row:active ما تنطبق على الصف المسحوب — التحجيم وسط السحب
+   يخرب حساب المواقع */
+.mcard:active,.row:not(.row-ghost):active,.sec-row:active{transform:scale(.99)}
+.drag:active:not(:disabled),
 .macts button:active{background:var(--line);color:var(--ink)}
 .macts button.danger:active{background:var(--clay-wash);color:var(--clay-ink)}
 .acc > summary:active{background:var(--sunken)}
@@ -921,6 +942,8 @@ select.inp{cursor:pointer;
     <symbol id="i-empty" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6M8.6 8.6l4.8 4.8M13.4 8.6l-4.8 4.8"/></symbol>
     <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 14.5 6-6 6 6"/></symbol>
     <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9.5 6 6 6-6"/></symbol>
+    <!-- ست نقاط: العلامة المتعارف عليها للسحب، تفرّقها عن أزرار الأوامر -->
+    <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.4" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-right" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
     <symbol id="i-left" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.8" y="5" width="18.4" height="14" rx="2.6"/><path d="m3.4 6.6 8.6 6 8.6-6"/></symbol>
@@ -1307,8 +1330,9 @@ const T = {
     "app.delete":"حذف",
     "app.duplicate":"نسخة",
     "app.preview":"معاينة",
-    "app.moveUp":"حرّكيها فوق",
-    "app.moveDown":"حرّكيها تحت",
+    "app.reorder":"اسحبيها لتغيير الترتيب (أو أسهم فوك وتحت)",
+    "app.reorderBusy":"امسحي البحث حتى تكدرين تغيّرين الترتيب",
+    "app.viewsHint":"عدد مرات فتح التفاصيل (مرة وحدة لكل زائرة بكل جلسة)",
     "app.copySuffix":"نسخة",
     "ok.duplicated":"انسوّت نسخة — عدّليها وانشريها",
     "ok.reordered":"انتغيّر الترتيب",
@@ -1486,6 +1510,8 @@ const T = {
     "f.unit":"الوحدة",
     "f.ingName":"اسم المكوّن",
     "f.addIng":"إضافة مكوّن",
+    "f.alt":"بدائل المكوّن",
+    "f.altPh":"بدائل (اختياري) — مثلاً: تونة، توفو",
     "f.noIng":"ماكو مكونات — ضيفي أول واحد.",
     "f.steps":"طريقة العمل",
     "f.stepPh":"اكتبي الخطوة…",
@@ -1571,8 +1597,9 @@ const T = {
     "app.delete":"Delete",
     "app.duplicate":"Duplicate",
     "app.preview":"Preview",
-    "app.moveUp":"Move up",
-    "app.moveDown":"Move down",
+    "app.reorder":"Drag to reorder (or use up/down arrows)",
+    "app.reorderBusy":"Clear the search to reorder",
+    "app.viewsHint":"Times the details were opened (once per visitor per session)",
     "app.copySuffix":"copy",
     "ok.duplicated":"Copy created — edit it and publish",
     "ok.reordered":"Order updated",
@@ -1750,6 +1777,8 @@ const T = {
     "f.unit":"Unit",
     "f.ingName":"Ingredient name",
     "f.addIng":"Add ingredient",
+    "f.alt":"Ingredient swaps",
+    "f.altPh":"Swaps (optional) — e.g. tuna, tofu",
     "f.noIng":"No ingredients yet — add the first one.",
     "f.steps":"Method",
     "f.stepPh":"Write the step…",
@@ -1934,6 +1963,7 @@ function toggleTheme(){
 let TAB     = 'recipes';   // recipes | courses | media | info
 let ROWS    = { recipes:[], courses:[] };
 let INFO    = null;
+let VIEWS_ON = false;   /* هل جدول المشاهدات موجود؟ شوف views.sql */
 let EDITING = null;        // الصف قيد التعديل أو null للإضافة
 let DRAFT   = null;        // نسخة عمل من الصفوف الديناميكية
 let PENDING_DELETE = null;
@@ -1999,6 +2029,7 @@ async function loadAll(){
   }
   ROWS.recipes = r.data || [];
   ROWS.courses = c.data || [];
+  await loadViews();
   INFO = i.data || { id:1, name:'كوتش زهراء', initial:'ز', tagline:'', bio:'', avatar_url:'', instagram:'', whatsapp:'' };
   CT = null;                    /* يعاد بناؤه من INFO عند فتح تبويب المحتوى */
   fillInfoForm();
@@ -2007,13 +2038,27 @@ async function loadAll(){
   render();
 }
 
-/* الصفوف المعروضة حالياً بعد البحث — نفسها اللي يشتغل عليها زرّا الترتيب،
-   وإلا «فوق» يبدّل مع عنصر مو ظاهر بالشاشة والنتيجة تبين عشوائية */
+/* ══ المشاهدات ══
+   جدول منفصل (شوف views.sql). إذا ما انفّذ السكربت بعد، الطلب يفشل
+   وننكتم الخطأ ونكمّل بدون أرقام — اللوحة ما تنكسر لأن ميزة جديدة
+   ما انتنصّبت. */
+async function loadViews(){
+  const { data, error } = await sb.from('item_views').select('kind,item_id,views');
+  const map = new Map((error ? [] : (data || [])).map(v => [v.kind + ':' + v.item_id, v.views]));
+  VIEWS_ON = !error;
+  ['recipes','courses'].forEach(k =>
+    ROWS[k].forEach(x => { x._views = map.get(k + ':' + x.id) || 0 }));
+}
+
+/* الصفوف المعروضة حالياً بعد البحث */
 function visibleRows(){
   const s = norm($('#q').value);
   return ROWS[table()].filter(x =>
     !s || norm(x.title).includes(s) || norm(x.tag).includes(s) || norm(x.area).includes(s));
 }
+/* البحث شغّال يعني القائمة المعروضة جزء من القائمة الكاملة — والسحب
+   يعيد ترقيم القائمة الكاملة، فينطفي */
+const SEARCHING_NOW = () => !!$('#q').value.trim();
 
 function render(){
   if (TAB === 'info') return;
@@ -2032,6 +2077,8 @@ function render(){
     </div>`;
     return;
   }
+
+  const SEARCHING = SEARCHING_NOW();
 
   $('#list').innerHTML = items.map((x, i, arr) => {
     const meta = TAB === 'recipes'
@@ -2055,15 +2102,21 @@ function render(){
           ${meta}
           <span class="pill ${x.is_published ? 'on' : 'offp'}">${esc(x.is_published ? t('app.published') : t('app.hidden'))}</span>
           <span class="num" style="opacity:.7">#${x.sort_order}</span>
+          ${/* ما نعرض العدد إلا إذا الجدول موجود — «٠ مشاهدة» على كل
+                عنصر لأن السكربت ما انفّذ رسالة مضلّلة */''}
+          ${VIEWS_ON ? `<span class="views" title="${esc(t('app.viewsHint'))}">
+            ${ico('i-eye')}<b>${nz(x._views)}</b></span>` : ''}
         </div>
       </div>
       <div class="row-acts">
-        <span class="sorter">
-          <button type="button" data-act="up" data-id="${x.id}" ${i === 0 ? 'disabled' : ''}
-                  aria-label="${esc(t('app.moveUp'))}" title="${esc(t('app.moveUp'))}">${ico('i-up')}</button>
-          <button type="button" data-act="down" data-id="${x.id}" ${i === arr.length - 1 ? 'disabled' : ''}
-                  aria-label="${esc(t('app.moveDown'))}" title="${esc(t('app.moveDown'))}">${ico('i-down')}</button>
-        </span>
+        ${/* مقبض السحب — بديل زرّي فوك/تحت.
+              السحب بالماوس وباللمس، والأسهم للكيبورد (اللي ما يكدر يسحب
+              لازم يبقى عنده طريق). ينطفي لمن يكون البحث شغّال: الترتيب
+              ينحسب على القائمة كاملة، ولو سحبتي وسط نتائج مفلترة راح
+              ينعاد ترقيم العناصر المخفية غلط */''}
+        <button class="drag" type="button" data-drag="${x.id}" ${SEARCHING ? 'disabled' : ''}
+                aria-label="${esc(t('app.reorder'))}"
+                title="${esc(SEARCHING ? t('app.reorderBusy') : t('app.reorder'))}">${ico('i-grip')}</button>
         ${/* الأسماء تنخفي على الموبايل وتبقى الأيقونة — فكل زر لازمه
               aria-label و title حتى يبقى مفهوم بالحالتين */''}
         <button class="btn btn-quiet btn-sm" type="button" data-act="toggle" data-id="${x.id}"
@@ -2499,6 +2552,10 @@ function drawRows(){
       <input class="inp" data-k="q" type="number" step="0.1" min="0" value="${nz(x.q)}" aria-label="${esc(t('f.qty'))}">
       <input class="inp" data-k="u" value="${esc(x.u)}" placeholder="${esc(t('f.unit'))}" aria-label="${esc(t('f.unit'))}">
       <input class="inp n-in" data-k="n" value="${esc(x.n)}" placeholder="${esc(t('f.ingName'))}" aria-label="${esc(t('f.ingName'))}">
+      ${/* البدائل تنكتب مفصولة بفاصلة وتنخزن كمصفوفة بنفس صف المكوّن
+           (حقل alt جوّا jsonb) — ماكو عمود جديد ولا هجرة بالداتابيس */''}
+      <input class="inp alt-in" data-k="alt" value="${esc((Array.isArray(x.alt) ? x.alt : []).join('، '))}"
+             placeholder="${esc(t('f.altPh'))}" aria-label="${esc(t('f.alt'))}">
       <button class="del-row" type="button" data-del="ingredients" data-i="${i}" aria-label="${esc(t('f.removeRow'))}">${ico('i-trash')}</button>
     </div>`).join('') : `<p class="rows-empty">${esc(t('f.noIng'))}</p>`;
 
@@ -2543,6 +2600,10 @@ function syncRows(){
     o.q = nz(el.querySelector('[data-k=q]').value);
     o.u = el.querySelector('[data-k=u]').value;
     o.n = el.querySelector('[data-k=n]').value;
+    /* الفاصلة العربية والإنكليزية الثنتين تفصلن — نتوقّع الثنتين
+       لأن الكيبورد العربي يطلّع «،» والإنكليزي «,» */
+    o.alt = el.querySelector('[data-k=alt]').value
+      .split(/[،,]/).map(s => s.trim()).filter(Boolean);
   });
   $$('#rows-steps .erow').forEach(el => {
     const i = +el.dataset.i;
@@ -2680,8 +2741,16 @@ async function saveItem(e){
         carbs:       Math.max(0, nz($('#f-carbs').value)),
         fat:         Math.max(0, nz($('#f-fat').value)),
         video:       $('#f-video').value.trim(),
+        /* حقل alt يتحط بس إذا بيه بدائل فعلاً — ماكو داعي نكدّس
+           alt:[] بكل مكوّن بالـ jsonb */
         ingredients: DRAFT.ingredients.filter(x => String(x.n).trim())
-                       .map(x => ({ q:nz(x.q), u:String(x.u).trim(), n:String(x.n).trim() })),
+                       .map(x => {
+                         const row = { q:nz(x.q), u:String(x.u).trim(), n:String(x.n).trim() };
+                         const alt = (Array.isArray(x.alt) ? x.alt : [])
+                           .map(s => String(s).trim()).filter(Boolean);
+                         if (alt.length) row.alt = alt;
+                         return row;
+                       }),
         steps:       DRAFT.steps.map(s => String(s).trim()).filter(Boolean),
         is_published:$('#f-pub').checked,
         sort_order:  Math.trunc(nz($('#f-sort').value))
@@ -2729,6 +2798,10 @@ async function duplicate(id){
   const src = ROWS[table()].find(x => x.id === id); if (!src) return;
   const copy = { ...src };
   delete copy.id; delete copy.created_at; delete copy.updated_at;
+  /* `_views` تنحط على الصف بالذاكرة من loadViews() وماكو عمود بالجدول —
+     لو انرسلت وية الـ insert يرجع خطأ «عمود مو موجود».
+     أي حقل يبدي بـ `_` هو حقل شغل محلي، مو داتا */
+  Object.keys(copy).forEach(k => { if (k.startsWith('_')) delete copy[k] });
   copy.title = `${src.title} — ${t('app.copySuffix')}`;
   copy.is_published = false;
   copy.sort_order = nz(src.sort_order) + 1;
@@ -2747,28 +2820,126 @@ function sortRows(){
     (a.sort_order - b.sort_order) || (b.created_at > a.created_at ? 1 : -1));
 }
 
-/* يبدّل sort_order بين عنصرين متجاورين */
-async function move(id, dir){
-  /* على القائمة المعروضة، مو على كل الصفوف — حتى يطابق اللي تشوفينه */
-  const list = visibleRows();
-  const i = list.findIndex(x => x.id === id);
-  const j = i + dir;
-  if (i < 0 || j < 0 || j >= list.length) return;
+/* ══ إعادة الترتيب ══
+   بدل تبديل رقمين بين جارين، نعيد ترقيم القائمة كلها ١..ن ونرسل
+   الصفوف اللي تغيّر رقمها فقط. هيچي السحب لمسافة بعيدة يشتغل بطلب
+   واحد لكل صف انزاح، والأرقام تبقى نظيفة بدون فجوات ولا تكرار.
+   ⚠️ لازم تنتادى على القائمة الكاملة — شوف SEARCHING_NOW(). */
+async function applyOrder(ids){
+  const list = ROWS[table()];
+  const jobs = [];
 
-  const a = list[i], b = list[j];
-  /* إذا الترتيبين متساويين نعطيهم أرقام متمايزة أول */
-  let sa = nz(a.sort_order), sbb = nz(b.sort_order);
-  if (sa === sbb){ sbb = sa + dir }
+  ids.forEach((id, i) => {
+    const row = list.find(x => x.id === id);
+    if (row && nz(row.sort_order) !== i + 1) jobs.push({ row, want:i + 1 });
+  });
+  if (!jobs.length) return;
 
-  const [r1, r2] = await Promise.all([
-    sb.from(table()).update({ sort_order:sbb }).eq('id', a.id),
-    sb.from(table()).update({ sort_order:sa  }).eq('id', b.id)
-  ]);
-  if (r1.error || r2.error){ toast(t('err.save'), 'bad'); return }
+  /* نحدّث الشاشة أول ونرجّعها إذا فشل الحفظ — الانتظار بعد كل سحبة
+     يحسّها الواحد عالقة */
+  const before = jobs.map(j => ({ row:j.row, was:j.row.sort_order }));
+  jobs.forEach(j => { j.row.sort_order = j.want });
+  sortRows(); render();
 
-  a.sort_order = sbb; b.sort_order = sa;
-  sortRows();
-  render();
+  const res = await Promise.all(jobs.map(j =>
+    sb.from(table()).update({ sort_order:j.want }).eq('id', j.row.id)));
+
+  if (res.some(r => r.error)){
+    before.forEach(b => { b.row.sort_order = b.was });
+    sortRows(); render();
+    toast(t('err.save'), 'bad');
+    return;
+  }
+  toast(t('ok.reordered'));
+}
+
+/* تحريك خطوة وحدة — للكيبورد، والسحب يستعملها بعد للأجهزة اللي
+   ما توصل فيها أحداث المؤشر */
+function moveBy(id, dir){
+  if (SEARCHING_NOW()) return;
+  const ids = ROWS[table()].map(x => x.id);
+  const i = ids.indexOf(id), j = i + dir;
+  if (i < 0 || j < 0 || j >= ids.length) return;
+  ids.splice(j, 0, ids.splice(i, 1)[0]);
+  applyOrder(ids);
+  /* التركيز يضيع لأن render() تبني الصفوف من جديد — نرجّعه للمقبض
+     نفسه حتى تكدرين تضغطين السهم مرة ثانية بدون ما تدوّرين عليه */
+  requestAnimationFrame(() => $(`[data-drag="${id}"]`)?.focus());
+}
+
+/* ══ السحب باليد ══
+   المبدأ: الصف المسحوب يبقى بمكانه بالـ DOM ويتحرك بـ transform،
+   والصفوف اللي يمر عليها تنزاح بمقدار ارتفاعه. لمن ترفعين الإصبع
+   نحسب الفهرس النهائي من مقدار الإزاحة ونرسل الترتيب الجديد.
+   ما نحرّك الـ DOM وسط السحب — تحريكه يغيّر مواقع كل شي ويخلي
+   الحساب يلاحق نفسه. */
+function startDrag(handle, e0){
+  const list = $('#list');
+  const row  = handle.closest('.row');
+  if (!row || SEARCHING_NOW()) return;
+
+  const rows = [...list.querySelectorAll('.row')];
+  const from = rows.indexOf(row);
+  /* ارتفاع الصف المسحوب + الفجوة = بالضبط المسافة اللي تنزاحها الصفوف
+     الثانية لمن يطلع من مكانه أو يدخل بمكان جديد */
+  const h = row.offsetHeight + parseFloat(getComputedStyle(list).rowGap) || row.offsetHeight;
+  /* مراكز الصفوف قبل أي تحريك — الصفوف مو بنفس الارتفاع (عنوان طويل
+     ينكسر سطرين)، فحساب الفهرس بالقسمة على ارتفاع واحد يزحف بالقوائم
+     الطويلة. المقارنة بالمراكز تضبط بأي ارتفاعات */
+  const centers = rows.map(r => {
+    const b = r.getBoundingClientRect();
+    return b.top + b.height / 2;
+  });
+
+  let to = from, dy = 0;
+
+  list.classList.add('list-dragging');
+  row.classList.add('row-ghost');
+  document.body.style.userSelect = 'none';
+  try { handle.setPointerCapture(e0.pointerId) } catch(err){}
+
+  const onMove = e => {
+    if (e.pointerId !== e0.pointerId) return;
+    dy = e.clientY - e0.clientY;
+    row.style.transform = `translateY(${dy}px)`;
+
+    /* العتبة: حافة الصف المسحوب تعبر مركز جاره — يعني «غطّيت نصّه
+       فخذ مكانه». المقارنة بالمركز وحده تغلط بخطوة، لأن الصف لمن
+       يوصل مركزه لمركز الهدف يكون أصلاً غطّاه */
+    const c    = centers[from] + dy;
+    const half = row.offsetHeight / 2;
+    let next = from;
+    while (next > 0 && c - half < centers[next - 1]) next--;
+    while (next < rows.length - 1 && c + half > centers[next + 1]) next++;
+    if (next === to) return;
+    to = next;
+    rows.forEach((r, i) => {
+      if (r === row) return;
+      /* الصفوف بين المصدر والهدف تنزاح خطوة بالاتجاه المعاكس */
+      const shift = (i > from && i <= to) ? -h : (i < from && i >= to) ? h : 0;
+      r.style.transform = shift ? `translateY(${shift}px)` : '';
+    });
+  };
+
+  const onUp = e => {
+    if (e.pointerId !== e0.pointerId) return;
+    removeEventListener('pointermove', onMove);
+    removeEventListener('pointerup', onUp);
+    removeEventListener('pointercancel', onUp);
+    list.classList.remove('list-dragging');
+    row.classList.remove('row-ghost');
+    document.body.style.userSelect = '';
+    rows.forEach(r => { r.style.transform = '' });
+
+    if (to === from) return;
+    const ids = rows.map(r => r.querySelector('[data-drag]')?.dataset.drag).filter(Boolean);
+    ids.splice(to, 0, ids.splice(from, 1)[0]);
+    applyOrder(ids);
+  };
+
+  addEventListener('pointermove', onMove);
+  addEventListener('pointerup', onUp);
+  addEventListener('pointercancel', onUp);
 }
 
 function askDelete(id){
@@ -3438,8 +3609,27 @@ function wire(){
     if (b.dataset.act === 'del')    askDelete(id);
     if (b.dataset.act === 'toggle') togglePublish(id);
     if (b.dataset.act === 'dup')    duplicate(id);
-    if (b.dataset.act === 'up')     move(id, -1);
-    if (b.dataset.act === 'down')   move(id,  1);
+  });
+
+  /* ── السحب لإعادة الترتيب ──
+     مربوط على #list مو على كل مقبض — القائمة تتبنى من جديد بكل رسم،
+     والمستمع الواحد هنا يبقى شغّال بلا إعادة ربط */
+  $('#list').addEventListener('pointerdown', e => {
+    const h = e.target.closest('[data-drag]');
+    if (!h || h.disabled) return;
+    if (e.button !== undefined && e.button !== 0) return;   /* الزر الأيسر بس */
+    e.preventDefault();     /* يمنع اختيار النص وسحب الصورة */
+    h.focus();              /* preventDefault تلغي التركيز التلقائي — نرجّعه
+                               حتى الأسهم تشتغل بعد السحب مباشرة */
+    startDrag(h, e);
+  });
+
+  /* الأسهم للكيبورد — نفس الحركة بدون إيماءة */
+  $('#list').addEventListener('keydown', e => {
+    const h = e.target.closest('[data-drag]');
+    if (!h || h.disabled) return;
+    if (e.key === 'ArrowUp'  ){ e.preventDefault(); moveBy(h.dataset.drag, -1) }
+    if (e.key === 'ArrowDown'){ e.preventDefault(); moveBy(h.dataset.drag,  1) }
   });
 
   /* المودال */
@@ -3451,7 +3641,7 @@ function wire(){
     if (add){
       syncRows();
       const k = add.dataset.add;
-      if (k === 'ingredients') DRAFT.ingredients.push({ q:0, u:'', n:'' });
+      if (k === 'ingredients') DRAFT.ingredients.push({ q:0, u:'', n:'', alt:[] });
       if (k === 'steps')       DRAFT.steps.push('');
       if (k === 'moves')       DRAFT.moves.push({ n:'', s:'' });
       drawRows();
