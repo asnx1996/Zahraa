@@ -1059,8 +1059,12 @@ ul.list li.done .tickbox{background:var(--pine);border-color:var(--pine);color:#
 
 /* ── بدائل المكوّن ──
    سطر ثالث بنفس الـ li، ينزل تحت الاسم بمحاذاته (١٩ مربّع + ١٠ فجوة).
-   flex-wrap هي اللي تخليه ينزل سطر لحاله بدل ما يزاحم الكمية */
-ul.list li{flex-wrap:wrap}
+   ⚠️ flex-wrap على الصفوف اللي بيها بدائل **فقط**. لو انحطت على كل
+   الصفوف، أي صف اسمه طويل يصير على حافة الالتفاف: تغيّر بكسل واحد
+   بالعرض يقفز الكمية لسطر ثاني ⇒ الارتفاع يتغيّر ⇒ شريط التمرير
+   يتبدّل ⇒ العرض يتغيّر ⇒ … نفس حلقة الاهتزاز.
+   الصفوف بلا بدائل تبقى بسطر واحد مثل ما چانت بالضبط. */
+ul.list li.has-swap{flex-wrap:wrap}
 .swap{
   flex-basis:100%;display:flex;align-items:flex-start;gap:6px;
   padding-inline-start:29px;margin-top:2px;
@@ -3674,7 +3678,7 @@ function drawSheet(){
             /* البدائل حقل اختياري بنفس صف المكوّن — الوصفات القديمة
                ما بيها فيختفي السطر بدون أي شي زايد */
             const alt = (Array.isArray(i.alt) ? i.alt : []).filter(Boolean);
-            return `<li data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
+            return `<li class="${alt.length ? 'has-swap' : ''}" data-act="tick" tabindex="0" role="checkbox" aria-checked="false">
             <span class="nm"><span class="tickbox">${ico('i-check')}</span>${esc(i.n)}</span>
             <span class="q">${num(nz(i.q) * mult)} ${esc(i.u)}</span>
             ${alt.length ? `<span class="swap">${ico('i-swap')}
