@@ -645,12 +645,20 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
   background:var(--brand);color:#fff;font-family:var(--f-num);font-size:var(--t-11);font-weight:600;
 }
 
-/* ── لوحة الفلترة والترتيب ──
+/* ══ لوحة الفلترة والترتيب ══
    تنرسم جوّا #sheet نفسه (VIEW='filter')، فتاخذ السحب للإغلاق وحصر
-   التركيز وزر الرجوع ببلاش */
+   التركيز وزر الرجوع ببلاش.
+
+   ⚠️ اللوحة **ما تتمرر ككل** — رأس وذيل مثبّتين ووسط يتمرر إذا اضطر.
+   قبلها چان الشيت كله يتمرر: المحتوى أطول من الشاشة ⇒ شريط تمرير ⇒
+   الشرائح تعيد التفافها ⇒ الارتفاع يتغيّر ⇒ الشريط يروح ويجي…
+   هسه ارتفاع الصندوق يجي من max-height مو من المحتوى، فالحلقة مقطوعة
+   من جذرها مو مرقّعة. وزر «شوفي النتائج» يبقى بالشاشة دائماً بدل ما
+   تنزلين تدوّرين عليه. */
+
 .flt-sec + .flt-sec{margin-top:var(--s-4)}
 .flt-sec h4{font-size:var(--t-13);color:var(--soft);font-family:var(--f-head);
-  letter-spacing:.02em;margin-bottom:10px}
+  letter-spacing:.02em;margin-bottom:8px}
 .flt-opts{display:flex;flex-wrap:wrap;gap:8px}
 .flt-opt{
   display:inline-flex;align-items:center;gap:7px;padding:10px 15px;min-height:44px;
@@ -1115,6 +1123,33 @@ ol.steps li::before{
 .vid:active{transform:scale(.96)}
 .sheet-cta{margin-top:var(--s-5)}
 .sheet-cta .btn{width:100%}
+
+/* اللوحة ما تتمرر أبداً، فحجز مكان الشريط عليها ياكل ١٥px بلا سبب —
+   الحجز ينتقل للمنطقة الوسطى وحدها (.pane-scroll) */
+.sheet-inner.pane{overflow:hidden;display:flex;flex-direction:column;scrollbar-gutter:auto}
+.pane-body{
+  display:flex;flex-direction:column;flex:1;min-height:0;   /* min-height:0 يخلي الوسط ينكمش */
+  padding-block-end:0;
+}
+.pane-head{
+  flex:none;display:flex;align-items:center;gap:12px;
+  padding-block-end:var(--s-3);touch-action:none;           /* منطقة سحب على الموبايل */
+}
+.pane-head h2{flex:1;min-width:0;margin-bottom:0;font-size:clamp(19px,3vw,24px)}
+.pane-head .close{position:static;flex:none;box-shadow:none;background:var(--sunken)}
+/* المقبض فوك لوحة بلا صورة — نفس مقبض التفاصيل بلون محايد */
+.grab.plain{background:var(--line-2)}
+.pane-scroll{
+  flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-gutter:stable;                                  /* لو تمرر، العرض ما يتغيّر */
+  padding-block:2px;
+}
+.pane-foot{
+  flex:none;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;
+  padding-block:var(--s-3);border-block-start:1px solid var(--line);
+  padding-block-end:calc(var(--s-3) + env(safe-area-inset-bottom));
+}
+.pane-foot .btn{width:100%}
 
 /* ═══════════════════════════════════════════════════════════
    ⑬  ظهور تدريجي عند التمرير
@@ -2735,22 +2770,20 @@ function drawFilters(){
     `<button class="flt-opt${cls ? ' ' + cls : ''}" type="button" data-act="flt"
              aria-pressed="${on}" ${attrs}>${body}</button>`;
 
-  let h = `<div class="sheet-body" style="padding-top:26px">
-    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:6px">
-      <div style="flex:1">
-        <h2 id="sheetTitle">${ico('i-filter')} ${esc(tt('flt.btn'))}</h2>
-        <p style="color:var(--soft);font-size:var(--t-14);margin-top:6px">${esc(tt('flt.sub'))}</p>
-      </div>
-      <button class="close" type="button" data-act="close" aria-label="${esc(tt('close'))}"
-              style="position:static">${ico('i-close')}</button>
+  let h = `<span class="grab plain"></span>
+    <div class="sheet-body pane-body">
+    <div class="pane-head">
+      <h2 id="sheetTitle">${ico('i-filter')} ${esc(tt('flt.btn'))}</h2>
+      <button class="close" type="button" data-act="close"
+              aria-label="${esc(tt('close'))}">${ico('i-close')}</button>
     </div>
 
-    <div class="panel">
+    <div class="pane-scroll">
       <div class="flt-sec">
         <h4>${esc(tt('flt.sort'))}</h4>
         <div class="flt-opts">
           ${sortKeys().map(k => opt(k === SORT, `data-sort="${k}"`,
-            `${ico('i-sort')} ${esc(tt('sort.' + k))}`)).join('')}
+            esc(tt('sort.' + k)))).join('')}
         </div>
       </div>`;
 
@@ -2773,23 +2806,25 @@ function drawFilters(){
       </div>`;
   }
 
-  h += `<div class="flt-sec">
+  /* «المحفوظة فقط» ما تنعرض إذا ماكو ولا محفوظة — خيار مطفي وتحته سطر
+     شرح چانن ياكلن ارتفاع بلا فايدة */
+  if (favN) h += `<div class="flt-sec">
         <h4>${esc(tt('flt.saved'))}</h4>
         <div class="flt-opts">
-          ${opt(FAVONLY, `data-favonly="1"${favN ? '' : ' disabled'}`,
-            `${ico('i-heart')} ${esc(tt('flt.favOnly'))} ${favN ? `<span style="font-family:var(--f-num)">${favN}</span>` : ''}`,
-            'fav')}
+          ${opt(FAVONLY, 'data-favonly="1"',
+            `${ico('i-heart')} ${esc(tt('flt.favOnly'))}
+             <span style="font-family:var(--f-num)">${favN}</span>`, 'fav')}
         </div>
-        ${favN ? '' : `<p style="color:var(--soft);font-size:var(--t-12);margin-top:8px">${esc(tt('fav.hint'))}</p>`}
-      </div>
-    </div>
+      </div>`;
 
-    <div class="sheet-cta" style="display:grid;gap:10px">
-      <button class="btn btn-primary btn-lg" type="button" data-act="close">
-        ${ico('i-check')} <span id="fltDone">${esc(tt('flt.done', { x: countMatches() }))}</span>
-      </button>
+  h += `</div>
+
+    <div class="pane-foot">
       <button class="btn btn-quiet" type="button" data-act="fltclear" style="color:var(--clay-ink)">
         ${ico('i-refresh')} ${esc(tt('flt.reset'))}
+      </button>
+      <button class="btn btn-primary" type="button" data-act="close">
+        <span id="fltDone">${esc(tt('flt.done', { x: countMatches() }))}</span>
       </button>
     </div>
   </div>`;
@@ -3530,7 +3565,9 @@ function makeSheetDraggable(inner){
     /* من الرأس فقط، وبس إذا المحتوى مو منزّل — حتى ما نتعارك وية التمرير.
        وزر الإغلاق مستثنى لأنه جوّا .sheet-hero */
     if (inner.scrollTop > 0) return;
-    if (!e.target.closest('.sheet-hero,.grab') || e.target.closest('.close')) return;
+    /* .pane-head انضافت حتى لوحة الفلترة تنسحب من رأسها — ماكو صورة
+       بيها فماكو .sheet-hero تمسك السحب */
+    if (!e.target.closest('.sheet-hero,.grab,.pane-head') || e.target.closest('.close')) return;
 
     id = e.pointerId;
     cancelAnimationFrame(inner._raf); inner._raf = 0;
@@ -3599,6 +3636,10 @@ function setMult(d){
 }
 
 function drawSheet(){
+  /* لوحة الفلترة وحدها تشتغل بارتفاع ثابت (رأس + وسط يتمرر + ذيل).
+     التبديل هنا مو بـ openFilters — حتى أي طريق يوصل للرسم ينضبط */
+  $('#sheetInner').classList.toggle('pane', VIEW === 'filter');
+
   if (VIEW === 'cart')   return drawCart();
   if (VIEW === 'filter') return drawFilters();
 
