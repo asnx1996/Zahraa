@@ -142,6 +142,10 @@ try{
   /* البنية */
   --line:rgba(20,32,27,.10);
   --line-2:rgba(20,32,27,.16);
+  /* حافة الصور منفصلة عن --line عن قصد: --line نيوترال مخضّر، وفوك
+     صورة يلتقط لون السطح ويقرا كأنه وسخ على الحافة. الحافة الصحيحة
+     أسود صافي بالفاتح وأبيض صافي بالغامق — ما عندها لون تنقله */
+  --img-line:rgba(0,0,0,.10);
   --ring:var(--brand);
   --shadow-1:0 1px 2px rgba(20,32,27,.05), 0 6px 16px -10px rgba(20,32,27,.24);
   --shadow-2:0 2px 6px rgba(20,32,27,.06), 0 18px 40px -20px rgba(20,32,27,.38);
@@ -231,6 +235,7 @@ try{
     --clay-wash:rgba(240,121,139,.16);
     --line:rgba(255,255,255,.09);
     --line-2:rgba(255,255,255,.16);
+    --img-line:rgba(255,255,255,.10);
     --shadow-1:0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.7);
     --shadow-2:0 2px 6px rgba(0,0,0,.45), 0 18px 40px -20px rgba(0,0,0,.8);
     --shadow-3:0 30px 70px -30px rgba(0,0,0,.9);
@@ -261,6 +266,7 @@ try{
   --clay-wash:rgba(240,121,139,.16);
   --line:rgba(255,255,255,.09);
   --line-2:rgba(255,255,255,.16);
+  --img-line:rgba(255,255,255,.10);
   --shadow-1:0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.7);
   --shadow-2:0 2px 6px rgba(0,0,0,.45), 0 18px 40px -20px rgba(0,0,0,.8);
   --shadow-3:0 30px 70px -30px rgba(0,0,0,.9);
@@ -337,6 +343,21 @@ p{margin:0}
              transform var(--m-press) var(--ease);
   touch-action:manipulation;
 }
+/* ── تبادل أيقونة الثيم ──
+   بدل ما نبدّل href — قطع مفاجئ ماكو بيه لا دخول ولا خروج — الأيقونتين
+   ثنتيهن موجودات فوك بعض بنفس الخلية، والانتقال بالشفافية والتحجيم
+   والضباب. ماكو مكتبة حركة بالمشروع، فالانتقال CSS صافي */
+.ico-swap{position:relative;display:grid;place-items:center;width:1em;height:1em}
+.ico-swap .icon{
+  grid-area:1/1;opacity:0;scale:.25;filter:blur(4px);
+  transition:opacity .3s cubic-bezier(.2,0,0,1),scale .3s cubic-bezier(.2,0,0,1),
+             filter .3s cubic-bezier(.2,0,0,1);
+}
+#themeBtn[data-now="light"] .icon[data-when="light"],
+#themeBtn[data-now="dark"]  .icon[data-when="dark"]{opacity:1;scale:1;filter:blur(0)}
+/* أول رسم ما يتحرّك — الحركة للتبديل الفعلي مو لفتح الصفحة */
+#themeBtn.no-anim .icon{transition:none}
+
 .icon-btn.lang-btn{width:auto;padding-inline:13px;gap:6px;font-family:var(--f-head);font-weight:700;font-size:var(--t-13)}
 .icon-btn.lang-btn .icon{font-size:var(--t-17)}
 
@@ -353,8 +374,10 @@ p{margin:0}
 
 /* ── الضغط — بكل الأجهزة ──
    الرد يجي مع نزول الإصبع مو مع رفعه */
-.btn:active{transform:scale(.97)}
-.icon-btn:active{transform:scale(.94)}
+/* ٠٫٩٦ بكل زر — نفس الرقم بكل الأجهزة. أقل من ٠٫٩٥ يقرا مبالغ،
+   وقيمة تختلف بين اللمس والمؤشر تخلي نفس الزر يرد ردّين */
+.btn:active{transform:scale(.96)}
+.icon-btn:active{transform:scale(.96)}
 
 /* ═══════════════════════════════════════════════════════════
    ④  الهيدر
@@ -376,7 +399,8 @@ p{margin:0}
 }
 .logo b{font-family:var(--f-head);font-size:var(--t-18);font-weight:600}
 /* الصورة الشخصية تحل محل الحرف بالشعار إذا انرفعت */
-.mark.has-photo{background:var(--sunken);overflow:hidden;font-size:0}
+.mark.has-photo{background:var(--sunken);overflow:hidden;font-size:0;
+  box-shadow:inset 0 0 0 1px var(--img-line)}
 .mark img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
 
 /* ── انتقال ناعم عند تبديل اللغة ── */
@@ -472,7 +496,7 @@ body.lang-swap{opacity:.35}
 .hero-photo{
   position:relative;border-radius:var(--r-xl);overflow:hidden;aspect-ratio:4/5;
   background:linear-gradient(150deg,var(--sunken),var(--brand-wash));
-  box-shadow:var(--shadow-3);border:1px solid var(--line);
+  box-shadow:var(--shadow-3);border:1px solid var(--img-line);
 }
 .hero-photo::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
   background:linear-gradient(to top,rgba(10,18,14,.5),transparent 46%)}
@@ -559,7 +583,8 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--sunken);padding:5px;border-radius:var(--r);border:1px solid var(--line)}
 .tab{
   display:flex;align-items:center;justify-content:center;gap:7px;
-  padding:10px 8px;border-radius:10px;font-weight:600;font-size:var(--t-15);color:var(--soft);
+  /* ١٤ (الخارجي) − ١ حد − ٥ حشوة = ٨ */
+  padding:10px 8px;border-radius:8px;font-weight:600;font-size:var(--t-15);color:var(--soft);
   transition:background-color var(--m-ui) var(--ease),color var(--m-ui) var(--ease),
              box-shadow var(--m-ui) var(--ease),transform var(--m-press) var(--ease);
   touch-action:manipulation;
@@ -600,7 +625,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
   touch-action:manipulation;
 }
 @media (hover:hover) and (pointer:fine){ .chip:hover{color:var(--ink);border-color:var(--line-2)} }
-.chip:active{transform:scale(.95)}
+.chip:active{transform:scale(.96)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .count{font-size:var(--t-13);color:var(--soft);white-space:nowrap;flex:none}
 .flt-lbl{font-size:var(--t-13);font-weight:600;color:var(--soft);white-space:nowrap;flex:none;
@@ -629,7 +654,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
   background:var(--surface);color:var(--clay-ink);font-size:var(--t-12);flex:none;
   transition:transform var(--m-press) var(--ease),background-color var(--m-ui) var(--ease);
   touch-action:manipulation}
-.today-item button:active{transform:scale(.88);background:var(--clay-wash)}
+.today-item button:active{transform:scale(.96);background:var(--clay-wash)}
 .today-acts{display:flex;gap:var(--s-2);flex-wrap:wrap}
 .today-acts .btn{flex:1;min-width:130px}
 
@@ -663,8 +688,16 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
   transition:transform var(--m-ui) var(--ease),box-shadow var(--m-ui) var(--ease),
              border-color var(--m-ui) var(--ease);
   /* كان var(--back) — التجاوز ما ينستحق هنا لأن ماكو إيماءة قبله */
-  animation:rise .42s var(--ease) backwards;animation-delay:calc(var(--i,0) * 55ms);
   touch-action:manipulation;
+}
+/* ── الدخول المتدرّج مو دائم ──
+   renderGrid() يعيد بناء الشبكة بكل حرف بالبحث وبكل ضغطة فلتر. لو التدرّج
+   شغّال هناك، كل ضغطة زر تعيد رقصة الدخول من الصفر وتأخّر آخر بطاقة
+   أكثر من نص ثانية. التدرّج يفيد لمن يشرح ترتيب — أول تحميل وتبديل
+   التبويب — ويصير ضجّة بالتفاعل المتكرّر. الكلاس ينحط من الجافاسكربت */
+.grid.stagger .card{
+  animation:rise .42s var(--ease) backwards;
+  animation-delay:calc(var(--i,0) * 55ms);
 }
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 
@@ -680,7 +713,9 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 }
 
 .thumb{position:relative;aspect-ratio:16/10;overflow:hidden;
-  background:linear-gradient(140deg,var(--sunken),var(--brand-wash))}
+  background:linear-gradient(140deg,var(--sunken),var(--brand-wash));
+  /* بدونها الصورة تنزف بجسم البطاقة الأبيض بلا فاصل */
+  box-shadow:inset 0 -1px 0 var(--img-line)}
 .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
 .thumb img.failed{opacity:0}
 .badge{
@@ -791,7 +826,7 @@ section{scroll-margin-top:calc(var(--header-h) + 16px)}
 .about-grid{display:grid;gap:clamp(24px,4vw,48px);align-items:center}
 @media(min-width:880px){.about-grid{grid-template-columns:.85fr 1.15fr}}
 .about-photo{border-radius:var(--r-xl);overflow:hidden;aspect-ratio:1;box-shadow:var(--shadow-2);
-  border:1px solid var(--line);background:linear-gradient(150deg,var(--sunken),var(--brand-wash));max-width:420px;margin-inline:auto;width:100%}
+  border:1px solid var(--img-line);background:linear-gradient(150deg,var(--sunken),var(--brand-wash));max-width:420px;margin-inline:auto;width:100%}
 .about-photo img{width:100%;height:100%;object-fit:cover}
 .about-body p{color:var(--ink-2);font-size:clamp(15px,1.8vw,17px);line-height:1.95;margin-top:var(--s-4)}
 .creds{display:grid;gap:12px;margin-top:var(--s-5)}
@@ -895,10 +930,9 @@ body{padding-bottom:0}
   transition:transform var(--m-press) var(--ease),background-color var(--m-ui) var(--ease);
   touch-action:manipulation;
 }
-.close:active{transform:scale(.9);background:var(--surface-2)}
+.close:active{transform:scale(.96);background:var(--surface-2)}
 @media (hover:hover) and (pointer:fine){
   .close:hover{transform:scale(1.08);background:var(--surface-2)}
-  .close:active{transform:scale(.96)}
 }
 .sheet-body{padding:clamp(18px,3vw,26px) clamp(16px,3vw,26px) clamp(32px,5vw,40px)}
 .sheet-body h2{font-size:clamp(21px,3.4vw,28px);margin-bottom:8px;line-height:var(--lh-display)}
@@ -917,14 +951,13 @@ body{padding-bottom:0}
   color:var(--soft);letter-spacing:var(--tracking)}
 .servings .lbl span{font-size:var(--t-12);color:var(--soft)}
 .stepper{display:flex;align-items:center;gap:4px;background:var(--sunken);border-radius:var(--r);padding:4px}
-.stepper button{width:44px;height:40px;border-radius:9px;background:var(--surface);display:grid;place-items:center;
+.stepper button{width:44px;height:40px;border-radius:10px;   /* ١٤ − ٤ حشوة */background:var(--surface);display:grid;place-items:center;
   font-size:var(--t-16);box-shadow:var(--shadow-1);
   transition:background-color var(--m-ui) var(--ease),transform var(--m-press) var(--ease);
   touch-action:manipulation}
-.stepper button:active:not(:disabled){background:var(--surface-2);transform:scale(.9)}
+.stepper button:active:not(:disabled){background:var(--surface-2);transform:scale(.96)}
 @media (hover:hover) and (pointer:fine){
   .stepper button:hover:not(:disabled){background:var(--surface-2);transform:scale(1.06)}
-  .stepper button:active:not(:disabled){transform:scale(.94)}
 }
 .stepper button:disabled{opacity:.38;cursor:not-allowed}
 .stepper b{min-width:40px;text-align:center;font-family:var(--f-num);font-size:var(--t-15)}
@@ -960,12 +993,12 @@ ol.steps li::before{
   background:var(--ink);color:var(--paper);display:grid;place-items:center;
   font-family:var(--f-num);font-size:var(--t-13);font-weight:600;
 }
-.embed{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;margin-top:var(--s-4);background:#000;border:1px solid var(--line)}
+.embed{position:relative;aspect-ratio:16/9;border-radius:var(--r-lg);overflow:hidden;margin-top:var(--s-4);background:#000;border:1px solid var(--img-line)}
 .embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vid{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;background:var(--brand);
   color:var(--on-brand);padding:14px;border-radius:var(--r);font-weight:600;margin-top:var(--s-4);
   transition:transform var(--m-press) var(--ease);touch-action:manipulation}
-.vid:active{transform:scale(.97)}
+.vid:active{transform:scale(.96)}
 .sheet-cta{margin-top:var(--s-5)}
 .sheet-cta .btn{width:100%}
 
@@ -1126,10 +1159,9 @@ ul.list li{min-height:44px}                                                     
              transform var(--m-press) var(--ease);
   touch-action:manipulation;
 }
-.pick-btn:active{transform:scale(.88)}
+.pick-btn:active{transform:scale(.96)}
 @media (hover:hover) and (pointer:fine){
   .pick-btn:hover{transform:scale(1.08)}
-  .pick-btn:active{transform:scale(.96)}
 }
 .pick-btn.on{background:var(--pine);color:#fff;border-color:var(--pine)}
 
@@ -1144,7 +1176,7 @@ ul.list li{min-height:44px}                                                     
   transition:transform var(--m-press) var(--ease);
   touch-action:manipulation;
 }
-.cart-fab:active{transform:scale(.95)}
+.cart-fab:active{transform:scale(.96)}
 .cart-fab.show{display:inline-flex}
 .cart-fab .n{
   min-width:23px;height:23px;border-radius:var(--r-full);background:rgba(255,255,255,.25);
@@ -1181,14 +1213,14 @@ ul.list li{min-height:44px}                                                     
 .cs-k{display:block;font-size:var(--t-12);font-weight:500;color:var(--soft);font-family:var(--f-num)}
 /* نسخة مصغّرة من الستيبر تنلزم داخل سطر القائمة */
 .stepper.sm{padding:3px;gap:3px;flex:none}
-.stepper.sm button{width:34px;height:32px;border-radius:8px;font-size:var(--t-13)}
+.stepper.sm button{width:34px;height:32px;border-radius:11px;font-size:var(--t-13)}  /* ١٤ − ٣ حشوة */
 .stepper.sm b{min-width:26px;font-size:var(--t-14)}
 .cs-del{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;
   color:var(--soft);font-size:var(--t-13);touch-action:manipulation;
   transition:background-color var(--m-ui) var(--ease),color var(--m-ui) var(--ease),
              transform var(--m-press) var(--ease)}
 @media (hover:hover) and (pointer:fine){ .cs-del:hover{background:var(--clay-wash);color:var(--clay-ink)} }
-.cs-del:active{background:var(--clay-wash);color:var(--clay-ink);transform:scale(.88)}
+.cs-del:active{background:var(--clay-wash);color:var(--clay-ink);transform:scale(.96)}
 .cart-tot{
   display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-2);margin-bottom:var(--s-4);
 }
@@ -1211,7 +1243,9 @@ ul.list li{min-height:44px}                                                     
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></symbol>
-    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.8v14.4a.8.8 0 0 0 1.22.68l11.5-7.2a.8.8 0 0 0 0-1.36L8.22 4.12A.8.8 0 0 0 7 4.8Z" fill="currentColor" stroke="none"/></symbol>
+    <!-- مزحّف ٠٫٨ باتجاه الرأس: مركز ثقل المثلث يقع على ثلث القاعدة مو بنصّه،
+         فالتوسيط الهندسي يخليه يبين مزاح للخلف داخل الدائرة. هني المركز صار ١٢٫٠ -->
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.8 4.8v14.4a.8.8 0 0 0 1.22.68l11.5-7.2a.8.8 0 0 0 0-1.36L9.02 4.12A.8.8 0 0 0 7.8 4.8Z" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z"/></symbol>
     <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M20.5 11.6a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.5-4.3A8.5 8.5 0 1 1 20.5 11.6Z"/><path d="M8.9 8.4c.2-.5.4-.5.6-.5h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.5l-.4.5c-.1.2-.2.3-.1.5a5.4 5.4 0 0 0 2.6 2.3c.2.1.4 0 .5-.1l.5-.6c.2-.2.3-.2.5-.1l1.6.8c.2.1.4.2.4.4a1.8 1.8 0 0 1-1.3 1.6c-.5.1-1.2.2-3.4-.8a7.7 7.7 0 0 1-3.2-3.4c-.6-1.2-.4-2.2 0-2.8Z"/></symbol>
@@ -1256,7 +1290,10 @@ ul.list li{min-height:44px}                                                     
         <svg class="icon"><use href="#i-globe"></use></svg><span id="langTxt">EN</span>
       </button>
       <button class="icon-btn" id="themeBtn" type="button" data-t-aria="nav.theme">
-        <svg class="icon" id="themeIcon"><use href="#i-moon"></use></svg>
+        <span class="ico-swap">
+          <svg class="icon" data-when="light"><use href="#i-moon"></use></svg>
+          <svg class="icon" data-when="dark"><use href="#i-sun"></use></svg>
+        </span>
       </button>
       <a class="btn btn-primary btn-sm header-cta" id="headerCta" href="#" target="_blank" rel="noopener">
         <svg class="icon"><use href="#i-whatsapp"></use></svg> <span data-t="cta.subscribe">اشتركي بالبرنامج</span>
@@ -1449,7 +1486,7 @@ ul.list li{min-height:44px}                                                     
             <svg class="icon"><use href="#i-chevron"></use></svg>
           </button>
         </div>
-        <div class="grid peek-grid" id="peekRecipes"></div>
+        <div class="grid peek-grid stagger" id="peekRecipes"></div>
       </div>
 
       <div class="peek-block" id="peekCoursesBlock">
@@ -1463,7 +1500,7 @@ ul.list li{min-height:44px}                                                     
             <svg class="icon"><use href="#i-chevron"></use></svg>
           </button>
         </div>
-        <div class="grid peek-grid" id="peekCourses"></div>
+        <div class="grid peek-grid stagger" id="peekCourses"></div>
       </div>
     </div>
   </section>
@@ -2007,7 +2044,7 @@ async function fetchAll(){
   loadCart();
   loadDay();
   paintSite();
-  renderGrid();
+  renderGrid(true);   /* أول وصول للبيانات — التدرّج يستاهل */
   renderPeek();
   renderToday();
   injectStructuredData();
@@ -2367,7 +2404,7 @@ function setPage(p, keepScroll){
       $('#q').value = ''; $('#searchBox').classList.remove('has-value');
     }
     paintCatalogHead();
-    renderGrid();
+    renderGrid(true);   /* تبديل تبويب — الشبكة تدخل من جديد */
   }
 
   /* الأقسام اللي تظهر بالتبويب الجديد ما شافها المراقب — أظهرها فوراً */
@@ -2451,8 +2488,10 @@ function skeletonCards(n){
   </div>`).join('');
 }
 
-function renderGrid(){
+function renderGrid(stagger){
   const grid = $('#grid');
+  /* === true بس — حتى لو انربطت كمستمع حدث يوم من الأيام، الحدث ما يشغّلها */
+  grid.classList.toggle('stagger', stagger === true);
 
   if (LOADING){
     $('#chips').innerHTML = '';
@@ -2518,7 +2557,7 @@ function renderGrid(){
 function cardHtml(x, kind, n){
   const isR = kind === 'recipes';
   const inCart = isR && CART.some(c => c.id === x.id);
-  return `<div class="card" style="--i:${n}">
+  return `<div class="card" style="--i:${Math.min(n, 11)}">
     <span class="thumb">
       <img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async">
       <span class="badge">${esc(tg(x.tag))}</span>
@@ -3280,16 +3319,57 @@ function currentTheme(){
   return document.documentElement.dataset.theme
       || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 }
-function syncThemeIcon(){
-  const dark = currentTheme() === 'dark';
-  $('#themeIcon').querySelector('use').setAttribute('href', dark ? '#i-sun' : '#i-moon');
-  $('#themeBtn').setAttribute('aria-label', tt('nav.theme'));
+/* لون شريط المتصفح. وسمَي <meta> بالرأس يتبعون النظام بس، فالاختيار
+   الصريح كان يخلي الشريط بلون ثيم ثاني. هذا الوسم بلا media يسبقهم
+   بالرأس فيغلبهم دائماً، وقيمته تجي من currentTheme() اللي ترجع
+   لإعداد النظام إذا ماكو اختيار محفوظ */
+const THEME_BG = { light:'#F6F5F2', dark:'#0F1512' };
+function syncThemeColor(){
+  let m = document.querySelector('meta[name="theme-color"]:not([media])');
+  if (!m){
+    m = document.createElement('meta');
+    m.setAttribute('name', 'theme-color');
+    document.head.prepend(m);
+  }
+  m.setAttribute('content', THEME_BG[currentTheme()]);
 }
+
+let themeIconLive = false;
+function syncThemeIcon(){
+  const b = $('#themeBtn');
+  if (!themeIconLive) b.classList.add('no-anim');
+  b.dataset.now = currentTheme();
+  b.setAttribute('aria-label', tt('nav.theme'));
+  if (!themeIconLive){ void b.offsetWidth; b.classList.remove('no-anim'); themeIconLive = true; }
+}
+
 function toggleTheme(){
   const next = currentTheme() === 'dark' ? 'light' : 'dark';
+
+  /* ── قفل الانتقالات لحظة التبديل ──
+     الثيم يغيّر لون وخلفية وحد وظل كل عنصر بالصفحة بنفس اللحظة، وكلهم
+     عندهم transition. لو خليناهم يشتغلون، التبديل يطلع مسحة بطيئة مو
+     قصّة نظيفة. نطفّيهم، نجبر إعادة الحساب حتى الألوان الجديدة تثبت
+     والقفل لسّه شغّال، ونشيل القفل بعد الرسم.
+     السطر الثاني يستثني أيقونة الزر: هي الشي الوحيد اللي المفروض
+     يتحرّك. الاستثناء داخل نفس الورقة ومتأخّر عنها وأعلى تخصيصاً،
+     فيغلب الـ !important مال السطر الأول — ومحطوط داخل
+     prefers-reduced-motion حتى ما يغلب قاعدة تقليل الحركة هو بعد */
+  const kill = document.createElement('style');
+  kill.textContent =
+    '*,*::before,*::after{transition:none!important}' +
+    '@media (prefers-reduced-motion:no-preference){' +
+    '.ico-swap .icon{transition:opacity .3s cubic-bezier(.2,0,0,1),' +
+    'scale .3s cubic-bezier(.2,0,0,1),filter .3s cubic-bezier(.2,0,0,1)!important}}';
+  document.head.appendChild(kill);
+
   document.documentElement.dataset.theme = next;
   try { localStorage.setItem('cz-theme', next) } catch(e){}
+  syncThemeColor();
   syncThemeIcon();
+
+  void document.body.offsetHeight;   /* يجبر تثبيت الألوان الجديدة بلا انتقال */
+  requestAnimationFrame(() => requestAnimationFrame(() => kill.remove()));
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -3472,6 +3552,10 @@ function wire(){
   });
 
   $('#themeBtn').addEventListener('click', toggleTheme);
+  /* ماكو اختيار محفوظ ⇒ الصفحة تتبع النظام، فلازم لون الشريط يتبعه وياها */
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!document.documentElement.dataset.theme){ syncThemeColor(); syncThemeIcon() }
+  });
   $('#langBtn').addEventListener('click', toggleLang);
 
 
@@ -3499,6 +3583,7 @@ function wire(){
 /* ══════════════════════════════════════════════════════════
    ⑬  الإقلاع
    ══════════════════════════════════════════════════════════ */
+syncThemeColor();   /* لازم قبل paintUI — الاختيار المحفوظ ينطبّق بالرأس قبل أول رسم */
 paintUI();
 wire();
 openFromHash();     /* التبويب الصحيح يبين فوراً، قبل ما توصل البيانات */
